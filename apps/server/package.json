@@ -1,0 +1,23 @@
+{
+  "name": "@edu/server",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts"
+  },
+  "devDependencies": {
+    "@edu/eslint": "*",
+    "@edu/prettier": "*",
+    "@edu/rbac": "*",
+    "@edu/tsconfig": "*",
+    "tsx": "^4.19.3"
+  },
+  "prettier": "@edu/prettier",
+  "eslintConfig": {
+    "extends": [
+      "@edu/eslint/base"
+    ]
+  }
+}
