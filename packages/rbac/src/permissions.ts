@@ -1,20 +1,20 @@
-import { AppAbility } from '.'
-import { Role } from './enums/role.enum'
+import { AppAbility } from './ability'
+import { User } from './entities/user.entity'
+import { Role } from './types/role.type'
 import { AbilityBuilder } from '@casl/ability'
 
-type DefinePermissions = (
-  user: any,
-  builder: AbilityBuilder<AppAbility>,
-) => void
+type DefinePermissions = (user: User, builder: AbilityBuilder<AppAbility>) => void
 
 export const permissions: Record<Role, DefinePermissions> = {
-  admin(user, { can }) {
+  super_admin(_, { can }) {
     can('manage', 'all')
   },
+  admin(user, { can }) {
+    can('manage', 'User')
+    can(['read', 'update'], 'Organization', { slug: user.organization })
+  },
   teacher(user, { can }) {
-    can('create', 'all')
+    can('update', 'User', { id: { $eq: user.id } })
   },
-  student(user, { can }) {
-    can('read', 'all')
-  },
+  student(user, { can }) {},
 }
