@@ -1,3 +1,4 @@
 import { defineAbilityFor } from '@edu/rbac'
 
-console.log(defineAbilityFor({}))
+const { can } = defineAbilityFor({ role: 'admin' as any })
+console.log(can('read', 'User'))

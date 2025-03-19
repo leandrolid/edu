@@ -12,6 +12,7 @@
     "@edu/prettier": "*",
     "@edu/rbac": "*",
     "@edu/tsconfig": "*",
+    "@types/node": "^20.0.0",
     "tsx": "^4.19.3"
   },
   "prettier": "@edu/prettier",
