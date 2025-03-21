@@ -1,3 +1,5 @@
+import { prisma } from '@/lib/prisma'
+import { hash } from 'bcrypt'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
@@ -20,9 +22,15 @@ export const createUserController = async (app: FastifyInstance) => {
       },
     },
     async (request, reply) => {
-      const { email, password } = request.body
-      // create account logic
-      return { email }
+      const { name, email, password } = request.body
+      const userExists = await prisma.user.findUnique({ where: { email } })
+      if (userExists) {
+        return reply.status(400).send({ message: 'User already exists' })
+      }
+      await prisma.user.create({
+        data: { name, email, passwordHash: await hash(password, 10) },
+      })
+      return reply.status(201).send({ message: 'User created' })
     },
   )
 }

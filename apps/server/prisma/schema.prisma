@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  name         String?
+  email        String   @unique
+  passwordHash String?  @map("password_hash")
+  avatarUrl    String?  @map("avatar_url")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  tokens        Token[]
+  accounts      Account[]
+  invites       Invite[]
+  memberships   Member[]
+  organizations Organization[]
+  projects      Project[]
+
+  @@map("users")
+}
+
+enum TokenType {
+  PASSWORD_RECOVER
+}
+
+model Token {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  type      TokenType
+  value     String
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@map("tokens")
+}
+
+enum AccountProvider {
+  GITHUB
+}
+
+model Account {
+  id                String          @id @default(uuid(7)) @db.Uuid
+  provider          AccountProvider
+  providerAccountId String          @unique @map("provider_account_id")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@unique([provider, userId])
+  @@map("accounts")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model Invite {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  email     String
+  role      Role
+  createdAt DateTime @default(now()) @map("created_at")
+
+  author User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id") @db.Uuid
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id") @db.Uuid
+
+  @@unique([email, organizationId])
+  @@index([email])
+  @@map("invites")
+}
+
+model Member {
+  id   String @id @default(uuid(7)) @db.Uuid
+  role Role   @default(MEMBER)
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@unique([organizationId, userId])
+  @@map("members")
+}
+
+model Organization {
+  id                       String   @id @default(uuid(7)) @db.Uuid
+  name                     String
+  slug                     String   @unique
+  domain                   String?  @unique
+  shouldAttachUserByDomain Boolean  @default(false) @map("should_attach_user_by_domain")
+  avatarUrl                String?  @map("avatar_url")
+  createdAt                DateTime @default(now()) @map("created_at")
+  updatedAt                DateTime @default(now()) @updatedAt @map("updated_at")
+
+  owner  User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  invites  Invite[]
+  members  Member[]
+  projects Project[]
+
+  @@map("organizations")
+}
+
+model Project {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  name        String
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id") @db.Uuid
+
+  owner  User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@map("projects")
+}

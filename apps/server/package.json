@@ -8,7 +8,10 @@
     "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
+    "@edu/rbac": "*",
     "@fastify/cors": "^11.0.0",
+    "@prisma/client": "6.5.0",
+    "bcrypt": "^5.1.1",
     "fastify": "^5.2.1",
     "fastify-type-provider-zod": "^4.0.2",
     "zod": "^3.24.2"
@@ -16,9 +19,10 @@
   "devDependencies": {
     "@edu/eslint": "*",
     "@edu/prettier": "*",
-    "@edu/rbac": "*",
     "@edu/tsconfig": "*",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.0.0",
+    "prisma": "^6.5.0",
     "tsx": "^4.19.3"
   },
   "prettier": "@edu/prettier",
