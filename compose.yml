@@ -1,0 +1,10 @@
+services:
+  db:
+    container_name: edu-db
+    image: bitnami/postgresql:latest
+    environment:
+      POSTGRES_DB: edu
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+    ports:
+      - "4321:5432"
