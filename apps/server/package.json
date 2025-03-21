@@ -5,7 +5,9 @@
   "types": "src/index.ts",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "predev": "prisma generate",
+    "dev": "tsx watch src/index.ts",
+    "migrate:dev": "prisma migrate dev"
   },
   "dependencies": {
     "@edu/rbac": "*",

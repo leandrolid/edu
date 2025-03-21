@@ -57,7 +57,7 @@ CREATE TABLE "invites" (
 CREATE TABLE "members" (
     "id" UUID NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'MEMBER',
-    "organizationId" UUID NOT NULL,
+    "organization_id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
 
     CONSTRAINT "members_pkey" PRIMARY KEY ("id")
@@ -107,7 +107,7 @@ CREATE INDEX "invites_email_idx" ON "invites"("email");
 CREATE UNIQUE INDEX "invites_email_organization_id_key" ON "invites"("email", "organization_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "members_organizationId_user_id_key" ON "members"("organizationId", "user_id");
+CREATE UNIQUE INDEX "members_organization_id_user_id_key" ON "members"("organization_id", "user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "organizations_slug_key" ON "organizations"("slug");
@@ -128,7 +128,7 @@ ALTER TABLE "invites" ADD CONSTRAINT "invites_user_id_fkey" FOREIGN KEY ("user_i
 ALTER TABLE "invites" ADD CONSTRAINT "invites_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "members" ADD CONSTRAINT "members_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "members" ADD CONSTRAINT "members_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "members" ADD CONSTRAINT "members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

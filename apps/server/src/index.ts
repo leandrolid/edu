@@ -6,7 +6,7 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-import { createUserController } from './controllers/users/create-account.controller'
+import { createUserController } from './infra/controllers/users/create-account.controller'
 
 const PORT = Number(process.env.PORT || 4000)
 
