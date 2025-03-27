@@ -5,6 +5,8 @@
   ],
   "compilerOptions": {
     "outDir": "dist",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
       "@infra/*": [
@@ -12,7 +14,10 @@
       ],
       "@app/*": [
         "src/app/*"
-      ]
+      ],
+      "@domain/*": [
+        "src/domain/*"
+      ],
     }
   }
 }

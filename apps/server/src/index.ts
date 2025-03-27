@@ -1,20 +1,11 @@
-import fastifyCors from '@fastify/cors'
-import fastify from 'fastify'
-import {
-  // jsonSchemaTransform,
-  serializerCompiler,
-  validatorCompiler,
-  ZodTypeProvider,
-} from 'fastify-type-provider-zod'
-import { createUserController } from './infra/controllers/users/create-account.controller'
+import 'reflect-metadata'
+
+import { FastifyServer } from '@infra/http/servers/fastfy.server'
+import { CreateAccountController } from '@infra/http/controllers/users/create-account.controller'
 
 const PORT = Number(process.env.PORT || 4000)
-
-const app = fastify().withTypeProvider<ZodTypeProvider>()
-app.setSerializerCompiler(serializerCompiler)
-app.setValidatorCompiler(validatorCompiler)
-app.register(fastifyCors)
-app.register(createUserController)
-app.listen({ port: PORT }).then(() => {
-  console.log(`Server running on port ${PORT}`)
-})
+const app = new FastifyServer()
+app.cors()
+app.registerValidationProvider()
+app.registerControllers([CreateAccountController])
+app.start(PORT)
