@@ -1,12 +1,25 @@
 import fastifyCors from '@fastify/cors'
+import fastifySwagger from '@fastify/swagger'
+import fastifySwaggerUI from '@fastify/swagger-ui'
 import { Constructor, Container } from '@infra/_injection'
 import { IServer } from '@infra/http/servers/server'
 import fastify from 'fastify'
-import { serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod'
+import {
+  jsonSchemaTransform,
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 export class FastifyServer implements IServer {
+  async start(port: number): Promise<void> {
+    await app.listen({ port })
+    console.log(app.printRoutes())
+    console.log(`Server running on port ${port}`)
+  }
+
   cors(): void {
     app.register(fastifyCors)
   }
@@ -38,10 +51,30 @@ export class FastifyServer implements IServer {
     app.setErrorHandler((error, _request, reply) => handler.execute(error, reply))
   }
 
-  async start(port: number): Promise<void> {
-    await app.listen({ port })
-    console.log(app.printRoutes())
-    console.log(`Server running on port ${port}`)
+  registerDocs(): void {
+    app.register(fastifySwagger, {
+      openapi: {
+        info: {
+          title: 'Edu API',
+          description: 'Full-stack SaaS with multi-tenant & RBAC.',
+          version: '1.0.0',
+        },
+        components: {
+          securitySchemes: {
+            bearerAuth: {
+              type: 'http',
+              scheme: 'bearer',
+              bearerFormat: 'JWT',
+            },
+          },
+        },
+      },
+      transform: jsonSchemaTransform,
+    })
+
+    app.register(fastifySwaggerUI, {
+      routePrefix: '/docs',
+    })
   }
 
   private makePath(prefix: string, path: string): string {

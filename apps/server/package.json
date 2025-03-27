@@ -12,6 +12,8 @@
   "dependencies": {
     "@edu/rbac": "*",
     "@fastify/cors": "^11.0.0",
+    "@fastify/swagger": "^9.4.2",
+    "@fastify/swagger-ui": "^5.2.2",
     "@prisma/client": "6.5.0",
     "bcrypt": "^5.1.1",
     "fastify": "^5.2.1",
