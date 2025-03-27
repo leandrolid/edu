@@ -34,6 +34,10 @@ export class FastifyServer implements IServer {
     })
   }
 
+  registerErrorHandler(handler: { execute(error: Error, res: any): void }): void {
+    app.setErrorHandler((error, _request, reply) => handler.execute(error, reply))
+  }
+
   async start(port: number): Promise<void> {
     await app.listen({ port })
     console.log(app.printRoutes())

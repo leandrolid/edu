@@ -1,12 +1,20 @@
 import { Controller, Post } from '@infra/_injection'
 import { CreateAccountUseCase } from '@app/users/create-account/create-account.usecase'
 import z from 'zod'
+import type {
+  IController,
+  IRequest,
+  IResponse,
+  IValidation,
+} from '@infra/http/interfaces/controller.interface'
+import { CreateAccountInput } from '@app/users/create-account/create-account.input'
+import { HttpStatusCode } from '@domain/enums/http-statuscode.enum'
 
 @Controller('/users')
-export class CreateAccountController {
+export class CreateAccountController implements IController {
   constructor(private readonly createUserUseCase: CreateAccountUseCase) {}
 
-  public validation = {
+  public validation: IValidation = {
     body: z.object({
       name: z.string({ message: 'Nome inválido' }).optional(),
       email: z.string({ message: 'O email é obrigatório' }).email('O email é inválido'),
@@ -20,9 +28,9 @@ export class CreateAccountController {
   }
 
   @Post('/')
-  async execute(req: any, res: any) {
+  async execute(req: IRequest<CreateAccountInput>, res: IResponse) {
     const { name, email, password } = req.body
     const output = await this.createUserUseCase.execute({ name, email, password })
-    return res.status(201).send(output)
+    return res.status(HttpStatusCode.CREATED).send(output)
   }
 }
