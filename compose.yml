@@ -2,6 +2,7 @@ services:
   db:
     container_name: edu-db
     image: bitnami/postgresql:latest
+    restart: always
     environment:
       POSTGRES_DB: edu
       POSTGRES_USER: docker
