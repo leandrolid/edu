@@ -1,8 +1,8 @@
 import fastifyCors from '@fastify/cors'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
-import { Constructor, Container } from '@infra/_injection'
-import { IServer } from '@infra/http/servers/server'
+import { Container, IConstructor } from '@infra/_injection'
+import { IServer } from '@infra/http/interfaces/server'
 import fastify from 'fastify'
 import {
   jsonSchemaTransform,
@@ -29,15 +29,25 @@ export class FastifyServer implements IServer {
     app.setValidatorCompiler(validatorCompiler)
   }
 
-  registerControllers(controllers: Constructor[]): void {
+  registerControllers(controllers: IConstructor[]): void {
     controllers.forEach((controller) => {
-      const { instance, prefix, routes } = Container.instance.resolveController(controller)
+      const { instance, prefix, routes, docs, validation } =
+        Container.instance.resolveController(controller)
       routes.forEach((route) => {
         app.register(async (appInstance) => {
           appInstance.withTypeProvider<ZodTypeProvider>().route({
             url: this.makePath(prefix, route.path),
             method: route.method,
-            schema: instance.validation,
+            schema: {
+              body: validation.body,
+              query: validation.query,
+              params: validation.params,
+              headers: validation.headers,
+              summary: docs.title,
+              description: docs.description,
+              tags: docs.tags,
+              response: docs.response,
+            },
             handler: async (request, reply) => {
               return instance[route.execute](request, reply)
             },

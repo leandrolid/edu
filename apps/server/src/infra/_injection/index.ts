@@ -1,27 +1,7 @@
-import 'reflect-metadata'
-
-export type Constructor<T = any> = new (...args: any[]) => T
-
-enum Scope {
-  Singleton,
-  Transient,
-}
-
-interface Provider<T = any> {
-  useClass: Constructor<T>
-  scope: Scope
-  instance?: T
-}
-
-export interface RouteDefinition {
-  path: string
-  method: 'get' | 'post' | 'put' | 'delete' | 'patch'
-  execute: string
-}
+import { IValidation, IValidator } from '@infra/http/interfaces/controller.interface'
 
 export class Container {
-  private providers = new Map<Constructor, Provider>()
-  private controllers: Constructor[] = []
+  private providers = new Map<IConstructor, IProvider>()
 
   private static _instance: Container
 
@@ -35,8 +15,8 @@ export class Container {
   private constructor() {}
 
   register<T>(
-    token: Constructor<T>,
-    options: { useClass: Constructor<T>; scope?: Scope } = {
+    token: IConstructor<T>,
+    options: { useClass: IConstructor<T>; scope?: Scope } = {
       useClass: token,
       scope: Scope.Transient,
     },
@@ -45,7 +25,7 @@ export class Container {
     this.providers.set(token, { useClass: options.useClass, scope })
   }
 
-  resolve<T>(token: Constructor<T>): T {
+  resolve<T>(token: IConstructor<T>): T {
     const provider = this.providers.get(token)
 
     if (!provider) {
@@ -57,7 +37,7 @@ export class Container {
       return provider.instance
     }
 
-    const paramTypes: Constructor[] =
+    const paramTypes: IConstructor[] =
       Reflect.getMetadata('design:paramtypes', provider.useClass) || []
     const dependencies = paramTypes.map((param) => this.resolve(param))
     const instance = new provider.useClass(...dependencies)
@@ -69,26 +49,30 @@ export class Container {
     return instance
   }
 
-  resolveController<T>(token: Constructor<T>) {
+  resolveController<T>(token: IConstructor<T>) {
     const instance = Container.instance.resolve(token)
-    const routes: RouteDefinition[] = Reflect.getMetadata('routes', token) || []
+    const routes: IRoute[] = Reflect.getMetadata('routes', token) || []
     const prefix = Reflect.getMetadata('prefix', token) || ''
+    const docs: IApiDocs = Reflect.getMetadata('docs', token) || {}
+    const validation: IValidation = Reflect.getMetadata('validation', token) || {}
     return {
       instance,
       routes,
       prefix,
+      docs,
+      validation,
     }
   }
 }
 
 export function Injectable(options?: { scope?: Scope }) {
-  return function <T extends Constructor>(target: T) {
+  return function <T extends IConstructor>(target: T) {
     Container.instance.register(target, { useClass: target, scope: options?.scope })
   }
 }
 
 export function Controller(prefix: string = '') {
-  return function (target: Constructor) {
+  return function (target: IConstructor) {
     Reflect.defineMetadata('prefix', prefix, target)
     Container.instance.register(target)
   }
@@ -104,7 +88,7 @@ export const Patch = createRouteDecorator('patch')
 function createRouteDecorator(method: 'get' | 'post' | 'put' | 'delete' | 'patch') {
   return function (path: string) {
     return function (target: any, propertyKey: string) {
-      const routes: RouteDefinition[] = Reflect.getMetadata('routes', target.constructor) || []
+      const routes: IRoute[] = Reflect.getMetadata('routes', target.constructor) || []
 
       routes.push({
         method,
@@ -115,4 +99,42 @@ function createRouteDecorator(method: 'get' | 'post' | 'put' | 'delete' | 'patch
       Reflect.defineMetadata('routes', routes, target.constructor)
     }
   }
+}
+
+export function Validate(validation: IValidation) {
+  return function (target: any, _propertyKey: string) {
+    Reflect.defineMetadata('validation', validation, target.constructor)
+  }
+}
+
+type IApiDocs = {
+  title: string
+  tags: string[]
+  description?: string
+  response?: Record<number, IValidator>
+}
+
+export function Docs(docs: IApiDocs) {
+  return function (target: any) {
+    Reflect.defineMetadata('docs', docs, target)
+  }
+}
+
+export type IConstructor<T = any> = new (...args: any[]) => T
+
+enum Scope {
+  Singleton,
+  Transient,
+}
+
+type IProvider<T = any> = {
+  useClass: IConstructor<T>
+  scope: Scope
+  instance?: T
+}
+
+export type IRoute = {
+  path: string
+  method: 'get' | 'post' | 'put' | 'delete' | 'patch'
+  execute: string
 }

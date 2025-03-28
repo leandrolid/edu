@@ -1,5 +1,4 @@
 export interface IController {
-  validation: IValidation
   execute(req: IRequest, res: IResponse): Promise<void>
 }
 
@@ -10,7 +9,7 @@ export interface IValidation<B = unknown, Q = unknown, P = unknown, H = unknown>
   headers?: IValidator<H>
 }
 
-interface IValidator<T = unknown> {
+export interface IValidator<T = unknown> {
   parse: (data: unknown) => T
 }
 
