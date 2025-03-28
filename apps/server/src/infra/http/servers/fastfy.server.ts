@@ -1,7 +1,7 @@
 import fastifyCors from '@fastify/cors'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
-import { Container, IConstructor } from '@infra/_injection'
+import { Constructor, Container } from '@infra/_injection'
 import { IServer } from '@infra/http/interfaces/server'
 import fastify from 'fastify'
 import {
@@ -29,7 +29,7 @@ export class FastifyServer implements IServer {
     app.setValidatorCompiler(validatorCompiler)
   }
 
-  registerControllers(controllers: IConstructor[]): void {
+  registerControllers(controllers: Constructor[]): void {
     controllers.forEach((controller) => {
       const { instance, prefix, routes, docs, validation } =
         Container.instance.resolveController(controller)
