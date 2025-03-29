@@ -65,13 +65,13 @@ export class Container {
 
   resolveController<T>(token: Constructor<T>) {
     const instance = Container.instance.resolve(token)
-    const routes: Route[] = Reflect.getMetadata('routes', token) || []
+    const route: Route = Reflect.getMetadata('route', token) || {}
     const prefix = Reflect.getMetadata('prefix', token) || ''
     const docs: DocsConfig = Reflect.getMetadata('docs', token) || {}
     const validation: IValidation = Reflect.getMetadata('validation', token) || {}
     return {
       instance,
-      routes,
+      route,
       prefix,
       docs,
       validation,

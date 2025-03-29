@@ -2,6 +2,7 @@ import fastifyCors from '@fastify/cors'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
 import { Constructor, Container } from '@infra/_injection'
+import { IErrorHandler } from '@infra/http/interfaces/error.handler'
 import { IServer } from '@infra/http/interfaces/server'
 import fastify from 'fastify'
 import {
@@ -31,39 +32,37 @@ export class FastifyServer implements IServer {
 
   registerControllers(controllers: Constructor[]): void {
     controllers.forEach((controller) => {
-      const { instance, prefix, routes, docs, validation } =
+      const { instance, prefix, route, docs, validation } =
         Container.instance.resolveController(controller)
-      routes.forEach((route) => {
-        app.register(async (appInstance) => {
-          appInstance.withTypeProvider<ZodTypeProvider>().route({
-            url: this.makePath(prefix, route.path),
-            method: route.method,
-            schema: {
-              body: validation.body,
-              query: validation.query,
-              params: validation.params,
-              headers: validation.headers,
-              summary: docs.title,
-              description: docs.description,
-              tags: docs.tags,
-              response: docs.response,
-            },
-            handler: async (request, reply) => {
-              const output = await Container.instance.resolveRouteHandler({
-                instance,
-                execute: route.execute,
-                request,
-                response: reply,
-              })
-              return reply.status(route.status).send(output)
-            },
-          })
+      app.register(async (appInstance) => {
+        appInstance.withTypeProvider<ZodTypeProvider>().route({
+          url: this.makePath(prefix, route.path),
+          method: route.method,
+          schema: {
+            body: validation.body,
+            query: validation.query,
+            params: validation.params,
+            headers: validation.headers,
+            summary: docs.title,
+            description: docs.description,
+            tags: docs.tags,
+            response: docs.response,
+          },
+          handler: async (request, response) => {
+            const output = await Container.instance.resolveRouteHandler({
+              instance,
+              execute: route.execute,
+              request,
+              response,
+            })
+            return response.status(route.status).send(output)
+          },
         })
       })
     })
   }
 
-  registerErrorHandler(handler: { execute(error: Error, res: any): void }): void {
+  registerErrorHandler(handler: IErrorHandler): void {
     app.setErrorHandler((error, _request, reply) => handler.execute(error, reply))
   }
 

@@ -19,14 +19,13 @@ export function Controller(prefix: string = '') {
 function createRouteDecorator(method: 'get' | 'post' | 'put' | 'delete' | 'patch') {
   return function (path: string) {
     return function (target: any, propertyKey: string) {
-      const routes: Route[] = Reflect.getMetadata('routes', target.constructor) || []
-      routes.push({
+      const route = {
         method,
         path,
         execute: propertyKey,
         status: method === 'post' ? HttpStatusCode.CREATED : HttpStatusCode.OK,
-      })
-      Reflect.defineMetadata('routes', routes, target.constructor)
+      }
+      Reflect.defineMetadata('route', route, target.constructor)
     }
   }
 }
