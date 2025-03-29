@@ -4,6 +4,7 @@ import fastifySwaggerUI from '@fastify/swagger-ui'
 import { Constructor, Container } from '@infra/_injection'
 import { IErrorHandler } from '@infra/http/interfaces/error.handler'
 import { IServer } from '@infra/http/interfaces/server'
+import { DefaultValidation } from '@infra/http/servers/fastify.validation'
 import fastify from 'fastify'
 import {
   jsonSchemaTransform,
@@ -13,11 +14,11 @@ import {
 } from 'fastify-type-provider-zod'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
+const defaultValidation = new DefaultValidation()
 
 export class FastifyServer implements IServer {
   async start(port: number): Promise<void> {
     await app.listen({ port })
-    console.log(app.printRoutes())
     console.log(`Server running on port ${port}`)
   }
 
@@ -39,10 +40,10 @@ export class FastifyServer implements IServer {
           url: this.makePath(prefix, route.path),
           method: route.method,
           schema: {
-            body: validation.body,
-            query: validation.query,
-            params: validation.params,
-            headers: validation.headers,
+            body: validation.body || defaultValidation.body,
+            query: validation.query || defaultValidation.query,
+            params: validation.params || defaultValidation.params,
+            headers: validation.headers || defaultValidation.headers,
             summary: docs.title,
             description: docs.description,
             tags: docs.tags,
