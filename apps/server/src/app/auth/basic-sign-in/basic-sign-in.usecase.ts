@@ -1,4 +1,4 @@
-import { BasicSignInInput } from '@app/auth/basic-sign-in.input'
+import { BasicSignInInput } from '@app/auth/basic-sign-in/basic-sign-in.input'
 import { BadRequestError } from '@domain/errors/bad-request.error'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
 import { Injectable } from '@infra/_injection'

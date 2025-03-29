@@ -1,7 +1,7 @@
-import type { BasicSignInInput } from '@app/auth/basic-sign-in.input'
-import { BasicSignInUseCase } from '@app/auth/basic-sign-in.usecase'
+import type { BasicSignInInput } from '@app/auth/basic-sign-in/basic-sign-in.input'
+import { BasicSignInUseCase } from '@app/auth/basic-sign-in/basic-sign-in.usecase'
 import { Body, Controller, Docs, Post, Validate } from '@infra/_injection'
-import { BasicSignInValidation } from '@infra/http/controllers/auth/basic-signin/basic-signin.validation'
+import { BasicSignInValidation } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.validation'
 import { IController } from '@infra/http/interfaces/controller.interface'
 
 @Controller('/auth/signin')
