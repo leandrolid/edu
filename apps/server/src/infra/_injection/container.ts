@@ -1,6 +1,6 @@
-import { Route } from '@infra/_injection/controller'
+import { REQUEST_METADATA_KEYS, Route } from '@infra/_injection/controller'
 import { DocsConfig } from '@infra/_injection/docs'
-import { IValidation } from '@infra/http/interfaces/controller.interface'
+import { IRequest, IResponse, IValidation } from '@infra/http/interfaces/controller.interface'
 
 export enum Scope {
   Singleton,
@@ -76,5 +76,36 @@ export class Container {
       docs,
       validation,
     }
+  }
+
+  resolveRouteHandler({
+    instance,
+    execute,
+    request,
+    response,
+  }: {
+    instance: any
+    execute: string
+    request: IRequest
+    response: IResponse
+  }) {
+    const method = instance[execute]
+    const paramCount = method.length
+    const args = Array.from({ length: paramCount })
+    const requestProperties = ['body', 'query', 'params', 'headers'] as const
+    requestProperties.forEach((reqKey) => {
+      const indices: number[] =
+        Reflect.getOwnMetadata(
+          REQUEST_METADATA_KEYS[reqKey],
+          Object.getPrototypeOf(instance),
+          execute,
+        ) || []
+      indices.forEach((index) => {
+        args[index] = request[reqKey]
+      })
+    })
+    if (paramCount > 0 && args[0] === undefined) args[0] = request
+    if (paramCount > 1 && args[1] === undefined) args[1] = response
+    return method.apply(instance, args)
   }
 }

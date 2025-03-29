@@ -35,3 +35,26 @@ export function Validate(validation: IValidation) {
     Reflect.defineMetadata('validation', validation, target.constructor)
   }
 }
+
+export const REQUEST_METADATA_KEYS = {
+  body: 'custom:body',
+  query: 'custom:query',
+  params: 'custom:params',
+  headers: 'custom:headers',
+} as const
+
+function createRequestDecorator<K extends keyof typeof REQUEST_METADATA_KEYS>(key: K) {
+  return function () {
+    return function (target: Object, propertyKey: string | symbol, parameterIndex: number) {
+      const existingIndices: number[] =
+        Reflect.getOwnMetadata(REQUEST_METADATA_KEYS[key], target, propertyKey) || []
+      existingIndices.push(parameterIndex)
+      Reflect.defineMetadata(REQUEST_METADATA_KEYS[key], existingIndices, target, propertyKey)
+    }
+  }
+}
+
+export const Body = createRequestDecorator('body')
+export const Query = createRequestDecorator('query')
+export const Params = createRequestDecorator('params')
+export const Headers = createRequestDecorator('headers')

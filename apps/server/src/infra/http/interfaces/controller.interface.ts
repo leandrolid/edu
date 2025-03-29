@@ -1,5 +1,5 @@
 export interface IController {
-  execute(req: IRequest, res: IResponse): Promise<void>
+  execute(...args: any[]): Promise<void>
 }
 
 export interface IValidation<B = unknown, Q = unknown, P = unknown, H = unknown> {
