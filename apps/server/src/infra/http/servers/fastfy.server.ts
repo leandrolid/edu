@@ -49,12 +49,13 @@ export class FastifyServer implements IServer {
               response: docs.response,
             },
             handler: async (request, reply) => {
-              return Container.instance.resolveRouteHandler({
+              const output = await Container.instance.resolveRouteHandler({
                 instance,
                 execute: route.execute,
                 request,
                 response: reply,
               })
+              return reply.status(route.status).send(output)
             },
           })
         })

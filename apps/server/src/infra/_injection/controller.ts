@@ -1,3 +1,4 @@
+import { HttpStatusCode } from '@domain/enums/http-statuscode.enum'
 import { Constructor, Container } from '@infra/_injection/container'
 import { IValidation } from '@infra/http/interfaces/controller.interface'
 
@@ -5,6 +6,7 @@ export type Route = {
   path: string
   method: 'get' | 'post' | 'put' | 'delete' | 'patch'
   execute: string
+  status: HttpStatusCode
 }
 
 export function Controller(prefix: string = '') {
@@ -18,7 +20,12 @@ function createRouteDecorator(method: 'get' | 'post' | 'put' | 'delete' | 'patch
   return function (path: string) {
     return function (target: any, propertyKey: string) {
       const routes: Route[] = Reflect.getMetadata('routes', target.constructor) || []
-      routes.push({ method, path, execute: propertyKey })
+      routes.push({
+        method,
+        path,
+        execute: propertyKey,
+        status: method === 'post' ? HttpStatusCode.CREATED : HttpStatusCode.OK,
+      })
       Reflect.defineMetadata('routes', routes, target.constructor)
     }
   }
