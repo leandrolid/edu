@@ -1,8 +1,8 @@
 import type { BasicSignInInput } from '@app/auth/basic-sign-in/basic-sign-in.input'
 import { BasicSignInUseCase } from '@app/auth/basic-sign-in/basic-sign-in.usecase'
-import { Body, Controller, Docs, Post, Response, Validate } from '@infra/_injection'
+import { Body, Controller, Docs, Post, Validate } from '@infra/_injection'
 import { BasicSignInValidation } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.validation'
-import type { IController, IResponse } from '@infra/http/interfaces/controller.interface'
+import type { IController } from '@infra/http/interfaces/controller.interface'
 
 @Controller('/auth/signin')
 @Docs({
@@ -14,13 +14,11 @@ export class BasicSignInController implements IController {
 
   @Post('/')
   @Validate(new BasicSignInValidation())
-  async execute(@Body() body: BasicSignInInput, @Response() response: IResponse) {
+  async execute(@Body() body: BasicSignInInput) {
     const { email, password } = body
     const output = await this.basicSignInUseCase.execute({ email, password })
     return {
-      data: {
-        token: await response.jwtSign(output),
-      },
+      data: output,
     }
   }
 }

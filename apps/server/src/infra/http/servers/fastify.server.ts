@@ -1,5 +1,4 @@
 import fastifyCors from '@fastify/cors'
-import fastifyJwt from '@fastify/jwt'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
 import { Constructor, Container, Injectable, Scope } from '@infra/_injection'
@@ -92,12 +91,6 @@ export class FastifyServer implements IServer {
 
     app.register(fastifySwaggerUI, {
       routePrefix: '/docs',
-    })
-  }
-
-  registerJWT(): void {
-    app.register(fastifyJwt, {
-      secret: process.env.JWT_SECRET!,
     })
   }
 

@@ -26,11 +26,9 @@ export interface IRequest<B = unknown, Q = unknown, P = unknown, H = unknown> {
   query: Q
   params: P
   headers: H
-  jwtVerify: <T>() => Promise<T>
 }
 
 export interface IResponse {
   status: (code: number) => this
   send: (data: any) => void
-  jwtSign: <T>(payload: T, options?: any) => Promise<string>
 }

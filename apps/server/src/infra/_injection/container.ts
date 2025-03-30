@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { REQUEST_METADATA_KEYS, Route } from '@infra/_injection/controller'
 import { DocsConfig } from '@infra/_injection/docs'
 import { IRequest, IResponse, IValidation } from '@infra/http/interfaces/controller.interface'
@@ -16,7 +18,7 @@ type Provider<T = any> = {
 }
 
 export class Container {
-  private providers = new Map<Constructor, Provider>()
+  private providers = new Map<string, Provider>()
 
   private static _instance: Container
 
@@ -30,18 +32,21 @@ export class Container {
   private constructor() {}
 
   register<T>(
-    token: Constructor<T>,
-    options: { useClass: Constructor<T>; scope?: Scope } = {
-      useClass: token,
-      scope: Scope.Transient,
+    token: Constructor<T> | string,
+    options?: {
+      useClass: Constructor<T>
+      scope?: Scope
     },
   ) {
-    const scope = options.scope ?? Scope.Transient
-    this.providers.set(token, { useClass: options.useClass, scope })
+    const scope = options?.scope ?? Scope.Transient
+    this.providers.set(typeof token === 'string' ? token : token.name, {
+      useClass: typeof token === 'string' ? options!.useClass : token,
+      scope,
+    })
   }
 
-  resolve<T>(token: Constructor<T>): T {
-    const provider = this.providers.get(token)
+  resolve<T>(token: Constructor<T> | string): T {
+    const provider = this.providers.get(typeof token === 'string' ? token : token.name)
 
     if (!provider) {
       throw new Error(`No provider found for ${token}`)
@@ -53,7 +58,16 @@ export class Container {
 
     const paramTypes: Constructor[] =
       Reflect.getMetadata('design:paramtypes', provider.useClass) || []
-    const dependencies = paramTypes.map((param) => this.resolve(param))
+
+    // prettier-ignore
+    const injectionTokens: { index: number; token: string | Constructor }[] = Reflect.getOwnMetadata('custom:inject', provider.useClass) || []
+    const dependencies = paramTypes.map((dep, paramIndex) => {
+      const injection = injectionTokens.find((item) => item.index === paramIndex)
+      if (injection) {
+        return this.resolve(injection.token)
+      }
+      return this.resolve(dep)
+    })
     const instance = new provider.useClass(...dependencies)
 
     if (provider.scope === Scope.Singleton) {

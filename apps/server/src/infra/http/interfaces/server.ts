@@ -8,5 +8,4 @@ export type IServer = {
   registerControllers(controllers: Constructor[]): void
   registerErrorHandler(errorHandler: IErrorHandler): void
   registerDocs(): void
-  registerJWT(): void
 }

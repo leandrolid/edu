@@ -37,7 +37,7 @@ export const Delete = createRouteDecorator('delete')
 export const Patch = createRouteDecorator('patch')
 
 export function Validate(validation: IValidation) {
-  return function (target: any, _propertyKey: string) {
+  return function (target: any, _: string) {
     Reflect.defineMetadata('validation', validation, target.constructor)
   }
 }

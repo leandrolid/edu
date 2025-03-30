@@ -1,4 +1,4 @@
-import 'reflect-metadata'
+import '@infra/_injection/register'
 
 import { Container } from '@infra/_injection'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
@@ -12,7 +12,6 @@ const app = Container.instance.resolve(FastifyServer)
 app.cors()
 app.registerValidationProvider()
 app.registerDocs()
-app.registerJWT()
 app.registerControllers([CreateAccountController])
 app.registerControllers([BasicSignInController])
 app.registerControllers([CreateOrganizationController])

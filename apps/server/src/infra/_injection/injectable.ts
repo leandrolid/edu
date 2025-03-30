@@ -1,8 +1,8 @@
 import { Constructor, Container, Scope } from '@infra/_injection/container'
 
-export function Injectable(options?: { scope?: Scope }) {
+export function Injectable(options?: { scope?: Scope; token?: string }) {
   return function <T extends Constructor>(target: T) {
-    Container.instance.register(target, {
+    Container.instance.register(options?.token ?? target, {
       useClass: target,
       scope: options?.scope,
     })
