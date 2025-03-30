@@ -1,4 +1,5 @@
 import { CreateOrganizationInput } from '@app/organizations/create-organization/create-organization.input'
+import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
 import { Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
@@ -11,8 +12,9 @@ export class CreateOrganizationUseCase {
     avatarUrl,
     domain,
     shouldAttachUserByDomain,
-  }: CreateOrganizationInput) {
-    const user = { id: '' }
+    user,
+  }: Auth<CreateOrganizationInput>) {
+    console.log('CreateOrganizationUseCase', user)
     const isUserAllowed = false
     if (!isUserAllowed) {
       throw new ForbiddenError('Usuário não autorizado a criar uma organização')

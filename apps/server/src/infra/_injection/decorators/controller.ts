@@ -73,3 +73,12 @@ export function Response() {
     Reflect.defineMetadata('custom:response', existingIndices, target, propertyKey)
   }
 }
+
+export function Request() {
+  return function (target: any, propertyKey: string | symbol, parameterIndex: number) {
+    const existingIndices: number[] =
+      Reflect.getOwnMetadata('custom:request', target, propertyKey) || []
+    existingIndices.push(parameterIndex)
+    Reflect.defineMetadata('custom:request', existingIndices, target, propertyKey)
+  }
+}

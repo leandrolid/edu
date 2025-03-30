@@ -34,32 +34,39 @@ export class FastifyServer implements IServer {
 
   registerControllers(controllers: Constructor[]): void {
     controllers.forEach((controller) => {
-      const { instance, prefix, route, docs, validation } =
-        Container.instance.resolveController(controller)
+      // prettier-ignore
+      const { instance, prefix, route, docs, validation, middlewares } = Container.instance.resolveController(controller)
       app.register(async (appInstance) => {
-        appInstance.withTypeProvider<ZodTypeProvider>().route({
-          url: this.makePath(prefix, route.path),
-          method: route.method,
-          schema: {
-            body: validation.body || defaultValidation.body,
-            query: validation.query || defaultValidation.query,
-            params: validation.params || defaultValidation.params,
-            headers: validation.headers || defaultValidation.headers,
-            summary: docs.title,
-            description: docs.description,
-            tags: docs.tags,
-            response: docs.response,
-          },
-          handler: async (request, response) => {
-            const output = await Container.instance.resolveRouteHandler({
-              instance,
-              execute: route.execute,
-              request,
-              response,
-            })
-            return response.status(route.status).send(output)
-          },
-        })
+        appInstance
+          .withTypeProvider<ZodTypeProvider>()
+          .addHook('preHandler', async (request, response) => {
+            return Promise.all(
+              middlewares.map((middleware) => middleware.execute(request, response)),
+            )
+          })
+          .route({
+            url: this.makePath(prefix, route.path),
+            method: route.method,
+            schema: {
+              body: validation.body || defaultValidation.body,
+              query: validation.query || defaultValidation.query,
+              params: validation.params || defaultValidation.params,
+              headers: validation.headers || defaultValidation.headers,
+              summary: docs.title,
+              description: docs.description,
+              tags: docs.tags,
+              response: docs.response,
+            },
+            handler: async (request, response) => {
+              const output = await Container.instance.resolveRouteHandler({
+                instance,
+                execute: route.execute,
+                request,
+                response,
+              })
+              return response.status(route.status).send(output)
+            },
+          })
       })
     })
   }

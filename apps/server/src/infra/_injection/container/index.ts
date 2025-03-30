@@ -3,6 +3,7 @@ import 'reflect-metadata'
 import { REQUEST_METADATA_KEYS, Route } from '@infra/_injection/decorators/controller'
 import { DocsConfig } from '@infra/_injection/decorators/docs'
 import { IRequest, IResponse, IValidation } from '@infra/http/interfaces/controller'
+import { IMiddleware } from '@infra/http/interfaces/middleware'
 
 export enum Scope {
   Singleton,
@@ -83,12 +84,14 @@ export class Container {
     const prefix = Reflect.getMetadata('prefix', token) || ''
     const docs: DocsConfig = Reflect.getMetadata('docs', token) || {}
     const validation: IValidation = Reflect.getMetadata('validation', token) || {}
+    const middlewares = this.resolveMiddlewares(token)
     return {
       instance,
       route,
       prefix,
       docs,
       validation,
+      middlewares,
     }
   }
 
@@ -108,19 +111,23 @@ export class Container {
     const args = Array.from({ length: paramCount })
     const requestProperties = ['body', 'query', 'params', 'headers'] as const
     requestProperties.forEach((reqKey) => {
-      // prettier-ignore
-      const requestIndexes: number[] = Reflect.getOwnMetadata(REQUEST_METADATA_KEYS[reqKey], Object.getPrototypeOf(instance), execute) || []
-      requestIndexes.forEach((index) => {
-        args[index] = request[reqKey]
-      })
+      this.resolveParams(REQUEST_METADATA_KEYS[reqKey], instance, execute, args, request[reqKey])
     })
-    // prettier-ignore
-    const responseIndex: number[] = Reflect.getOwnMetadata('custom:response', Object.getPrototypeOf(instance), execute) || []
-    responseIndex.forEach((index) => {
-      args[index] = response
-    })
-    if (paramCount > 0 && args[0] === undefined) args[0] = request
-    if (paramCount > 1 && args[1] === undefined) args[1] = response
+    this.resolveParams('custom:request', instance, execute, args, request)
+    this.resolveParams('custom:response', instance, execute, args, response)
     return method.apply(instance, args)
+  }
+
+  private resolveParams(key: string, instance: any, execute: string, args: any[], value: any) {
+    // prettier-ignore
+    const paramIndexes: number[] = Reflect.getOwnMetadata(key, Object.getPrototypeOf(instance), execute) || []
+    paramIndexes.forEach((index) => {
+      args[index] = value
+    })
+  }
+
+  private resolveMiddlewares(token: Constructor): IMiddleware[] {
+    const middlewares: Constructor[] = Reflect.getMetadata('middlewares', token) || []
+    return middlewares.map((middleware) => this.resolve(middleware))
   }
 }

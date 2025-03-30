@@ -6,9 +6,13 @@ export class CreateOrganizationValidation implements IValidation {
   body?: IValidator<CreateOrganizationInput> = z.object({
     name: z.string({ message: 'Nome inválido' }),
     slug: z.string({ message: 'O slug é obrigatório' }),
-    domain: z
-      .string({ message: 'O domínio é obrigatório' })
-      .url({ message: 'O domínio é inválido' }),
+    domain: z.string({ message: 'O domínio é obrigatório' }).refine(
+      (value) => {
+        const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        return domainRegex.test(value)
+      },
+      { message: 'O domínio é inválido' },
+    ),
     avatarUrl: z
       .string({ message: 'A logo é obrigatória' })
       .url({ message: 'A logo é inválida' })
