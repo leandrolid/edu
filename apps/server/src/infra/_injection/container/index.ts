@@ -109,13 +109,16 @@ export class Container {
     const method = instance[execute]
     const paramCount = method.length
     const args = Array.from({ length: paramCount })
-    const requestProperties = ['body', 'query', 'params', 'headers'] as const
-    requestProperties.forEach((reqKey) => {
+    this.getKeys(REQUEST_METADATA_KEYS).forEach((reqKey) => {
       this.resolveParams(REQUEST_METADATA_KEYS[reqKey], instance, execute, args, request[reqKey])
     })
     this.resolveParams('custom:request', instance, execute, args, request)
     this.resolveParams('custom:response', instance, execute, args, response)
     return method.apply(instance, args)
+  }
+
+  private getKeys<T extends object>(obj: T): Array<keyof T> {
+    return Object.keys(obj) as Array<keyof T>
   }
 
   private resolveParams(key: string, instance: any, execute: string, args: any[], value: any) {

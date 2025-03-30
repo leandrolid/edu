@@ -1,9 +1,10 @@
 import type { CreateOrganizationInput } from '@app/organizations/create-organization/create-organization.input'
 import { CreateOrganizationUseCase } from '@app/organizations/create-organization/create-organization.usecase'
-import { Body, Controller, Docs, Post, Request, Validate } from '@infra/_injection'
+import type { IUser } from '@domain/dtos/user.dto'
+import { Body, Controller, Docs, Post, User, Validate } from '@infra/_injection'
 import { MiddleWares } from '@infra/_injection/decorators/middlewares'
 import { CreateOrganizationValidation } from '@infra/http/controllers/organizations/create-organization/create-organization.validation'
-import type { IController, IRequest } from '@infra/http/interfaces/controller'
+import type { IController } from '@infra/http/interfaces/controller'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({
@@ -17,9 +18,9 @@ export class CreateOrganizationController implements IController {
 
   @Post('/')
   @Validate(new CreateOrganizationValidation())
-  async execute(@Request() request: IRequest, @Body() body: CreateOrganizationInput) {
+  async execute(@User() user: IUser, @Body() body: CreateOrganizationInput) {
     const output = await this.createOrganizationUseCase.execute({
-      user: request.user!,
+      user,
       name: body.name,
       slug: body.slug,
       avatarUrl: body.avatarUrl,

@@ -42,14 +42,17 @@ export function Validate(validation: IValidation) {
   }
 }
 
-export const REQUEST_METADATA_KEYS = {
+export type RequestMetadataKeys = 'body' | 'query' | 'params' | 'headers' | 'user'
+
+export const REQUEST_METADATA_KEYS: { [Key in RequestMetadataKeys]: `custom:${Key}` } = {
   body: 'custom:body',
   query: 'custom:query',
   params: 'custom:params',
   headers: 'custom:headers',
-} as const
+  user: 'custom:user',
+}
 
-function createRequestDecorator<K extends keyof typeof REQUEST_METADATA_KEYS>(key: K) {
+function createRequestDecorator<K extends RequestMetadataKeys>(key: K) {
   return function () {
     return function (target: Object, propertyKey: string | symbol, parameterIndex: number) {
       const existingIndices: number[] =
@@ -64,6 +67,7 @@ export const Body = createRequestDecorator('body')
 export const Query = createRequestDecorator('query')
 export const Params = createRequestDecorator('params')
 export const Headers = createRequestDecorator('headers')
+export const User = createRequestDecorator('user')
 
 export function Response() {
   return function (target: any, propertyKey: string | symbol, parameterIndex: number) {
