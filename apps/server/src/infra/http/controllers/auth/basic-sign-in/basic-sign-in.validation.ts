@@ -1,4 +1,4 @@
-import { IValidation, IValidator } from '@infra/http/interfaces/controller.interface'
+import { IValidation, IValidator } from '@infra/http/interfaces/controller'
 import z from 'zod'
 
 export class BasicSignInValidation implements IValidation {

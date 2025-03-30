@@ -1,5 +1,5 @@
 import { Constructor } from '@infra/_injection'
-import { IErrorHandler } from '@infra/http/interfaces/error.handler'
+import { IErrorHandler } from '@infra/http/interfaces/error-handler'
 
 export type IServer = {
   start(port: number): Promise<void>

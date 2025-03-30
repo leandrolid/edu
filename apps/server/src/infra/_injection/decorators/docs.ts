@@ -1,4 +1,4 @@
-import { IValidator } from '@infra/http/interfaces/controller.interface'
+import { IValidator } from '@infra/http/interfaces/controller'
 
 export type DocsConfig = {
   title: string

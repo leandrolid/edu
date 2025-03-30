@@ -1,8 +1,8 @@
 import 'reflect-metadata'
 
-import { REQUEST_METADATA_KEYS, Route } from '@infra/_injection/controller'
-import { DocsConfig } from '@infra/_injection/docs'
-import { IRequest, IResponse, IValidation } from '@infra/http/interfaces/controller.interface'
+import { REQUEST_METADATA_KEYS, Route } from '@infra/_injection/decorators/controller'
+import { DocsConfig } from '@infra/_injection/decorators/docs'
+import { IRequest, IResponse, IValidation } from '@infra/http/interfaces/controller'
 
 export enum Scope {
   Singleton,

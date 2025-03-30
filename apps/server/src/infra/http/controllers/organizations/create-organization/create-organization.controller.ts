@@ -2,7 +2,7 @@ import type { CreateOrganizationInput } from '@app/organizations/create-organiza
 import { CreateOrganizationUseCase } from '@app/organizations/create-organization/create-organization.usecase'
 import { Body, Controller, Docs, Post, Validate } from '@infra/_injection'
 import { CreateOrganizationValidation } from '@infra/http/controllers/organizations/create-organization/create-organization.validation'
-import { IController } from '@infra/http/interfaces/controller.interface'
+import { IController } from '@infra/http/interfaces/controller'
 
 @Controller('/organizations')
 @Docs({

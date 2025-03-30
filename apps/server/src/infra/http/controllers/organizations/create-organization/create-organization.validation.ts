@@ -1,5 +1,5 @@
 import { CreateOrganizationInput } from '@app/organizations/create-organization/create-organization.input'
-import { IValidation, IValidator } from '@infra/http/interfaces/controller.interface'
+import { IValidation, IValidator } from '@infra/http/interfaces/controller'
 import z from 'zod'
 
 export class CreateOrganizationValidation implements IValidation {

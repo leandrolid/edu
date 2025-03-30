@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '@domain/enums/http-statuscode.enum'
 import { HttpError } from '@domain/errors/http.error'
-import { IResponse } from '@infra/http/interfaces/controller.interface'
-import { IErrorHandler } from '@infra/http/interfaces/error.handler'
+import { IResponse } from '@infra/http/interfaces/controller'
+import { IErrorHandler } from '@infra/http/interfaces/error-handler'
 import { ZodError } from 'zod'
 
 export class HttpErrorHandler implements IErrorHandler {

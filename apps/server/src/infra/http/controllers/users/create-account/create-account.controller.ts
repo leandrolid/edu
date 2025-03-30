@@ -2,7 +2,7 @@ import type { CreateAccountInput } from '@app/users/create-account/create-accoun
 import { CreateAccountUseCase } from '@app/users/create-account/create-account.usecase'
 import { Body, Controller, Docs, Post, Validate } from '@infra/_injection'
 import { CreateAccountValidation } from '@infra/http/controllers/users/create-account/create-account.validation'
-import type { IController } from '@infra/http/interfaces/controller.interface'
+import type { IController } from '@infra/http/interfaces/controller'
 
 @Controller('/users')
 @Docs({
