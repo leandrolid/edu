@@ -10,13 +10,13 @@ import type { IController } from '@infra/http/interfaces/controller.interface'
   tags: ['Users'],
 })
 export class CreateAccountController implements IController {
-  constructor(private readonly createUserUseCase: CreateAccountUseCase) {}
+  constructor(private readonly createAccountUseCase: CreateAccountUseCase) {}
 
   @Post('/')
   @Validate(new CreateAccountValidation())
   async execute(@Body() body: CreateAccountInput) {
     const { name, email, password } = body
-    const output = await this.createUserUseCase.execute({ name, email, password })
-    return output
+    const output = await this.createAccountUseCase.execute({ name, email, password })
+    return { data: output }
   }
 }

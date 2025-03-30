@@ -10,13 +10,13 @@ import { IController } from '@infra/http/interfaces/controller.interface'
   tags: ['Auth'],
 })
 export class BasicSignInController implements IController {
-  constructor(private readonly createUserUseCase: BasicSignInUseCase) {}
+  constructor(private readonly basicSignInUseCase: BasicSignInUseCase) {}
 
   @Post('/')
   @Validate(new BasicSignInValidation())
   async execute(@Body() body: BasicSignInInput) {
     const { email, password } = body
-    const output = await this.createUserUseCase.execute({ email, password })
-    return output
+    const output = await this.basicSignInUseCase.execute({ email, password })
+    return { data: output }
   }
 }

@@ -1,5 +1,13 @@
 export interface IController {
-  execute(...args: any[]): Promise<any>
+  execute(...args: any[]): Promise<{
+    data: unknown
+    metadata?: {
+      page?: number
+      perPage?: number
+      totalItems?: number
+      totalPages?: number
+    }
+  }>
 }
 
 export interface IValidation<B = unknown, Q = unknown, P = unknown, H = unknown> {
