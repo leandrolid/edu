@@ -1,7 +1,8 @@
 import fastifyCors from '@fastify/cors'
+import fastifyJwt from '@fastify/jwt'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
-import { Constructor, Container } from '@infra/_injection'
+import { Constructor, Container, Injectable, Scope } from '@infra/_injection'
 import { IErrorHandler } from '@infra/http/interfaces/error.handler'
 import { IServer } from '@infra/http/interfaces/server'
 import { DefaultValidation } from '@infra/http/servers/fastify.validation'
@@ -16,6 +17,7 @@ import {
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 const defaultValidation = new DefaultValidation()
 
+@Injectable({ scope: Scope.Singleton })
 export class FastifyServer implements IServer {
   async start(port: number): Promise<void> {
     await app.listen({ port })
@@ -90,6 +92,12 @@ export class FastifyServer implements IServer {
 
     app.register(fastifySwaggerUI, {
       routePrefix: '/docs',
+    })
+  }
+
+  registerJWT(): void {
+    app.register(fastifyJwt, {
+      secret: process.env.JWT_SECRET!,
     })
   }
 

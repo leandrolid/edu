@@ -64,3 +64,12 @@ export const Body = createRequestDecorator('body')
 export const Query = createRequestDecorator('query')
 export const Params = createRequestDecorator('params')
 export const Headers = createRequestDecorator('headers')
+
+export function Response() {
+  return function (target: any, propertyKey: string | symbol, parameterIndex: number) {
+    const existingIndices: number[] =
+      Reflect.getOwnMetadata('custom:response', target, propertyKey) || []
+    existingIndices.push(parameterIndex)
+    Reflect.defineMetadata('custom:response', existingIndices, target, propertyKey)
+  }
+}

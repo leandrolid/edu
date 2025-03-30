@@ -94,15 +94,16 @@ export class Container {
     const args = Array.from({ length: paramCount })
     const requestProperties = ['body', 'query', 'params', 'headers'] as const
     requestProperties.forEach((reqKey) => {
-      const indices: number[] =
-        Reflect.getOwnMetadata(
-          REQUEST_METADATA_KEYS[reqKey],
-          Object.getPrototypeOf(instance),
-          execute,
-        ) || []
-      indices.forEach((index) => {
+      // prettier-ignore
+      const requestIndexes: number[] = Reflect.getOwnMetadata(REQUEST_METADATA_KEYS[reqKey], Object.getPrototypeOf(instance), execute) || []
+      requestIndexes.forEach((index) => {
         args[index] = request[reqKey]
       })
+    })
+    // prettier-ignore
+    const responseIndex: number[] = Reflect.getOwnMetadata('custom:response', Object.getPrototypeOf(instance), execute) || []
+    responseIndex.forEach((index) => {
+      args[index] = response
     })
     if (paramCount > 0 && args[0] === undefined) args[0] = request
     if (paramCount > 1 && args[1] === undefined) args[1] = response

@@ -22,7 +22,7 @@ export class BasicSignInUseCase {
       throw new ForbiddenError('Usuário ou senha inválidos')
     }
     return {
-      token: 'jwt-token',
+      id: user.id,
     }
   }
 }
