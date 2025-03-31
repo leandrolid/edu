@@ -7,7 +7,7 @@ import { CreateAccountController } from '@infra/http/controllers/users/create-ac
 import { HttpErrorHandler } from '@infra/http/errors/error.handler'
 import { FastifyServer } from '@infra/http/servers/fastify.server'
 
-const PORT = Number(process.env.PORT || 4000)
+const PORT = Number(process.env.PORT || 4001)
 const app = Container.instance.resolve(FastifyServer)
 app.cors()
 app.registerValidationProvider()

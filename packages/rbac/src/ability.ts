@@ -1,21 +1,22 @@
-import { createMongoAbility, CreateAbility, MongoAbility, AbilityBuilder } from '@casl/ability'
+import { AbilityBuilder, CreateAbility, createMongoAbility, MongoAbility } from '@casl/ability'
+import { RbacUser } from './entities/user.entity'
 import { permissions } from './permissions'
-import { User } from './entities/user.entity'
-import { UserSubject } from './subjects/user.subject'
 import { OrganizationSubject } from './subjects/organization.subject'
+import { UserSubject } from './subjects/user.subject'
 
 type AppAbilities = UserSubject | OrganizationSubject | ['manage', 'all']
 
 export type AppAbility = MongoAbility<AppAbilities>
 const createAppAbility = createMongoAbility as CreateAbility<AppAbility>
 
-export const defineAbilityFor = (user: User) => {
-  if (typeof permissions[user.role] !== 'function') {
-    throw new Error(`Invalid role: ${user.role}`)
+export const defineAbilityFor = (user: RbacUser) => {
+  if (!Array.isArray(user.roles) || user.roles.length === 0) {
+    throw new Error(`Invalid roles: ${user.roles}`)
   }
   const builder = new AbilityBuilder(createAppAbility)
-  permissions[user.role](user, builder)
-
+  user.roles.forEach((role) => {
+    permissions[role](user, builder)
+  })
   const ability = builder.build({
     detectSubjectType(subject) {
       return subject.__typename

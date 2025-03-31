@@ -15,6 +15,7 @@ datasource db {
 
 model User {
   id           String   @id @default(uuid(7)) @db.Uuid
+  role         Role     @default(MEMBER)
   name         String?
   email        String   @unique
   passwordHash String?  @map("password_hash")
@@ -66,8 +67,24 @@ model Account {
 
 enum Role {
   OWNER
-  ADMIN
   MEMBER
+  ORGANIZATION_ADMIN
+  ORGANIZATION_CONTRIBUTOR
+  ORGANIZATION_MEMBER
+  ORGANIZATION_BILLING
+}
+
+model Member {
+  id   String @id @default(uuid(7)) @db.Uuid
+  role Role   @default(MEMBER)
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id") @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@map("members")
 }
 
 model Invite {
@@ -85,20 +102,6 @@ model Invite {
   @@unique([email, organizationId])
   @@index([email])
   @@map("invites")
-}
-
-model Member {
-  id   String @id @default(uuid(7)) @db.Uuid
-  role Role   @default(MEMBER)
-
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  organizationId String       @map("organization_id") @db.Uuid
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @map("user_id") @db.Uuid
-
-  @@unique([organizationId, userId])
-  @@map("members")
 }
 
 model Organization {

@@ -1,11 +1,17 @@
 import { CreateOrganizationInput } from '@app/organizations/create-organization/create-organization.input'
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
-import { Injectable } from '@infra/_injection'
+import type { IPermissionService } from '@domain/services/permission.service'
+import { Inject, Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
 
 @Injectable()
 export class CreateOrganizationUseCase {
+  constructor(
+    @Inject('IPermissionService')
+    private readonly permissionService: IPermissionService,
+  ) {}
+
   async execute({
     name,
     slug,
@@ -14,9 +20,8 @@ export class CreateOrganizationUseCase {
     shouldAttachUserByDomain,
     user,
   }: Auth<CreateOrganizationInput>) {
-    console.log('CreateOrganizationUseCase', user)
-    const isUserAllowed = false
-    if (!isUserAllowed) {
+    const { cannot } = await this.permissionService.defineAbilityFor({ user })
+    if (cannot('create', 'Organization')) {
       throw new ForbiddenError('Usuário não autorizado a criar uma organização')
     }
     const organization = await prisma.organization.create({

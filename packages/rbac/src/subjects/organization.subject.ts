@@ -1,6 +1,6 @@
-import { Organization } from '../entities/organization.entity'
+import { RbacOrganization } from '../entities/organization.entity'
 
 export type OrganizationSubject = [
-  'manage' | 'create' | 'read' | 'update' | 'delete',
-  'Organization' | Organization,
+  'manage' | 'create' | 'read' | 'update' | 'delete' | 'bill',
+  'Organization' | RbacOrganization,
 ]

@@ -5,7 +5,8 @@
   "types": "src/index.ts",
   "private": true,
   "dependencies": {
-    "@casl/ability": "^6.7.3"
+    "@casl/ability": "^6.7.3",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@edu/eslint": "*",

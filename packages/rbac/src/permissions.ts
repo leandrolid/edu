@@ -1,20 +1,27 @@
-import { AppAbility } from './ability'
-import { User } from './entities/user.entity'
-import { Role } from './types/role.type'
 import { AbilityBuilder } from '@casl/ability'
+import { AppAbility } from './ability'
+import { RbacUser } from './entities/user.entity'
+import { RbacRole } from './types/role.type'
 
-type DefinePermissions = (user: User, builder: AbilityBuilder<AppAbility>) => void
+type DefinePermissions = (user: RbacUser, builder: AbilityBuilder<AppAbility>) => void
 
-export const permissions: Record<Role, DefinePermissions> = {
-  super_admin(_, { can }) {
+export const permissions: Record<RbacRole, DefinePermissions> = {
+  OWNER(_, { can }) {
     can('manage', 'all')
   },
-  admin(user, { can }) {
-    can('manage', 'User')
-    can(['read', 'update'], 'Organization', { slug: user.organization })
+  MEMBER(user, { can }) {
+    can('manage', 'User', { id: user.id })
   },
-  teacher(user, { can }) {
-    can('update', 'User', { id: { $eq: user.id } })
+  ORGANIZATION_ADMIN(user, { can }) {
+    can(['read', 'update', 'delete'], 'Organization', { slug: user.slug })
   },
-  student(user, { can }) {},
+  ORGANIZATION_CONTRIBUTOR(user, { can }) {
+    can(['read', 'update'], 'Organization', { slug: user.slug })
+  },
+  ORGANIZATION_MEMBER(user, { can }) {
+    can('read', 'Organization', { slug: user.slug })
+  },
+  ORGANIZATION_BILLING(user, { can }) {
+    can(['read', 'bill'], 'Organization', { slug: user.slug })
+  },
 }
