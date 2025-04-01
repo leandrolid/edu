@@ -3,6 +3,7 @@ import '@infra/_injection/register'
 import { Container } from '@infra/_injection'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
 import { CreateOrganizationController } from '@infra/http/controllers/organizations/create-organization/create-organization.controller'
+import { GetOrganizationController } from '@infra/http/controllers/organizations/get-organization/get-organization.controller'
 import { GetOrganizationsController } from '@infra/http/controllers/organizations/get-organizations/get-organizations.controller'
 import { UpdateOrganizationController } from '@infra/http/controllers/organizations/update-organization/update-organization.controller'
 import { CreateAccountController } from '@infra/http/controllers/users/create-account/create-account.controller'
@@ -20,6 +21,7 @@ app.registerControllers([
   CreateOrganizationController,
   UpdateOrganizationController,
   GetOrganizationsController,
+  GetOrganizationController,
 ])
 app.registerErrorHandler(new HttpErrorHandler())
 app.start(PORT)
