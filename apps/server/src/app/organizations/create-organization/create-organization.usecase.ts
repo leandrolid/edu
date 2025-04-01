@@ -20,7 +20,7 @@ export class CreateOrganizationUseCase {
     shouldAttachUserByDomain,
     user,
   }: Auth<CreateOrganizationInput>) {
-    const { cannot } = await this.permissionService.defineAbilityFor({ user })
+    const { cannot } = await this.permissionService.defineAbilityFor(user)
     if (cannot('create', 'Organization')) {
       throw new ForbiddenError('Usuário não autorizado a criar uma organização')
     }

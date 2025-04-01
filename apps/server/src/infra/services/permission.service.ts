@@ -1,40 +1,59 @@
 import { IUser } from '@domain/dtos/user.dto'
+import { NotFoundError } from '@domain/errors/not-found.error'
 import { UnauthorizedError } from '@domain/errors/unauthorized.error'
 import { UnprocessableEntityError } from '@domain/errors/unprocessable-entity.error'
-import { defineAbilityFor, rbacOrganizationSchema, rbacUserSchema } from '@edu/rbac'
+import { IPermissionService } from '@domain/services/permission.service'
+import {
+  AppAbility,
+  defineAbilityFor,
+  RbacOrganization,
+  rbacOrganizationSchema,
+  RbacUser,
+  rbacUserSchema,
+} from '@edu/rbac'
 import { Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import { get } from 'radash'
 
 @Injectable({ token: 'IPermissionService' })
-export class PermissionService {
-  async defineAbilityFor(input: {
-    user: IUser
-    slug?: string
-  }): Promise<ReturnType<typeof defineAbilityFor>> {
-    if (!input.slug) {
-      const user = await prisma.user.findUnique({ where: { id: input.user.id } })
-      if (!user) {
-        throw new UnauthorizedError('Usuário não autorizado')
-      }
-      return defineAbilityFor(this.parseUser({ id: user.id, roles: [user.role], slug: '' }))
+export class PermissionService implements IPermissionService {
+  async defineAbilityFor(user: IUser): Promise<AppAbility> {
+    if (!user.slug) {
+      const rbacUser = await this.getRbacUser(user.id)
+      return defineAbilityFor(rbacUser)
     }
     const merberships = await prisma.member.findMany({
-      where: { userId: input.user.id, organization: { slug: input.slug } },
+      where: { userId: user.id, organization: { slug: user.slug } },
     })
     if (merberships.length === 0) {
       throw new UnauthorizedError('Usuário não autorizado')
     }
     return defineAbilityFor(
       this.parseUser({
-        id: input.user.id,
+        id: user.id,
         roles: merberships.map((m) => m.role),
-        slug: input.slug,
+        slug: user.slug,
       }),
     )
   }
 
-  public parseUser(user: { id: string; roles: string[]; slug: string }) {
+  async getRbacUser(userId: string): Promise<RbacUser> {
+    const user = await prisma.user.findUnique({ where: { id: userId } })
+    if (!user) {
+      throw new NotFoundError('Usuário não encontrado')
+    }
+    return this.parseUser({ id: user.id, roles: [user.role], slug: '' })
+  }
+
+  async getRbacOrg(slug: string): Promise<RbacOrganization> {
+    const organization = await prisma.organization.findUnique({ where: { slug } })
+    if (!organization) {
+      throw new NotFoundError('Organização não encontrada')
+    }
+    return this.parseOrganization(organization)
+  }
+
+  private parseUser(user: { id: string; roles: string[]; slug: string }) {
     try {
       return rbacUserSchema.parse(user)
     } catch (error) {
@@ -42,7 +61,7 @@ export class PermissionService {
     }
   }
 
-  public parseOrganization(organization: { id: string; slug: string }) {
+  private parseOrganization(organization: { id: string; slug: string; ownerId: string }) {
     try {
       return rbacOrganizationSchema.parse(organization)
     } catch (error) {

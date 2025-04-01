@@ -15,7 +15,7 @@ declare module '@infra/http/interfaces/controller' {
 export class JwtMiddleware implements IMiddleware {
   constructor(@Inject('ITokenService') private readonly tokenService: ITokenService) {}
 
-  async execute(request: IRequest<any, any, any, Record<string, string>>) {
+  async execute(request: IRequest<any, any, Record<string, string>, Record<string, string>>) {
     if (!request.headers.authorization) throw new UnauthorizedError('Token não fornecido')
     const [bearer, token] = request.headers.authorization.split(' ')
     if (bearer !== 'Bearer') throw new UnauthorizedError('Token mal formatado')
@@ -23,6 +23,7 @@ export class JwtMiddleware implements IMiddleware {
     const payload = await this.tokenService.verify<{ id: string }>(token)
     request.user = {
       id: payload.id,
+      slug: request.params.slug,
     }
   }
 }
