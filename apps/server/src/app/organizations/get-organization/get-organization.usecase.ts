@@ -14,7 +14,7 @@ export class GetOrganizationUseCase {
 
   async execute({ user, slug }: Auth<GetOrganizationInput>) {
     const { cannot } = await this.permissionService.defineAbilityFor(user)
-    const rbacOrganization = await this.permissionService.getRbacOrg(slug)
+    const rbacOrganization = this.permissionService.getRbacOrganization({ slug })
     if (cannot('read', rbacOrganization)) {
       throw new ForbiddenError('Você não tem permissão para acessar esta organização')
     }

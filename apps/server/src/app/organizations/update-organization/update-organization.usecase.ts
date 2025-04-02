@@ -19,11 +19,11 @@ export class UpdateOrganizationUseCase {
     user,
   }: Auth<UpdateOrganizationInput>) {
     const { cannot } = await this.permissionService.defineAbilityFor(user)
-    const organization = await this.permissionService.getRbacOrg(slug)
-    if (cannot('update', organization)) {
+    const rbacOrganization = this.permissionService.getRbacOrganization({ slug })
+    if (cannot('update', rbacOrganization)) {
       throw new ForbiddenError('Usuário não autorizado a atualizar a organização')
     }
-    await prisma.organization.update({
+    const organization = await prisma.organization.update({
       where: { slug },
       data: {
         name,
