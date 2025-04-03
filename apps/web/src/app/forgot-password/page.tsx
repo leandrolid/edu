@@ -1,8 +1,7 @@
-import { loginWithEmailAndPassword } from '@/app/login/actions'
 import { Button, Card, Flex, Text, TextField } from '@radix-ui/themes'
 import Link from 'next/link'
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
     <Card
       style={{
@@ -15,7 +14,7 @@ export default function LoginPage() {
       }}
       asChild
     >
-      <form action={loginWithEmailAndPassword}>
+      <form action="">
         <Flex direction="column" gap="1">
           <Text as="label" htmlFor="email" size="2" weight="bold">
             E-mail
@@ -29,27 +28,12 @@ export default function LoginPage() {
             inputMode="email"
           />
         </Flex>
-        <Flex direction="column" gap="1">
-          <Text as="label" htmlFor="password" size="2" weight="bold">
-            Senha
-          </Text>
-          <TextField.Root
-            id="password"
-            name="password"
-            type="password"
-            placeholder="********"
-            size="2"
-          />
-          <Text size="1" color="indigo" asChild>
-            <Link href="/forgot-password">Esqueci minha senha</Link>
-          </Text>
-        </Flex>
 
         <Button type="submit" size="2">
-          Entrar
+          Recuperar senha
         </Button>
         <Button variant="ghost" size="1" asChild>
-          <Link href="/register">Criar conta</Link>
+          <Link href="/login">Fazer login</Link>
         </Button>
       </form>
     </Card>

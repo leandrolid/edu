@@ -1,5 +1,8 @@
-import type { Metadata } from 'next'
+import '@radix-ui/themes/styles.css'
 import './globals.css'
+
+import type { Metadata } from 'next'
+import { Providers } from '@/app/providers'
 
 export const metadata: Metadata = {
   title: 'Edu',
@@ -13,7 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

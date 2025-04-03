@@ -1,8 +1,7 @@
-import { loginWithEmailAndPassword } from '@/app/login/actions'
 import { Button, Card, Flex, Text, TextField } from '@radix-ui/themes'
 import Link from 'next/link'
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <Card
       style={{
@@ -15,7 +14,13 @@ export default function LoginPage() {
       }}
       asChild
     >
-      <form action={loginWithEmailAndPassword}>
+      <form action="">
+        <Flex direction="column" gap="1">
+          <Text as="label" htmlFor="name" size="2" weight="bold">
+            Nome
+          </Text>
+          <TextField.Root id="name" name="name" type="text" placeholder="Seu nome" size="2" />
+        </Flex>
         <Flex direction="column" gap="1">
           <Text as="label" htmlFor="email" size="2" weight="bold">
             E-mail
@@ -40,16 +45,26 @@ export default function LoginPage() {
             placeholder="********"
             size="2"
           />
-          <Text size="1" color="indigo" asChild>
-            <Link href="/forgot-password">Esqueci minha senha</Link>
+        </Flex>
+
+        <Flex direction="column" gap="1">
+          <Text as="label" htmlFor="passwordConfirmation" size="2" weight="bold">
+            Confirme sua senha
           </Text>
+          <TextField.Root
+            id="passwordConfirmation"
+            name="passwordConfirmation"
+            type="password"
+            placeholder="********"
+            size="2"
+          />
         </Flex>
 
         <Button type="submit" size="2">
-          Entrar
+          Criar conta
         </Button>
-        <Button variant="ghost" size="1" asChild>
-          <Link href="/register">Criar conta</Link>
+        <Button size="1" variant="ghost" asChild>
+          <Link href="/login">Já tenho uma conta</Link>
         </Button>
       </form>
     </Card>

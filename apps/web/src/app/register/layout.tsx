@@ -1,6 +1,6 @@
 import { Flex } from '@radix-ui/themes'
 
-export default function LoginLayout({
+export default function RegisterLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
