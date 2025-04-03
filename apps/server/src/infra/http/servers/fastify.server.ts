@@ -47,7 +47,7 @@ export class FastifyServer implements IServer {
           .route({
             url: this.makePath(prefix, route.path),
             method: route.method,
-            schema: {
+            schema: this.removeUndefined({
               body: validation.body,
               query: validation.query,
               params: validation.params,
@@ -56,7 +56,7 @@ export class FastifyServer implements IServer {
               description: docs.description,
               tags: docs.tags,
               response: docs.response,
-            },
+            }),
             handler: async (request, response) => {
               const output = await Container.instance.resolveRouteHandler({
                 instance,
@@ -69,6 +69,16 @@ export class FastifyServer implements IServer {
           })
       })
     })
+  }
+
+  private removeUndefined(obj: Record<string, unknown>): Record<string, unknown> {
+    return Object.entries(obj).reduce(
+      (acc, [key, value]) => {
+        if (!value) return acc
+        return { ...acc, [key]: value }
+      },
+      {} as Record<string, unknown>,
+    )
   }
 
   registerErrorHandler(handler: IErrorHandler): void {
