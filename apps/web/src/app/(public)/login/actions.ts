@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export const loginWithEmailAndPassword = async (data: FormData) => {
   const { email, password } = Object.fromEntries(data)
@@ -17,4 +18,5 @@ export const loginWithEmailAndPassword = async (data: FormData) => {
   const json = await res.json()
   const cookie = await cookies()
   cookie.set('token', json.data.token)
+  redirect('/')
 }

@@ -1,4 +1,4 @@
-import { loginWithEmailAndPassword } from '@/app/login/actions'
+import { loginWithEmailAndPassword } from '@/app/(public)/login/actions'
 import { Button, Card, Flex, Text, TextField } from '@radix-ui/themes'
 import Link from 'next/link'
 
