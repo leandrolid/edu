@@ -16,7 +16,7 @@ export class HttpErrorHandler implements IErrorHandler {
         errors: error.validation.reduce(
           (acc, validation) => ({
             ...acc,
-            [validation.instancePath.replace('/', '')]: validation.message,
+            [validation.instancePath.replace('/', '')]: [validation.message],
           }),
           {},
         ),
