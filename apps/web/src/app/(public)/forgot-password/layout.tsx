@@ -1,10 +1,16 @@
+import { auth } from '@/auth'
 import { Flex } from '@radix-ui/themes'
+import { redirect } from 'next/navigation'
 
-export default function ForgotPasswordLayout({
+export default async function ForgotPasswordLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const isAuthenticated = await auth.isAuthenticated()
+  if (isAuthenticated) {
+    return redirect('/')
+  }
   return (
     <Flex direction="column" align="center" justify="center" gap="2" p="4" height="100vh">
       {children}

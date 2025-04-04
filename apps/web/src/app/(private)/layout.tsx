@@ -1,4 +1,4 @@
-import { isAuthenticated } from '@/auth'
+import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 
 export default async function PrivateLayout({
@@ -6,8 +6,8 @@ export default async function PrivateLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const isAuth = await isAuthenticated()
-  if (!isAuth) {
+  const isAuthenticated = await auth.isAuthenticated()
+  if (!isAuthenticated) {
     return redirect('/login')
   }
   return <>{children}</>

@@ -1,10 +1,16 @@
+import { auth } from '@/auth'
 import { Flex } from '@radix-ui/themes'
+import { redirect } from 'next/navigation'
 
-export default function LoginLayout({
+export default async function LoginLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const isAuthenticated = await auth.isAuthenticated()
+  if (isAuthenticated) {
+    return redirect('/')
+  }
   return (
     <Flex direction="column" align="center" justify="center" gap="2" p="4" height="100vh">
       {children}
