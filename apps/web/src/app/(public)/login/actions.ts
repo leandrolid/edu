@@ -1,26 +1,19 @@
 'use server'
 
-import { httpClient } from '@/http/client'
 import { HttpError } from '@/http/errors/http.error'
+import { loginWithPassword } from '@/http/services/auth/login-with-password'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
 
-export const loginWithEmailAndPassword = async (prevState: any, data: FormData) => {
+export const loginWithPasswordAction = async (prevState: any, data: FormData) => {
   const result = schema.safeParse(Object.fromEntries(data))
   if (!result.success) {
     return { success: false, message: null, errors: result.error.flatten().fieldErrors }
   }
   try {
-    const res = await httpClient.request({
-      url: 'auth/signin',
-      method: 'POST',
-      body: {
-        email: result.data.email,
-        password: result.data.password,
-      },
-    })
+    const response = await loginWithPassword(result.data)
     const cookie = await cookies()
-    cookie.set('token', res.data.token)
+    cookie.set('token', response.data.token)
     return { success: true, message: null, errors: null }
   } catch (error) {
     console.error(error)

@@ -1,4 +1,4 @@
-import { httpClient } from '@/http/client'
+import { httpClient } from '@/http/clients'
 
 export const getOrganizations = async () => {
   return httpClient.request<GetOrganizationsOutput>({

@@ -1,13 +1,13 @@
 'use client'
 
-import { loginWithEmailAndPassword } from '@/app/(public)/login/actions'
+import { loginWithPasswordAction } from '@/app/(public)/login/actions'
 import { Warning } from '@phosphor-icons/react/dist/ssr'
 import { Flex, TextField, Button, Text, Card, Callout } from '@radix-ui/themes'
 import Link from 'next/link'
 import { useActionState } from 'react'
 
 export function LoginForm() {
-  const [state, formAction, isPending] = useActionState(loginWithEmailAndPassword, {
+  const [state, formAction, isPending] = useActionState(loginWithPasswordAction, {
     success: false,
     message: null,
     errors: null,

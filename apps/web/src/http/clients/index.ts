@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import { HttpClient, HttpRequest } from './client'
-import { cookies } from 'next/headers'
 import { HttpError } from '@/http/errors/http.error'
+import { CookiesFn, getCookie } from 'cookies-next'
 
 const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -11,19 +11,16 @@ const client = axios.create({
 })
 
 class AxiosHttpClient implements HttpClient {
-  async request<Body>({ url, method, headers = {}, query = {}, body }: HttpRequest): Promise<Body> {
+  async request<Body>(request: HttpRequest): Promise<Body> {
     try {
-      const cookie = await cookies()
-      const token = cookie.get('token')?.value
+      await this.authorize(request)
       const response = await client.request({
-        url,
-        method,
-        headers: {
-          Authorization: token ? `Bearer ${token}` : undefined,
-          ...headers,
-        },
-        params: query,
-        data: body,
+        url: request.url,
+        method: request.method,
+        headers: request.headers,
+        params: request.query,
+        data: request.body,
+        signal: request.signal,
         adapter: 'fetch',
       })
       return response.data
@@ -40,16 +37,32 @@ class AxiosHttpClient implements HttpClient {
     }
   }
 
-  responseMiddleware(cb: (response: { status: number }) => void) {
-    client.interceptors.response.use(
+  onStatusCode(cb: (statusCode: number) => void): number {
+    return client.interceptors.response.use(
       (response) => {
-        cb(response)
+        cb(response.status)
         return response
       },
       (error: AxiosError) => {
-        cb(error.response!)
+        cb(error.status ?? error.response!.status)
       },
     )
+  }
+
+  private async authorize(request: HttpRequest): Promise<void> {
+    let cookieStore: CookiesFn | undefined
+    if (typeof window === 'undefined') {
+      const { cookies: serverCookies } = await import('next/headers')
+      cookieStore = serverCookies
+    }
+    const token = await getCookie('token', { cookies: cookieStore })
+    if (token) {
+      Object.assign(request, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    }
   }
 }
 

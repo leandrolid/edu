@@ -1,6 +1,6 @@
 export type HttpClient = {
   request: <Body>(params: HttpRequest) => Promise<Body>
-  responseMiddleware: (cb: (response: { status: number }) => void) => void
+  onStatusCode: (cb: (statusCode: number) => void) => number
 }
 
 export type HttpRequest = {

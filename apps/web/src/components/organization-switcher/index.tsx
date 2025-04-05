@@ -1,10 +1,12 @@
-import { GetOrganizationsOutput } from '@/http/services/organizations/get-organizations'
+'use server'
+
+import { getOrganizations } from '@/http/services/organizations/get-organizations'
 import { CaretUpDown, PlusCircle } from '@phosphor-icons/react/dist/ssr'
 import { Avatar, Flex, DropdownMenu, Text, Button } from '@radix-ui/themes'
 import Link from 'next/link'
 
-export const OrganizationSwitcher = () => {
-  const { data } = { data: [] } as GetOrganizationsOutput
+export const OrganizationSwitcher = async () => {
+  const { data } = await getOrganizations()
   const orgnaization = ''
   return (
     <DropdownMenu.Root>
@@ -77,5 +79,5 @@ const getInitialsFromName = (name: string) => {
     .split(' ')
     .filter((_, index, self) => index === 0 || self.length - 1 === index)
     .map((name) => name[0])
-    .join()
+    .join('')
 }
