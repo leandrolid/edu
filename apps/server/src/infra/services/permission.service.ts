@@ -1,6 +1,6 @@
 import { IOrganization } from '@domain/dtos/organization.dto'
 import { IUser } from '@domain/dtos/user.dto'
-import { UnauthorizedError } from '@domain/errors/unauthorized.error'
+import { ForbiddenError } from '@domain/errors/forbidden.error'
 import { UnprocessableEntityError } from '@domain/errors/unprocessable-entity.error'
 import { IPermissionService } from '@domain/services/permission.service'
 import {
@@ -26,7 +26,7 @@ export class PermissionService implements IPermissionService {
   private async getAbilityOutOrganization(userId: string): Promise<AppAbility> {
     const user = await prisma.user.findUnique({ where: { id: userId } })
     if (!user) {
-      throw new UnauthorizedError('Usuário não autorizado')
+      throw new ForbiddenError('Usuário não autorizado')
     }
     const rbacUser = this.parseUser({
       id: user.id,
@@ -41,7 +41,7 @@ export class PermissionService implements IPermissionService {
       where: { userId: userId, organization: { slug } },
     })
     if (merberships.length === 0) {
-      throw new UnauthorizedError('Usuário não autorizado')
+      throw new ForbiddenError('Usuário não autorizado')
     }
     const rbacUser = this.parseUser({
       id: userId,
