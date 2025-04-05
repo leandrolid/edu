@@ -1,4 +1,5 @@
 import { auth } from '@/auth'
+import { Header } from '@/components/header'
 import { redirect } from 'next/navigation'
 
 export default async function PrivateLayout({
@@ -10,5 +11,10 @@ export default async function PrivateLayout({
   if (!isAuthenticated) {
     return redirect('/login')
   }
-  return <>{children}</>
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  )
 }

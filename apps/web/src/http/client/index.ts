@@ -11,13 +11,7 @@ const client = axios.create({
 })
 
 class AxiosHttpClient implements HttpClient {
-  async request<Body>({
-    url,
-    method,
-    headers = {},
-    query = {},
-    body,
-  }: HttpRequest<Body>): Promise<Body> {
+  async request<Body>({ url, method, headers = {}, query = {}, body }: HttpRequest): Promise<Body> {
     try {
       const cookie = await cookies()
       const token = cookie.get('token')?.value
