@@ -5,7 +5,6 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/org')) {
     const [, , slug] = request.nextUrl.pathname.split('/')
     response.cookies.set('slug', slug!)
-    console.log('set slug', slug)
   } else {
     response.cookies.delete('slug')
   }
