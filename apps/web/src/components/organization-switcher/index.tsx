@@ -1,27 +1,27 @@
-'use server'
-
 import { getOrganizations } from '@/http/services/organizations/get-organizations'
 import { CaretUpDown, PlusCircle } from '@phosphor-icons/react/dist/ssr'
 import { Avatar, Flex, DropdownMenu, Text, Button } from '@radix-ui/themes'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
 
 export const OrganizationSwitcher = async () => {
   const { data } = await getOrganizations()
-  const orgnaization = ''
+  const slug = await cookies().then((cookies) => cookies.get('slug')?.value)
+  const organization = data.find((org) => org.slug === slug)
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <Button variant="ghost" color="gray" style={{ width: '10rem', margin: 0 }}>
-          {orgnaization ? (
+          {organization ? (
             <Flex align="center" gap="2" width="10rem">
               <Avatar
-                src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
-                fallback="AN"
+                src={organization.avatarUrl ?? ''}
+                fallback={getInitialsFromName(organization.name)}
                 radius="full"
                 size="1"
               />
               <Text size="2" wrap="nowrap" truncate weight="medium">
-                Organização 1
+                {organization.name}
               </Text>
             </Flex>
           ) : (
@@ -32,25 +32,27 @@ export const OrganizationSwitcher = async () => {
               </Text>
             </Flex>
           )}
-          <CaretUpDown weight="bold" style={{ marginLeft: 'auto' }} />
+          <CaretUpDown weight="bold" style={{ marginLeft: 'auto', flexShrink: 0 }} />
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content variant="soft" side="bottom" align="center" style={{ padding: 0 }}>
         <DropdownMenu.Group>
           <DropdownMenu.Label>Organizações</DropdownMenu.Label>
           {data.map((organization) => (
-            <DropdownMenu.Item key={organization.id}>
-              <Flex align="center" gap="2" width="10rem">
-                <Avatar
-                  src={organization.avatarUrl ?? ''}
-                  fallback={getInitialsFromName(organization.name)}
-                  radius="full"
-                  size="1"
-                />
-                <Text size="2" wrap="nowrap" truncate weight="medium">
-                  {organization.name}
-                </Text>
-              </Flex>
+            <DropdownMenu.Item key={organization.id} asChild>
+              <Link href={`/org/${organization.slug}`} style={{ cursor: 'pointer' }}>
+                <Flex align="center" gap="2" width="10rem">
+                  <Avatar
+                    src={organization.avatarUrl ?? ''}
+                    fallback={getInitialsFromName(organization.name)}
+                    radius="full"
+                    size="1"
+                  />
+                  <Text size="2" wrap="nowrap" truncate weight="medium">
+                    {organization.name}
+                  </Text>
+                </Flex>
+              </Link>
             </DropdownMenu.Item>
           ))}
         </DropdownMenu.Group>
