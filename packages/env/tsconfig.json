@@ -1,0 +1,6 @@
+{
+  "extends": "@edu/tsconfig/base.json",
+  "include": [
+    "index.ts"
+  ]
+}

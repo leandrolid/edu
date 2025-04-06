@@ -5,13 +5,15 @@
   "types": "src/index.ts",
   "private": true,
   "scripts": {
-    "predev": "prisma generate",
-    "dev": "nodemon --watch src --ext ts --exec 'ts-node -r tsconfig-paths/register src/index.ts'",
-    "seed:dev": "prisma db seed",
-    "migrate:dev": "prisma migrate dev"
+    "predev": "yarn env:dev prisma generate",
+    "dev": "yarn env:dev nodemon --watch src --ext ts --exec 'ts-node -r tsconfig-paths/register src/index.ts'",
+    "seed:dev": "yarn env:dev prisma db seed",
+    "migrate:dev": "yarn env:dev prisma migrate dev",
+    "env:dev": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@edu/rbac": "*",
+    "@edu/env": "*",
     "@fastify/cors": "^11.0.0",
     "@fastify/swagger": "^9.4.2",
     "@fastify/swagger-ui": "^5.2.2",
@@ -35,7 +37,7 @@
     "tsconfig-paths": "^4.2.0"
   },
   "prisma": {
-    "seed": "ts-node -r tsconfig-paths/register src/infra/database/seeds/index.ts"
+    "seed": "yarn env:dev ts-node -r tsconfig-paths/register src/infra/database/seeds/index.ts"
   },
   "prettier": "@edu/prettier",
   "eslintConfig": {

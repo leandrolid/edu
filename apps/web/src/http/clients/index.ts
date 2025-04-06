@@ -2,9 +2,10 @@ import axios, { AxiosError } from 'axios'
 import { HttpClient, HttpRequest } from './client'
 import { HttpError } from '@/http/errors/http.error'
 import { CookiesFn, getCookie } from 'cookies-next'
+import { env } from '@edu/env'
 
 const client = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: env.NEXT_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },

@@ -1,5 +1,6 @@
 import { UnauthorizedError } from '@domain/errors/unauthorized.error'
 import { ExpiresIn, ITokenService, Payload } from '@domain/services/token.service'
+import { env } from '@edu/env'
 import { Injectable } from '@infra/_injection'
 import crypto from 'node:crypto'
 
@@ -21,7 +22,7 @@ export class TokenService implements ITokenService {
     const encodedPayload = await this.base64UrlEncode(JSON.stringify(payloadWithExp))
     const data = `${encodedHeader}.${encodedPayload}`
     const signature = crypto
-      .createHmac('sha256', process.env.JWT_SECRET!)
+      .createHmac('sha256', env.JWT_SECRET)
       .update(data)
       .digest('base64')
       .replace(/=+$/, '')
@@ -37,7 +38,7 @@ export class TokenService implements ITokenService {
     }
     const data = `${encodedHeader}.${encodedPayload}`
     const expectedSignature = crypto
-      .createHmac('sha256', process.env.JWT_SECRET!)
+      .createHmac('sha256', env.JWT_SECRET)
       .update(data)
       .digest('base64')
       .replace(/=+$/, '')
