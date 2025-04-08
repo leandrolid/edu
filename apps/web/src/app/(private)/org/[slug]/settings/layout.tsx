@@ -28,13 +28,12 @@ export default async function SettingsLayout({
       <Separator orientation="horizontal" size="4" />
       <Container size="4" p="4">
         <Flex gap="4">
-          <Flex direction="column" align="start" gap="2" width="250px" flexShrink="0" asChild>
+          <Flex direction="column" gap="2" width="250px" py="6" asChild>
             <nav>
               <Button
                 asChild
                 variant="ghost"
                 style={{
-                  width: '250px',
                   boxSizing: 'border-box',
                   textAlign: 'left',
                   justifyContent: 'start',
@@ -46,7 +45,6 @@ export default async function SettingsLayout({
                 asChild
                 variant="ghost"
                 style={{
-                  width: '250px',
                   boxSizing: 'border-box',
                   textAlign: 'left',
                   justifyContent: 'start',
@@ -58,7 +56,6 @@ export default async function SettingsLayout({
                 asChild
                 variant="ghost"
                 style={{
-                  width: '250px',
                   boxSizing: 'border-box',
                   textAlign: 'left',
                   justifyContent: 'start',
