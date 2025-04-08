@@ -1,4 +1,5 @@
 import { Header } from '@/components/header'
+import { Navbar } from '@/components/navbar'
 
 export default async function OrganizationLayout({
   children,
@@ -8,6 +9,7 @@ export default async function OrganizationLayout({
   return (
     <>
       <Header />
+      <Navbar />
       {children}
     </>
   )
