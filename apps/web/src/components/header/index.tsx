@@ -1,4 +1,4 @@
-import { OrganizationSwitcher } from '@/components/organization-switcher'
+import { OrganizationSwitcher } from '@/components/organizations/organization-switcher'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 import { CaretDown, List, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr'
 import { Avatar, Box, Flex, IconButton, Popover, Text, TextField } from '@radix-ui/themes'
