@@ -6,6 +6,7 @@ import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod'
 
 export class HttpErrorHandler implements IErrorHandler {
   execute(error: Error, res: IResponse) {
+    console.error(error)
     if (error instanceof HttpError) {
       return res.status(error.statusCode).send({ message: error.message })
     }

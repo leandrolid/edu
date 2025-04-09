@@ -24,7 +24,10 @@ export class FastifyServer implements IServer {
   }
 
   cors(): void {
-    app.register(fastifyCors)
+    app.register(fastifyCors, {
+      origin: '*',
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    })
   }
 
   registerValidationProvider(): void {
