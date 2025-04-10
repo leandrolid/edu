@@ -1,9 +1,17 @@
+import { auth } from '@/auth'
 import { OrganizationSwitcher } from '@/components/organizations/organization-switcher'
 import { ThemeSwitcher } from '@/components/theme-switcher'
-import { CaretDown, List, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr'
-import { Avatar, Box, Flex, IconButton, Popover, Text, TextField } from '@radix-ui/themes'
+import {
+  CaretDown,
+  HouseSimple,
+  LineVertical,
+  MagnifyingGlass,
+} from '@phosphor-icons/react/dist/ssr'
+import { Avatar, Box, Flex, Link as StyledLink, Popover, Text, TextField } from '@radix-ui/themes'
+import Link from 'next/link'
 
-export const Header = () => {
+export const Header = async () => {
+  const slug = await auth.getCurrentOrganization()
   return (
     <Flex
       align="center"
@@ -18,9 +26,18 @@ export const Header = () => {
     >
       <header>
         <Flex align="center" gap="2">
-          <IconButton variant="ghost" color="gray" size="3" aria-label="Menu">
-            <List weight="bold" />
-          </IconButton>
+          <StyledLink
+            color="gray"
+            size="3"
+            aria-label="Menu"
+            asChild
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            <Link href={slug ? `/org/${slug}` : '/'}>
+              <HouseSimple weight="bold" />
+            </Link>
+          </StyledLink>
+          <LineVertical weight="bold" style={{ rotate: '20deg' }} />
           <OrganizationSwitcher />
         </Flex>
 

@@ -1,9 +1,9 @@
-import { Flex, Heading } from '@radix-ui/themes'
+import { Card, Heading } from '@radix-ui/themes'
 
 export default function MembersPage() {
   return (
-    <Flex>
+    <Card variant="surface" style={{ width: '100%', padding: 0 }}>
       <Heading>Hello from members!</Heading>
-    </Flex>
+    </Card>
   )
 }
