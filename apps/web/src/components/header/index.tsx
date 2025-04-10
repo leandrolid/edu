@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { OrganizationSwitcher } from '@/components/organizations/organization-switcher'
+import { SignOutButton } from '@/components/sign-out-button'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 import {
   CaretDown,
@@ -7,7 +8,17 @@ import {
   LineVertical,
   MagnifyingGlass,
 } from '@phosphor-icons/react/dist/ssr'
-import { Avatar, Box, Flex, Link as StyledLink, Popover, Text, TextField } from '@radix-ui/themes'
+import {
+  Avatar,
+  Box,
+  Flex,
+  Link as StyledLink,
+  Popover,
+  Text,
+  TextField,
+  Separator,
+  Inset,
+} from '@radix-ui/themes'
 import Link from 'next/link'
 
 export const Header = async () => {
@@ -66,10 +77,21 @@ export const Header = async () => {
                 <CaretDown weight="bold" />
               </Flex>
             </Popover.Trigger>
-            <Popover.Content>
-              <Text size="3" weight="bold">
-                Ainda não há nada por aqui
-              </Text>
+            <Popover.Content minWidth="250px" side="bottom" align="end">
+              <Inset side="all" p="0">
+                <Box p="4">
+                  <Text as="p" weight="bold">
+                    Fulano de tal
+                  </Text>
+                  <Text as="p" weight="light">
+                    email@example.com
+                  </Text>
+                </Box>
+                <Separator orientation="horizontal" size="4" />
+                <Flex direction="column" gap="2" p="2">
+                  <SignOutButton />
+                </Flex>
+              </Inset>
             </Popover.Content>
           </Popover.Root>
         </Flex>
