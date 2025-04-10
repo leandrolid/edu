@@ -12,7 +12,7 @@ type Props = {
   }
 }
 
-export function SettingsForm({ organization }: Props) {
+export function OrganizationForm({ organization }: Props) {
   const [state, formAction, isPending] = useFormState(updateOrganizationAction)
 
   return (

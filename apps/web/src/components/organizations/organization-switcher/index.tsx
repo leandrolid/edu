@@ -62,7 +62,7 @@ export const OrganizationSwitcher = async () => {
         <DropdownMenu.Group>
           <DropdownMenu.Item>
             <Flex align="center" gap="2" width="10rem" asChild>
-              <Link href="/organizations/new">
+              <Link href="/new-organization">
                 <PlusCircle weight="regular" fontSize="1.5rem" />
                 <Text size="2" truncate weight="medium">
                   Criar nova
