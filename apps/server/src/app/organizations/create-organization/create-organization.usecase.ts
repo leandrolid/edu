@@ -4,6 +4,7 @@ import { ForbiddenError } from '@domain/errors/forbidden.error'
 import type { IPermissionService } from '@domain/services/permission.service'
 import { Inject, Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
+import { Role } from '@prisma/client'
 
 @Injectable()
 export class CreateOrganizationUseCase {
@@ -32,6 +33,13 @@ export class CreateOrganizationUseCase {
         domain: !domain ? null : domain,
         shouldAttachUserByDomain,
         ownerId: user.id,
+      },
+    })
+    await prisma.member.create({
+      data: {
+        organizationId: organization.id,
+        userId: user.id,
+        role: Role.ORGANIZATION_ADMIN,
       },
     })
     return {
