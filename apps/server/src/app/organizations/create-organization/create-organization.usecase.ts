@@ -29,7 +29,7 @@ export class CreateOrganizationUseCase {
         name,
         slug,
         avatarUrl,
-        domain,
+        domain: !domain ? null : domain,
         shouldAttachUserByDomain,
         ownerId: user.id,
       },

@@ -1,21 +1,18 @@
-import { auth } from '@/auth'
+'use server'
+
 import { HttpError } from '@/http/errors/http.error'
-import { updateOrganization } from '@/http/services/organizations/update-organization'
+import { createOrganization } from '@/http/services/organizations/create-organization'
+import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
-export const updateOrganizationAction = async (data: FormData) => {
+export const createOrganizationAction = async (data: FormData) => {
   const result = schema.safeParse(Object.fromEntries(data))
   if (!result.success) {
     return { success: false, message: null, errors: result.error.flatten().fieldErrors }
   }
   try {
-    const org = await auth.getCurrentOrganization()
-    await updateOrganization({
-      org: org!,
-      name: result.data.name,
-      domain: result.data.domain,
-      shouldAttachUserByDomain: result.data.autoJoin,
-    })
+    await createOrganization(result.data)
+    redirect(`/org/${result.data.slug}`)
     return { success: true, message: null, errors: null }
   } catch (error) {
     console.error(error)
@@ -30,10 +27,17 @@ const schema = z.object({
   name: z
     .string({ message: 'Nome é obrigatório' })
     .min(3, { message: 'Nome deve ter pelo menos 3 caracteres' }),
+  slug: z
+    .string({ message: 'Slug é obrigatório' })
+    .min(3, { message: 'Slug deve ter pelo menos 3 caracteres' })
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+      message: 'Slug deve conter apenas letras minúsculas, números e hífens',
+    }),
   domain: z.string({ message: 'Domínio é obrigatório' }).nullable(),
-  autoJoin: z
+  shouldAttachUserByDomain: z
     .any()
     .transform((value) => value === 'on')
     .optional()
     .default(false),
+  avatarUrl: z.string().nullable(),
 })
