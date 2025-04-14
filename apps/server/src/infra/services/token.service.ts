@@ -44,7 +44,12 @@ export class TokenService implements ITokenService {
       .replace(/=+$/, '')
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
-    if (signature !== expectedSignature) {
+    const signatureBuffer = Buffer.from(signature)
+    const expectedSignatureBuffer = Buffer.from(expectedSignature)
+    if (
+      signatureBuffer.length !== expectedSignatureBuffer.length ||
+      !crypto.timingSafeEqual(signatureBuffer, expectedSignatureBuffer)
+    ) {
       throw new UnauthorizedError('Assinatura inválida')
     }
     const payload: Payload<T> = await this.decode(token)
