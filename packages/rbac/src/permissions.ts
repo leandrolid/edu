@@ -14,14 +14,18 @@ export const permissions: Record<RbacRole, DefinePermissions> = {
   },
   ORGANIZATION_ADMIN(user, { can }) {
     can(['read', 'update', 'delete'], 'Organization', { slug: user.slug })
+    can(['manage'], 'Member')
   },
   ORGANIZATION_CONTRIBUTOR(user, { can }) {
     can(['read', 'update'], 'Organization', { slug: user.slug })
+    can(['create', 'read', 'update'], 'Member')
   },
   ORGANIZATION_MEMBER(user, { can }) {
     can('read', 'Organization', { slug: user.slug })
+    can('read', 'Member')
   },
   ORGANIZATION_BILLING(user, { can }) {
     can(['read', 'bill'], 'Organization', { slug: user.slug })
+    can('read', 'Member')
   },
 }
