@@ -24,7 +24,7 @@ import {
 
 export default async function MembersPage() {
   const slug = await auth.getCurrentOrganization()
-  const { data: members } = await getMembers(slug!)
+  const { data: members } = await getMembers({ slug: slug!, team: 'all', page: 1 })
   return (
     <Flex direction="column" gap="4">
       <Card variant="surface" style={{ width: '100%' }}>
@@ -92,11 +92,6 @@ export default async function MembersPage() {
                   </Table.Cell>
                   <Table.Cell justify="end">
                     <Flex align="center" justify="end" gap="2">
-                      {/* <Button variant="ghost" color="orange" size="2" style={{ margin: 0 }}>
-                        <ArrowsLeftRight weight="bold" />
-                        Transferir
-                      </Button> */}
-
                       <DropdownMenu.Root>
                         <DropdownMenu.Trigger>
                           <IconButton variant="outline" color="gray" size="2" radius="full">
@@ -119,15 +114,6 @@ export default async function MembersPage() {
                           </DropdownMenu.Item>
                         </DropdownMenu.Content>
                       </DropdownMenu.Root>
-
-                      {/* <Button variant="ghost" size="2" style={{ margin: 0 }}>
-                        <Key weight="bold" />
-                        Permissões
-                      </Button>
-                      <Button variant="surface" size="2" color="red">
-                        <Trash weight="bold" />
-                        Remover
-                      </Button> */}
                     </Flex>
                   </Table.Cell>
                 </Table.Row>
