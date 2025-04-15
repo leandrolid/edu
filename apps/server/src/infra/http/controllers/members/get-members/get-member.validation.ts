@@ -8,12 +8,12 @@ export class GetMembersValidation implements IValidation {
   })
 
   query?: IValidator<Omit<GetMembersInput, 'slug'>> = z.object({
-    group: z.string({ message: 'Grupo inválido' }).min(1, 'Grupo é obrigatório'),
-    page: z
+    team: z.string({ message: 'Grupo inválido' }).min(1, 'Grupo é obrigatório'),
+    page: z.coerce
       .number({ message: 'Página inválida' })
       .positive({ message: 'Página deve ser maior que 0' })
       .int({ message: 'Página deve ser um número inteiro' }),
-    limit: z
+    limit: z.coerce
       .number({ message: 'Limite inválido' })
       .positive({ message: 'Limite deve ser maior que 0' })
       .int({ message: 'Limite deve ser um número inteiro' })

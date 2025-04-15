@@ -1,6 +1,6 @@
 export type GetMembersInput = {
   slug: string
-  group: string
+  team: string
   page: number
   limit?: number
   search?: string

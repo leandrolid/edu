@@ -29,7 +29,11 @@ export class GetMembersUseCase {
       limit,
     })
     return {
-      members,
+      members: members.map(({ user, ...member }) => ({
+        ...member,
+        name: user.name,
+        email: user.email,
+      })),
     }
   }
 }
