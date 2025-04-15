@@ -22,7 +22,6 @@ export class CreateOrganizationController implements IController {
     const output = await this.createOrganizationUseCase.execute({
       user,
       name: body.name,
-      slug: body.slug,
       avatarUrl: body.avatarUrl,
       domain: body.domain,
       shouldAttachUserByDomain: body.shouldAttachUserByDomain,

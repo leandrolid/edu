@@ -3,6 +3,7 @@ import z from 'zod'
 export const rbacRoleSchema = z.enum([
   'OWNER',
   'MEMBER',
+  'USER',
   'ORGANIZATION_ADMIN',
   'ORGANIZATION_CONTRIBUTOR',
   'ORGANIZATION_MEMBER',

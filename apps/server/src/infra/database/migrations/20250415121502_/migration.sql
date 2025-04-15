@@ -5,14 +5,13 @@ CREATE TYPE "TokenType" AS ENUM ('PASSWORD_RECOVER');
 CREATE TYPE "AccountProvider" AS ENUM ('GITHUB');
 
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('OWNER', 'MEMBER', 'ORGANIZATION_ADMIN', 'ORGANIZATION_CONTRIBUTOR', 'ORGANIZATION_MEMBER', 'ORGANIZATION_BILLING');
+CREATE TYPE "Role" AS ENUM ('OWNER', 'MEMBER', 'USER', 'ORGANIZATION_ADMIN', 'ORGANIZATION_CONTRIBUTOR', 'ORGANIZATION_MEMBER', 'ORGANIZATION_BILLING');
 
 -- CreateTable
 CREATE TABLE "users" (
     "id" UUID NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'MEMBER',
     "name" TEXT,
-    "email" TEXT NOT NULL,
+    "email" TEXT,
     "password_hash" TEXT,
     "avatar_url" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -45,11 +44,27 @@ CREATE TABLE "accounts" (
 -- CreateTable
 CREATE TABLE "members" (
     "id" UUID NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'MEMBER',
+    "roles" "Role"[] DEFAULT ARRAY['MEMBER']::"Role"[],
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "organization_id" UUID NOT NULL,
+    "slug" TEXT NOT NULL,
     "user_id" UUID NOT NULL,
+    "team_id" UUID NOT NULL,
 
     CONSTRAINT "members_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "teams" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "roles" "Role"[],
+    "organization_id" UUID NOT NULL,
+    "owner_id" UUID NOT NULL,
+
+    CONSTRAINT "teams_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -102,6 +117,12 @@ CREATE UNIQUE INDEX "accounts_provider_account_id_key" ON "accounts"("provider_a
 CREATE UNIQUE INDEX "accounts_provider_user_id_key" ON "accounts"("provider", "user_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "members_user_id_organization_id_key" ON "members"("user_id", "organization_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "teams_slug_organization_id_key" ON "teams"("slug", "organization_id");
+
+-- CreateIndex
 CREATE INDEX "invites_email_idx" ON "invites"("email");
 
 -- CreateIndex
@@ -124,6 +145,15 @@ ALTER TABLE "members" ADD CONSTRAINT "members_organization_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "members" ADD CONSTRAINT "members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "members" ADD CONSTRAINT "members_team_id_fkey" FOREIGN KEY ("team_id") REFERENCES "teams"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "teams" ADD CONSTRAINT "teams_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "teams" ADD CONSTRAINT "teams_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "invites" ADD CONSTRAINT "invites_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;

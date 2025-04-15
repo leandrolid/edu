@@ -1,17 +1,17 @@
-import { IOrganization } from '@domain/dtos/organization.dto'
 import { IUser } from '@domain/dtos/user.dto'
-import { ForbiddenError } from '@domain/errors/forbidden.error'
 import { UnprocessableEntityError } from '@domain/errors/unprocessable-entity.error'
 import { IPermissionService } from '@domain/services/permission.service'
 import {
   AppAbility,
   defineAbilityFor,
+  rbacMemberSchema,
   RbacOrganization,
   rbacOrganizationSchema,
+  RbacUser,
   rbacUserSchema,
 } from '@edu/rbac'
+import { RbacMember } from '@edu/rbac/src/entities/member.entity'
 import { Injectable } from '@infra/_injection'
-import { prisma } from '@infra/database/connections/prisma.connection'
 import { get } from 'radash'
 
 @Injectable({ token: 'IPermissionService' })
@@ -20,38 +20,30 @@ export class PermissionService implements IPermissionService {
     if (!user.slug) {
       return this.getAbilityOutOrganization(user.id)
     }
-    return this.getAbilityInOrganization(user.id, user.slug)
+    return this.getAbilityInOrganization(user)
   }
 
   private async getAbilityOutOrganization(userId: string): Promise<AppAbility> {
-    const user = await prisma.user.findUnique({ where: { id: userId } })
-    if (!user) {
-      throw new ForbiddenError('Usuário não autorizado')
-    }
-    const rbacUser = this.parseUser({
-      id: user.id,
-      roles: [user.role],
-      slug: '',
-    })
-    return defineAbilityFor(rbacUser)
-  }
-
-  private async getAbilityInOrganization(userId: string, slug: string): Promise<AppAbility> {
-    const merberships = await prisma.member.findMany({
-      where: { userId: userId, organization: { slug } },
-    })
-    if (merberships.length === 0) {
-      throw new ForbiddenError('Usuário não autorizado')
-    }
     const rbacUser = this.parseUser({
       id: userId,
-      roles: merberships.map((m) => m.role),
-      slug,
+      roles: ['USER'],
+      slug: '',
+      organizationId: '',
     })
     return defineAbilityFor(rbacUser)
   }
 
-  private parseUser(user: { id: string; roles: string[]; slug: string }) {
+  private async getAbilityInOrganization(user: IUser): Promise<AppAbility> {
+    const rbacUser = this.parseUser({
+      id: user.id,
+      roles: user.roles!,
+      slug: user.slug!,
+      organizationId: user.organizationId!,
+    })
+    return defineAbilityFor(rbacUser)
+  }
+
+  private parseUser(user: Omit<RbacUser, '__typename'>) {
     try {
       return rbacUserSchema.parse(user)
     } catch (error) {
@@ -59,11 +51,19 @@ export class PermissionService implements IPermissionService {
     }
   }
 
-  public getRbacOrganization(organization: IOrganization): RbacOrganization {
+  public getOrganization(user: IUser): RbacOrganization {
     try {
-      return rbacOrganizationSchema.parse(organization)
+      return rbacOrganizationSchema.parse({ id: user.organizationId, slug: user.slug })
     } catch (error) {
       throw new UnprocessableEntityError('Organização inválida')
+    }
+  }
+
+  public getMember(user: IUser): RbacMember {
+    try {
+      return rbacMemberSchema.parse({ userId: user.id, organizationId: user.organizationId })
+    } catch (error) {
+      throw new UnprocessableEntityError('Membro inválido')
     }
   }
 

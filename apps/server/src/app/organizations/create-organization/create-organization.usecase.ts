@@ -2,6 +2,7 @@ import { CreateOrganizationInput } from '@app/organizations/create-organization/
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
 import type { IPermissionService } from '@domain/services/permission.service'
+import { createSlug } from '@edu/utils'
 import { Inject, Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import { Role } from '@prisma/client'
@@ -15,7 +16,6 @@ export class CreateOrganizationUseCase {
 
   async execute({
     name,
-    slug,
     avatarUrl,
     domain,
     shouldAttachUserByDomain,
@@ -28,10 +28,19 @@ export class CreateOrganizationUseCase {
     const organization = await prisma.organization.create({
       data: {
         name,
-        slug,
+        slug: createSlug(name),
         avatarUrl,
         domain: !domain ? null : domain,
         shouldAttachUserByDomain,
+        ownerId: user.id,
+      },
+    })
+    const team = await prisma.team.create({
+      data: {
+        name: 'Administrador',
+        slug: createSlug('Administrador'),
+        organizationId: organization.id,
+        roles: [Role.ORGANIZATION_ADMIN],
         ownerId: user.id,
       },
     })
@@ -39,11 +48,14 @@ export class CreateOrganizationUseCase {
       data: {
         organizationId: organization.id,
         userId: user.id,
-        role: Role.ORGANIZATION_ADMIN,
+        roles: [Role.ORGANIZATION_ADMIN],
+        slug: organization.slug,
+        teamId: team.id,
       },
     })
     return {
       id: organization.id,
+      slug: organization.slug,
     }
   }
 }

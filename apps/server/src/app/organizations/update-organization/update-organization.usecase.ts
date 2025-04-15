@@ -19,7 +19,7 @@ export class UpdateOrganizationUseCase {
     user,
   }: Auth<UpdateOrganizationInput>) {
     const { cannot } = await this.permissionService.defineAbilityFor(user)
-    const rbacOrganization = this.permissionService.getRbacOrganization({ slug })
+    const rbacOrganization = this.permissionService.getOrganization(user)
     if (cannot('update', rbacOrganization)) {
       throw new ForbiddenError('Usuário não autorizado a atualizar a organização')
     }

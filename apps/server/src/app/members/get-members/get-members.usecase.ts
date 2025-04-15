@@ -19,7 +19,8 @@ export class GetMembersUseCase {
   async execute({ slug, search, page, limit = 10, user }: Auth<GetMembersInput>) {
     const organization = await this.organizationRepository.getBySlug(slug)
     const { cannot } = await this.permissionService.defineAbilityFor(user)
-    if (cannot('read', 'Member')) {
+    const rbacMember = this.permissionService.getMember(user)
+    if (cannot('read', rbacMember)) {
       throw new ForbiddenError('Você não tem permissão para ver os membros dessa organização')
     }
     const members = await this.memberRepository.findMembers({

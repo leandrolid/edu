@@ -6,6 +6,7 @@ export const rbacUserSchema = z.object({
   id: z.string(),
   roles: z.array(rbacRoleSchema),
   slug: z.string(),
+  organizationId: z.string(),
 })
 
 export type RbacUser = z.infer<typeof rbacUserSchema>

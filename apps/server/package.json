@@ -12,8 +12,8 @@
     "env:dev": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@edu/rbac": "*",
     "@edu/env": "*",
+    "@edu/rbac": "*",
     "@fastify/cors": "^11.0.0",
     "@fastify/swagger": "^9.4.2",
     "@fastify/swagger-ui": "^5.2.2",
@@ -29,6 +29,8 @@
     "@edu/eslint": "*",
     "@edu/prettier": "*",
     "@edu/tsconfig": "*",
+    "@edu/utils": "*",
+    "@faker-js/faker": "^9.7.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.0.0",
     "nodemon": "^3.1.9",
