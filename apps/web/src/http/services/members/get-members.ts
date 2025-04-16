@@ -6,8 +6,9 @@ export const getMembers = async ({
   ...input
 }: {
   slug: string
-  team: string
+  teamId: string
   page: number
+  search?: string
 }) => {
   return httpClient.request<GetMembersOutput>({
     url: `/organizations/${slug}/members`,
@@ -17,6 +18,12 @@ export const getMembers = async ({
 }
 
 type GetMembersOutput = {
+  metadata: {
+    page: number
+    pageSize: number
+    total: number
+    totalPages: number
+  }
   data: Array<{
     id: string
     name: string | null

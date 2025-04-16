@@ -1,8 +1,8 @@
-import axios, { AxiosError } from 'axios'
-import { HttpClient, HttpRequest } from './client'
 import { HttpError } from '@/http/errors/http.error'
-import { CookiesFn, getCookie } from 'cookies-next'
 import { env } from '@edu/env'
+import axios, { AxiosError } from 'axios'
+import { CookiesFn, getCookie } from 'cookies-next'
+import { HttpClient, HttpRequest } from './client'
 
 const client = axios.create({
   baseURL: env.NEXT_PUBLIC_API_URL,
@@ -42,10 +42,11 @@ class AxiosHttpClient implements HttpClient {
     return client.interceptors.response.use(
       (response) => {
         cb(response.status)
-        return response
+        return Promise.resolve(response)
       },
       (error: AxiosError) => {
         cb(error.status ?? error.response!.status)
+        return Promise.reject(error)
       },
     )
   }
