@@ -7,7 +7,6 @@ import {
   rbacMemberSchema,
   RbacOrganization,
   rbacOrganizationSchema,
-  RbacUser,
   rbacUserSchema,
 } from '@edu/rbac'
 import { RbacMember } from '@edu/rbac/src/entities/member.entity'
@@ -17,33 +16,17 @@ import { get } from 'radash'
 @Injectable({ token: 'IPermissionService' })
 export class PermissionService implements IPermissionService {
   async defineAbilityFor(user: IUser): Promise<AppAbility> {
+    let inputUser: Required<IUser>
     if (!user.slug) {
-      return this.getAbilityOutOrganization(user.id)
+      inputUser = { id: user.id, roles: ['USER'], slug: '', organizationId: '' }
+    } else {
+      inputUser = user as Required<IUser>
     }
-    return this.getAbilityInOrganization(user)
-  }
-
-  private async getAbilityOutOrganization(userId: string): Promise<AppAbility> {
-    const rbacUser = this.parseUser({
-      id: userId,
-      roles: ['USER'],
-      slug: '',
-      organizationId: '',
-    })
+    const rbacUser = this.parseUser(inputUser)
     return defineAbilityFor(rbacUser)
   }
 
-  private async getAbilityInOrganization(user: IUser): Promise<AppAbility> {
-    const rbacUser = this.parseUser({
-      id: user.id,
-      roles: user.roles!,
-      slug: user.slug!,
-      organizationId: user.organizationId!,
-    })
-    return defineAbilityFor(rbacUser)
-  }
-
-  private parseUser(user: Omit<RbacUser, '__typename'>) {
+  private parseUser(user: IUser) {
     try {
       return rbacUserSchema.parse(user)
     } catch (error) {
