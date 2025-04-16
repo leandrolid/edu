@@ -2,7 +2,6 @@ import { GetMembersInput } from '@app/members/get-members/get-members.input'
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
 import type { IMemberRepository } from '@domain/repositories/member.repository'
-import type { IOrganizationRepository } from '@domain/repositories/organization.repository'
 import type { IPermissionService } from '@domain/services/permission.service'
 import { Inject, Injectable } from '@infra/_injection'
 
@@ -10,10 +9,7 @@ import { Inject, Injectable } from '@infra/_injection'
 export class GetMembersUseCase {
   constructor(
     @Inject('IPermissionService') private readonly permissionService: IPermissionService,
-    @Inject('IOrganizationRepository')
-    private readonly organizationRepository: IOrganizationRepository,
-    @Inject('IMemberRepository')
-    private readonly memberRepository: IMemberRepository,
+    @Inject('IMemberRepository') private readonly memberRepository: IMemberRepository,
   ) {}
 
   async execute({ teamId, search, page, limit = 10, user }: Auth<GetMembersInput>) {
