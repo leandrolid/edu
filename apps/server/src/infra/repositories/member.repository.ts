@@ -1,4 +1,5 @@
 import {
+  FindMembersAndCountOutput,
   FindMembersInput,
   FindMembersOutput,
   IMemberRepository,
@@ -14,6 +15,7 @@ export class MemberRepository implements IMemberRepository {
     const members = await prisma.member.findMany({
       where: {
         organizationId: input.organizationId,
+        teamId: input.teamId,
         user: {
           ...(input.search && {
             OR: [
@@ -30,5 +32,23 @@ export class MemberRepository implements IMemberRepository {
       take: input.limit,
     })
     return members
+  }
+
+  async findMembersAndCount(input: FindMembersInput): Promise<FindMembersAndCountOutput> {
+    const members = await this.findMembers(input)
+    const count = await prisma.member.count({
+      where: {
+        organizationId: input.organizationId,
+        user: {
+          ...(input.search && {
+            OR: [
+              { name: { contains: input.search, mode: 'insensitive' } },
+              { email: { contains: input.search, mode: 'insensitive' } },
+            ],
+          }),
+        },
+      },
+    })
+    return { members, count }
   }
 }

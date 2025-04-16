@@ -34,11 +34,11 @@ export class GetMembersController implements IController {
     const output = await this.getMembersUseCase.execute({
       user,
       slug: params.slug,
-      team: query.team,
+      teamId: query.teamId,
       page: query.page,
       limit: query.limit,
       search: query.search,
     })
-    return { data: output.members }
+    return { data: output.members, metadata: output.metadata }
   }
 }

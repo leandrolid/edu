@@ -8,7 +8,7 @@ export class GetMembersValidation implements IValidation {
   })
 
   query?: IValidator<Omit<GetMembersInput, 'slug'>> = z.object({
-    team: z.string({ message: 'Grupo inválido' }).min(1, 'Grupo é obrigatório'),
+    teamId: z.string({ message: 'Time inválido' }).uuid({ message: 'Time deve ser um UUID' }),
     page: z.coerce
       .number({ message: 'Página inválida' })
       .positive({ message: 'Página deve ser maior que 0' })
