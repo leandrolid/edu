@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
-  if (request.nextUrl.pathname.startsWith('/org')) {
-    const [, , slug] = request.nextUrl.pathname.split('/')
+  if (request.cookies.has('slug')) {
+    const [, slug] = request.nextUrl.pathname.split('/')
     response.cookies.set('slug', slug!)
   } else {
     response.cookies.delete('slug')

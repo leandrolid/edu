@@ -9,7 +9,7 @@ export default async function RegisterLayout({
 }>) {
   const isAuthenticated = await auth.isAuthenticated()
   if (isAuthenticated) {
-    return redirect('/org')
+    return redirect('/')
   }
   return (
     <Flex direction="column" align="center" justify="center" gap="2" p="4" height="100vh">

@@ -3,7 +3,7 @@ import { LineVertical } from '@phosphor-icons/react/dist/ssr'
 import { Box, Button, Container, Flex, Heading, Separator } from '@radix-ui/themes'
 import Link from 'next/link'
 
-export default async function MembersLayout({
+export default async function SettingsLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -21,7 +21,7 @@ export default async function MembersLayout({
         }}
       >
         <Heading as="h1" size="3">
-          Membros
+          Configurações
         </Heading>
         <LineVertical weight="bold" style={{ rotate: '20deg' }} />
       </Flex>
@@ -39,7 +39,7 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/org/${slug}/members`}>Geral</Link>
+                <Link href={`/${slug}/settings`}>Geral</Link>
               </Button>
               <Button
                 asChild
@@ -50,7 +50,7 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/org/${slug}/members/teachers`}>Professores</Link>
+                <Link href={`/${slug}/settings/billing`}>Financeiro</Link>
               </Button>
               <Button
                 asChild
@@ -61,7 +61,7 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/org/${slug}/members/students`}>Estudantes</Link>
+                <Link href={`/${slug}/settings/subsidiaries`}>Filiais</Link>
               </Button>
             </nav>
           </Flex>

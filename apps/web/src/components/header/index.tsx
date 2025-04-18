@@ -44,7 +44,7 @@ export const Header = async () => {
             asChild
             style={{ display: 'flex', alignItems: 'center' }}
           >
-            <Link href={slug ? `/org/${slug}` : '/'}>
+            <Link href={slug ? `/${slug}` : '/'}>
               <HouseSimple weight="bold" />
             </Link>
           </StyledLink>

@@ -12,7 +12,7 @@ export const createOrganizationAction = async (data: FormData) => {
   }
   try {
     await createOrganization(result.data)
-    redirect(`/org/${result.data.slug}`)
+    redirect(`/${result.data.slug}`)
     return { success: true, message: null, errors: null }
   } catch (error) {
     console.error(error)

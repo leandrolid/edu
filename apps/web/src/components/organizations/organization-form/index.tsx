@@ -3,7 +3,7 @@
 import { Button, Checkbox, Flex, Separator, Text, TextField } from '@radix-ui/themes'
 import { useFormState } from '@/react/hooks/use-form-state'
 import { createOrganizationAction } from '@/app/(private)/new-organization/actions'
-import { updateOrganizationAction } from '@/app/(private)/org/[slug]/settings/actions'
+import { updateOrganizationAction } from '@/app/(private)/[slug]/settings/actions'
 
 type Props = {
   organization?: {

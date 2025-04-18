@@ -40,7 +40,7 @@ export const OrganizationSwitcher = async () => {
           <DropdownMenu.Label>Organizações</DropdownMenu.Label>
           {data.map((organization) => (
             <DropdownMenu.Item key={organization.id} asChild>
-              <Link href={`/org/${organization.slug}`} style={{ cursor: 'pointer' }}>
+              <Link href={`/${organization.slug}`} style={{ cursor: 'pointer' }}>
                 <Flex align="center" gap="2" width="10rem">
                   <Avatar
                     src={organization.avatarUrl ?? ''}
