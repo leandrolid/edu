@@ -1,5 +1,10 @@
 import { dash } from 'radash'
 
 export const createSlug = (text: string): string => {
-  return dash(text.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+  return dash(
+    text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[\d_+-.,!@#$%^&*();:/|<>"'\?]/g, ''),
+  )
 }
