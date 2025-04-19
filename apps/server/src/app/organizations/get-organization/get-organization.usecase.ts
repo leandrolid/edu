@@ -1,15 +1,16 @@
 import { GetOrganizationInput } from '@app/organizations/get-organization/get-organization.input'
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
-import { NotFoundError } from '@domain/errors/not-found.error'
 import type { IPermissionService } from '@domain/services/permission.service'
 import { Inject, Injectable } from '@infra/_injection'
-import { prisma } from '@infra/database/connections/prisma.connection'
+import type { IOrganizationRepository } from '@infra/repositories/organization/organization.repository'
 
 @Injectable()
 export class GetOrganizationUseCase {
   constructor(
     @Inject('IPermissionService') private readonly permissionService: IPermissionService,
+    @Inject('IOrganizationRepository')
+    private readonly organizationRepository: IOrganizationRepository,
   ) {}
 
   async execute({ user, slug }: Auth<GetOrganizationInput>) {
@@ -18,12 +19,7 @@ export class GetOrganizationUseCase {
     if (cannot('read', rbacOrganization)) {
       throw new ForbiddenError('Você não tem permissão para acessar esta organização')
     }
-    const organization = await prisma.organization.findUnique({
-      where: { slug },
-    })
-    if (!organization) {
-      throw new NotFoundError('Organização não encontrada')
-    }
+    const organization = await this.organizationRepository.getBySlug(slug)
     return {
       id: organization.id,
       name: organization.name,

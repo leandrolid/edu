@@ -1,5 +1,5 @@
 import { NotFoundError } from '@domain/errors/not-found.error'
-import { IOrganizationRepository } from '@domain/repositories/organization.repository'
+import { IOrganizationRepository } from '@infra/repositories/organization/organization.repository'
 import { Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import { Organization } from '@prisma/client'
