@@ -1,9 +1,9 @@
-import { GetMembersInput } from '@app/members/get-members/get-members.input'
-import { Auth } from '@domain/dtos/auth.dto'
+import type { GetMembersInput } from '@app/members/get-members/get-members.input'
+import type { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
-import type { IMemberRepository } from '@domain/repositories/member.repository'
 import type { IPermissionService } from '@domain/services/permission.service'
 import { Inject, Injectable } from '@infra/_injection'
+import type { IMemberRepository } from '@infra/repositories/member/member.repository'
 
 @Injectable()
 export class GetMembersUseCase {
@@ -13,7 +13,7 @@ export class GetMembersUseCase {
   ) {}
 
   async execute({ teamId, search, page, limit = 10, user }: Auth<GetMembersInput>) {
-    const { cannot } = await this.permissionService.defineAbilityFor(user)
+    const { cannot } = this.permissionService.defineAbilityFor(user)
     const rbacMember = this.permissionService.getMember(user)
     if (cannot('read', rbacMember)) {
       throw new ForbiddenError('Você não tem permissão para ver os membros dessa organização')
