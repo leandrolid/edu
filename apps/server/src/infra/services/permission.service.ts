@@ -1,21 +1,23 @@
-import { IUser } from '@domain/dtos/user.dto'
+import type { IUser } from '@domain/dtos/user.dto'
 import { UnprocessableEntityError } from '@domain/errors/unprocessable-entity.error'
-import { IPermissionService } from '@domain/services/permission.service'
+import type { IPermissionService } from '@domain/services/permission.service'
 import {
-  AppAbility,
+  type AppAbility,
   defineAbilityFor,
+  type RbacMember,
   rbacMemberSchema,
-  RbacOrganization,
+  type RbacOrganization,
   rbacOrganizationSchema,
+  type RbacTeam,
+  rbacTeamSchema,
   rbacUserSchema,
 } from '@edu/rbac'
-import { RbacMember } from '@edu/rbac/src/entities/member.entity'
 import { Injectable } from '@infra/_injection'
 import { get } from 'radash'
 
 @Injectable({ token: 'IPermissionService' })
 export class PermissionService implements IPermissionService {
-  async defineAbilityFor(user: IUser): Promise<AppAbility> {
+  defineAbilityFor(user: IUser): AppAbility {
     let inputUser: Required<IUser>
     if (!user.slug) {
       inputUser = { id: user.id, roles: ['USER'], slug: '', organizationId: '' }
@@ -47,6 +49,14 @@ export class PermissionService implements IPermissionService {
       return rbacMemberSchema.parse({ userId: user.id, organizationId: user.organizationId })
     } catch (error) {
       throw new UnprocessableEntityError('Membro inválido')
+    }
+  }
+
+  public getTeam(user: IUser): RbacTeam {
+    try {
+      return rbacTeamSchema.parse({ organizationId: user.organizationId })
+    } catch (error) {
+      throw new UnprocessableEntityError('Time inválido')
     }
   }
 

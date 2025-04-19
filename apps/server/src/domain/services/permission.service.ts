@@ -1,9 +1,9 @@
-import { IUser } from '@domain/dtos/user.dto'
-import { AppAbility, RbacOrganization } from '@edu/rbac'
-import { RbacMember } from '@edu/rbac/src/entities/member.entity'
+import type { IUser } from '@domain/dtos/user.dto'
+import { type AppAbility, type RbacMember, type RbacOrganization, type RbacTeam } from '@edu/rbac'
 
 export interface IPermissionService {
-  defineAbilityFor(user: IUser): Promise<AppAbility>
+  defineAbilityFor(user: IUser): AppAbility
   getOrganization(user: IUser): RbacOrganization
   getMember(user: IUser): RbacMember
+  getTeam(user: IUser): RbacTeam
 }

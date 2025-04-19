@@ -1,5 +1,6 @@
 export * from './ability'
 export * from './entities/member.entity'
 export * from './entities/organization.entity'
+export * from './entities/team.entity'
 export * from './entities/user.entity'
 export * from './types/role.type'
