@@ -1,6 +1,5 @@
 import type { IUser } from '@domain/dtos/user.dto'
 import { UnprocessableEntityError } from '@domain/errors/unprocessable-entity.error'
-import type { IPermissionService } from '@domain/services/permission.service'
 import {
   type AppAbility,
   defineAbilityFor,
@@ -13,6 +12,7 @@ import {
   rbacUserSchema,
 } from '@edu/rbac'
 import { Injectable } from '@infra/_injection'
+import type { IPermissionService } from '@infra/services/permission/permission.service'
 import { get } from 'radash'
 
 @Injectable({ token: 'IPermissionService' })

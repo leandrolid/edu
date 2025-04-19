@@ -1,10 +1,10 @@
 import { CreateOrganizationInput } from '@app/organizations/create-organization/create-organization.input'
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
-import type { IPermissionService } from '@domain/services/permission.service'
 import { createSlug } from '@edu/utils'
 import { Inject, Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
+import type { IPermissionService } from '@infra/services/permission/permission.service'
 import { Role } from '@prisma/client'
 
 @Injectable()

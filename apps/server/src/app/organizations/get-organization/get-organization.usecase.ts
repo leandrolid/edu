@@ -1,9 +1,9 @@
 import { GetOrganizationInput } from '@app/organizations/get-organization/get-organization.input'
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
-import type { IPermissionService } from '@domain/services/permission.service'
 import { Inject, Injectable } from '@infra/_injection'
 import type { IOrganizationRepository } from '@infra/repositories/organization/organization.repository'
+import type { IPermissionService } from '@infra/services/permission/permission.service'
 
 @Injectable()
 export class GetOrganizationUseCase {

@@ -1,8 +1,8 @@
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
-import type { IPermissionService } from '@domain/services/permission.service'
 import { Inject, Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
+import type { IPermissionService } from '@infra/services/permission/permission.service'
 
 @Injectable()
 export class GetOrganizationsUseCase {
