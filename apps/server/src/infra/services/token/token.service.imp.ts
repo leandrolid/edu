@@ -1,7 +1,7 @@
 import { UnauthorizedError } from '@domain/errors/unauthorized.error'
-import { ExpiresIn, ITokenService, Payload } from '@domain/services/token.service'
 import { env } from '@edu/env'
 import { Injectable } from '@infra/_injection'
+import { ExpiresIn, ITokenService, Payload } from '@infra/services/token/token.service'
 import crypto from 'node:crypto'
 
 @Injectable({

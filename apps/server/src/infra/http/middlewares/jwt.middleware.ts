@@ -1,11 +1,11 @@
-import { IUser } from '@domain/dtos/user.dto'
+import type { IUser } from '@domain/dtos/user.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
 import { UnauthorizedError } from '@domain/errors/unauthorized.error'
-import { ITokenService } from '@domain/services/token.service'
 import { Inject, Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import type { IRequest } from '@infra/http/interfaces/controller'
-import { IMiddleware } from '@infra/http/interfaces/middleware'
+import type { IMiddleware } from '@infra/http/interfaces/middleware'
+import type { ITokenService } from '@infra/services/token/token.service'
 
 declare module '@infra/http/interfaces/controller' {
   interface IRequest {
