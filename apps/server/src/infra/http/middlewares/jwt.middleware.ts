@@ -25,19 +25,19 @@ export class JwtMiddleware implements IMiddleware {
     const payload = await this.tokenService.verify<{ id: string }>(token)
     if (!request.params.slug) {
       request.user = { id: payload.id }
-    } else {
-      const membership = await prisma.member.findFirst({
-        where: { slug: request.params.slug, userId: payload.id },
-      })
-      if (!membership) {
-        throw new ForbiddenError('Você não tem permissão para acessar essa organização')
-      }
-      request.user = {
-        id: payload.id,
-        slug: membership.slug,
-        organizationId: membership.organizationId,
-        roles: membership.roles,
-      }
+      return
+    }
+    const membership = await prisma.member.findFirst({
+      where: { slug: request.params.slug, userId: payload.id },
+    })
+    if (!membership) {
+      throw new ForbiddenError('Você não tem permissão para acessar essa organização')
+    }
+    request.user = {
+      id: payload.id,
+      slug: membership.slug,
+      organizationId: membership.organizationId,
+      roles: membership.roles,
     }
   }
 }
