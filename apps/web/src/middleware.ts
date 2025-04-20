@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
-  if (request.cookies.has('slug')) {
+  if (request.cookies.has('token')) {
     const [, slug] = request.nextUrl.pathname.split('/')
     response.cookies.set('slug', slug!)
   } else {
