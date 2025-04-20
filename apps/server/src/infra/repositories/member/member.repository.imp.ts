@@ -27,7 +27,7 @@ export class MemberRepository implements IMemberRepository {
     const [members, count] = await prisma.$transaction([
       prisma.member.findMany({
         where,
-        include: { user: { select: { name: true, email: true } } },
+        include: { user: { select: { name: true, email: true, avatarUrl: true } } },
         skip: (input.page - 1) * input.pageSize,
         take: input.pageSize,
       }),

@@ -36,6 +36,7 @@ export class GetMembersUseCase {
         ...member,
         name: user.name,
         email: user.email,
+        avatarUrl: user.avatarUrl,
       })),
     }
   }

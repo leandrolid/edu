@@ -30,7 +30,7 @@ export async function UserList({ page, search }: { search: string; page: number 
               <Table.Cell justify="start">
                 <Flex align="center" gap="2">
                   <Avatar
-                    src={member.updatedAt}
+                    src={member.avatarUrl || undefined}
                     fallback={createFallbackName(member.name)}
                     radius="full"
                   />

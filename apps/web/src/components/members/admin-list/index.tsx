@@ -23,7 +23,7 @@ export const AdminList = async ({ page, search }: { search: string; page: number
               <Table.Cell justify="start">
                 <Flex align="center" gap="2">
                   <Avatar
-                    src={undefined}
+                    src={member.avatarUrl || undefined}
                     fallback={createFallbackName(member.name)}
                     radius="full"
                   />

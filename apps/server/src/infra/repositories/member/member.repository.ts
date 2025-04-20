@@ -25,6 +25,7 @@ export type FindAndCountOutput = {
     user: {
       name: string | null
       email: string | null
+      avatarUrl: string | null
     }
   }>
   count: number

@@ -16,7 +16,7 @@ export const OrganizationSwitcher = async () => {
           {organization ? (
             <Flex align="center" gap="2" width="10rem">
               <Avatar
-                src={organization.avatarUrl ?? ''}
+                src={organization.avatarUrl || undefined}
                 fallback={createFallbackName(organization.name)}
                 radius="full"
                 size="1"
@@ -44,7 +44,7 @@ export const OrganizationSwitcher = async () => {
               <Link href={`/${organization.slug}`} style={{ cursor: 'pointer' }}>
                 <Flex align="center" gap="2" width="10rem">
                   <Avatar
-                    src={organization.avatarUrl ?? ''}
+                    src={organization.avatarUrl || undefined}
                     fallback={createFallbackName(organization.name)}
                     radius="full"
                     size="1"

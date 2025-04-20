@@ -29,6 +29,7 @@ type GetMembersOutput = {
     id: string
     name: string | null
     email: string | null
+    avatarUrl: string | null
     slug: string
     roles: RbacRole[]
     createdAt: string
