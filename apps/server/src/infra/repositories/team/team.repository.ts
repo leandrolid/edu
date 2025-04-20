@@ -19,5 +19,5 @@ export type FindManyAndCountInput = {
 
 export type FindManyAndCountOutput = {
   teams: Team[]
-  total: number
+  count: number
 }

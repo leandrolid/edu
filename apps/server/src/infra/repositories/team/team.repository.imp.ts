@@ -36,7 +36,7 @@ export class TeamRepository implements ITeamRepository {
         ],
       }),
     }
-    const [total, teams] = await prisma.$transaction([
+    const [count, teams] = await prisma.$transaction([
       prisma.team.count({ where }),
       prisma.team.findMany({
         where,
@@ -44,6 +44,6 @@ export class TeamRepository implements ITeamRepository {
         skip: (page - 1) * pageSize,
       }),
     ])
-    return { teams, total }
+    return { teams, count }
   }
 }

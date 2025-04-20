@@ -18,7 +18,7 @@ export class GetTeamsUseCase {
     if (cannot('read', rbacTeam)) {
       throw new ForbiddenError('Você não tem permissão para acessar os times')
     }
-    const { teams, total } = await this.teamRepository.findManyAndCount({
+    const { teams, count } = await this.teamRepository.findManyAndCount({
       organizationId: user.organizationId!,
       page,
       pageSize,
@@ -28,8 +28,8 @@ export class GetTeamsUseCase {
       metadata: {
         page,
         pageSize,
-        total,
-        totalPages: Math.ceil(total / pageSize),
+        total: count,
+        totalPages: Math.ceil(count / pageSize),
       },
       teams,
     }
