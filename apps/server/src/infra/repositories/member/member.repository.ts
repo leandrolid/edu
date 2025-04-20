@@ -1,18 +1,18 @@
 import { Role } from '@prisma/client'
 
 export interface IMemberRepository {
-  findMembersAndCount(params: FindMembersAndCountInput): Promise<FindMembersAndCountOutput>
+  findAndCount(params: FindAndCountInput): Promise<FindAndCountOutput>
 }
 
-export type FindMembersAndCountInput = {
+export type FindAndCountInput = {
   organizationId: string
-  teamId: string
+  team: string
   search?: string
   page: number
   pageSize: number
 }
 
-export type FindMembersAndCountOutput = {
+export type FindAndCountOutput = {
   members: Array<{
     id: string
     slug: string

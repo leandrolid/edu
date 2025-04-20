@@ -1,8 +1,8 @@
 import { Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import {
-  FindMembersAndCountInput,
-  FindMembersAndCountOutput,
+  FindAndCountInput,
+  FindAndCountOutput,
   IMemberRepository,
 } from '@infra/repositories/member/member.repository'
 import { Prisma } from '@prisma/client'
@@ -11,17 +11,18 @@ import { Prisma } from '@prisma/client'
   token: 'IMemberRepository',
 })
 export class MemberRepository implements IMemberRepository {
-  async findMembersAndCount(input: FindMembersAndCountInput): Promise<FindMembersAndCountOutput> {
+  async findAndCount(input: FindAndCountInput): Promise<FindAndCountOutput> {
     const where: Prisma.MemberFindManyArgs['where'] = {
       organizationId: input.organizationId,
-      user: {
-        ...(input.search && {
-          OR: [
-            { name: { contains: input.search, mode: 'insensitive' } },
-            { email: { contains: input.search, mode: 'insensitive' } },
-          ],
-        }),
-      },
+      team: { slug: input.team },
+      user: input.search
+        ? {
+            OR: [
+              { name: { contains: input.search, mode: 'insensitive' } },
+              { email: { contains: input.search, mode: 'insensitive' } },
+            ],
+          }
+        : undefined,
     }
     const [members, count] = await prisma.$transaction([
       prisma.member.findMany({

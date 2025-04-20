@@ -8,7 +8,7 @@ export const AdminList = async ({ page, search }: { search: string; page: number
   const slug = await auth.getCurrentOrganization()
   const { data: members, metadata } = await getMembers({
     slug: slug!,
-    teamId: '01963963-26ce-7d60-99b4-7d7524e37054',
+    team: 'administrador',
     page,
     search,
   })

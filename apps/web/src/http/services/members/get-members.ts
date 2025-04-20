@@ -3,15 +3,16 @@ import { RbacRole } from '@edu/rbac'
 
 export const getMembers = async ({
   slug,
+  team,
   ...input
 }: {
   slug: string
-  teamId: string
+  team: string
   page: number
   search?: string
 }) => {
   return httpClient.request<GetMembersOutput>({
-    url: `/organizations/${slug}/members`,
+    url: `/organizations/${slug}/teams/${team}/members`,
     method: 'GET',
     query: input,
   })

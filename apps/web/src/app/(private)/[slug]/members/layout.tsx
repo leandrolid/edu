@@ -39,7 +39,7 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/${slug}/members`}>Geral</Link>
+                <Link href={`/${slug}/members`}>Administradores</Link>
               </Button>
               <Button
                 asChild

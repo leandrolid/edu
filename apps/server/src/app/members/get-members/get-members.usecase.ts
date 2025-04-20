@@ -12,15 +12,15 @@ export class GetMembersUseCase {
     @Inject('IMemberRepository') private readonly memberRepository: IMemberRepository,
   ) {}
 
-  async execute({ teamId, search, page, pageSize, user }: Auth<GetMembersInput>) {
+  async execute({ team, search, page, pageSize, user }: Auth<GetMembersInput>) {
     const { cannot } = this.permissionService.defineAbilityFor(user)
     const rbacMember = this.permissionService.getMember(user)
     if (cannot('read', rbacMember)) {
       throw new ForbiddenError('Você não tem permissão para ver os membros dessa organização')
     }
-    const { members, count } = await this.memberRepository.findMembersAndCount({
+    const { members, count } = await this.memberRepository.findAndCount({
       organizationId: user.organizationId!,
-      teamId,
+      team,
       search,
       page,
       pageSize,

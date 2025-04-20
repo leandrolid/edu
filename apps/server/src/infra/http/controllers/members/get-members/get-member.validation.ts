@@ -3,12 +3,12 @@ import { IValidation, IValidator } from '@infra/http/interfaces/controller'
 import z from 'zod'
 
 export class GetMembersValidation implements IValidation {
-  params?: IValidator<Pick<GetMembersInput, 'slug'>> = z.object({
-    slug: z.string({ message: 'Slug inválido' }).min(1, 'Slug é obrigatório'),
+  params?: IValidator<Pick<GetMembersInput, 'slug' | 'team'>> = z.object({
+    slug: z.string({ message: 'Slug inválido' }).min(1, { message: 'Slug é obrigatório' }),
+    team: z.string({ message: 'Time inválido' }).min(1, { message: 'Time é obrigatório' }),
   })
 
-  query?: IValidator<Omit<GetMembersInput, 'slug'>> = z.object({
-    teamId: z.string({ message: 'Time inválido' }).uuid({ message: 'Time deve ser um UUID' }),
+  query?: IValidator<Omit<GetMembersInput, 'slug' | 'team'>> = z.object({
     page: z.coerce
       .number({ message: 'Página inválida' })
       .positive({ message: 'Página deve ser maior que 0' })

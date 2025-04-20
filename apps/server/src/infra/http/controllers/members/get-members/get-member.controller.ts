@@ -24,17 +24,17 @@ import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 export class GetMembersController implements IController {
   constructor(private readonly getMembersUseCase: GetMembersUseCase) {}
 
-  @Get('/:slug/members')
+  @Get('/:slug/teams/:team/members')
   @Validate(new GetMembersValidation())
   async execute(
     @User() user: IUser,
-    @Params() params: Pick<GetMembersInput, 'slug'>,
-    @Query() query: Omit<GetMembersInput, 'slug'>,
+    @Params() params: Pick<GetMembersInput, 'slug' | 'team'>,
+    @Query() query: Omit<GetMembersInput, 'slug' | 'team'>,
   ) {
     const output = await this.getMembersUseCase.execute({
       user,
       slug: params.slug,
-      teamId: query.teamId,
+      team: params.team,
       page: query.page,
       pageSize: query.pageSize,
       search: query.search,
