@@ -2,23 +2,30 @@ import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { getMembers } from '@/http/services/members/get-members'
 import { getTeams } from '@/http/services/teams/get-teams'
-import { createFallbackName } from '@edu/utils'
+import { createFallbackName, errorBoundary } from '@edu/utils'
 import { DotsThree, Key, Trash } from '@phosphor-icons/react/dist/ssr'
 import { Avatar, DropdownMenu, Flex, IconButton, Table, Text } from '@radix-ui/themes'
+import { redirect } from 'next/navigation'
 
 export async function UserList({ page, search }: { search: string; page: number }) {
   const slug = await auth.getCurrentOrganization()
-  const teamsResponse = await getTeams({
-    slug: slug!,
-    page: 1,
-    pageSize: 100,
+  const teams = await errorBoundary({
+    input: { slug: slug!, page: 1, pageSize: 100 },
+    request: async (input) => {
+      const response = await getTeams(input)
+      return response.data.filter((team) => team.slug !== 'administrador')
+    },
+    onError: () => redirect('/'),
   })
-  const teams = teamsResponse.data.filter((team) => team.slug !== 'administrador')
-  const { data: members, metadata } = await getMembers({
-    slug: slug!,
-    team: teams[0]?.slug || 'professor',
-    page,
-    search,
+  const { data: members, metadata } = await errorBoundary({
+    input: {
+      slug: slug!,
+      team: teams[0]?.slug || 'professor',
+      page,
+      search,
+    },
+    request: getMembers,
+    onError: () => redirect('/'),
   })
 
   return (

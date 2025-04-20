@@ -45,7 +45,7 @@ class AxiosHttpClient implements HttpClient {
         return Promise.resolve(response)
       },
       (error: AxiosError) => {
-        cb(error.status ?? error.response!.status)
+        cb(error.status ?? error.response?.status!)
         return Promise.reject(error)
       },
     )

@@ -18,7 +18,7 @@ export const getMembers = async ({
   })
 }
 
-type GetMembersOutput = {
+export type GetMembersOutput = {
   metadata: {
     page: number
     pageSize: number
