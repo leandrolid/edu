@@ -1,6 +1,7 @@
 import { getOrganizations } from '@/http/services/organizations/get-organizations'
+import { createFallbackName } from '@edu/utils'
 import { CaretUpDown, PlusCircle } from '@phosphor-icons/react/dist/ssr'
-import { Avatar, Flex, DropdownMenu, Text, Button } from '@radix-ui/themes'
+import { Avatar, Button, DropdownMenu, Flex, Text } from '@radix-ui/themes'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
 
@@ -16,7 +17,7 @@ export const OrganizationSwitcher = async () => {
             <Flex align="center" gap="2" width="10rem">
               <Avatar
                 src={organization.avatarUrl ?? ''}
-                fallback={getInitialsFromName(organization.name)}
+                fallback={createFallbackName(organization.name)}
                 radius="full"
                 size="1"
               />
@@ -44,7 +45,7 @@ export const OrganizationSwitcher = async () => {
                 <Flex align="center" gap="2" width="10rem">
                   <Avatar
                     src={organization.avatarUrl ?? ''}
-                    fallback={getInitialsFromName(organization.name)}
+                    fallback={createFallbackName(organization.name)}
                     radius="full"
                     size="1"
                   />
@@ -74,12 +75,4 @@ export const OrganizationSwitcher = async () => {
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   )
-}
-
-const getInitialsFromName = (name: string) => {
-  return name
-    .split(' ')
-    .filter((_, index, self) => index === 0 || self.length - 1 === index)
-    .map((name) => name[0])
-    .join('')
 }

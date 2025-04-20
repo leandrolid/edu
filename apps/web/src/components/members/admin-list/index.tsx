@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { getMembers } from '@/http/services/members/get-members'
+import { createFallbackName } from '@edu/utils'
 import { ArrowsLeftRight, DotsThree, Key, Trash } from '@phosphor-icons/react/dist/ssr'
 import { Avatar, DropdownMenu, Flex, IconButton, Table, Text } from '@radix-ui/themes'
 
@@ -21,7 +22,11 @@ export const AdminList = async ({ page, search }: { search: string; page: number
             <Table.Row key={member.id} align="center">
               <Table.Cell justify="start">
                 <Flex align="center" gap="2">
-                  <Avatar src="" fallback="LA" radius="full" />
+                  <Avatar
+                    src={undefined}
+                    fallback={createFallbackName(member.name)}
+                    radius="full"
+                  />
                   <Flex direction="column" align="start" gap="1">
                     <Text size="2" weight="medium" truncate>
                       {member.name}

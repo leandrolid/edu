@@ -18,12 +18,12 @@ export const Pagination = ({
   const { setQueryState } = useQueryState()
   const start = Math.min(page * pageSize - (pageSize - 1), total)
   const end = Math.min(page * pageSize, total)
-  const nextPages = Array.from({ length: 3 }, (_, index) =>
-    Math.min(page + index + 1, totalPages - 3),
-  ).reduce((acc, current) => {
-    if (!acc.includes(current)) acc.push(current)
-    return acc
-  }, [] as number[])
+  const nextPages = Array.from({ length: 3 })
+    .map((_, index) => Math.min(page + index + 1, totalPages - 3))
+    .reduce((acc, current) => {
+      if (!acc.includes(current)) acc.push(current)
+      return acc
+    }, [] as number[])
   return (
     <Flex align="center" justify="end" p="4">
       <Box mr="2">
@@ -75,7 +75,7 @@ export const Pagination = ({
           variant="outline"
           color="gray"
           size="2"
-          disabled={page === totalPages}
+          disabled={page >= totalPages}
           onClick={() => setQueryState('page', String(page + 1))}
         >
           <CaretRight weight="bold" />
