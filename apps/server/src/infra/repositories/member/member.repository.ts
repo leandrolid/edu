@@ -9,7 +9,7 @@ export type FindMembersAndCountInput = {
   teamId: string
   search?: string
   page: number
-  limit: number
+  pageSize: number
 }
 
 export type FindMembersAndCountOutput = {

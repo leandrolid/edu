@@ -12,7 +12,7 @@ export class GetMembersUseCase {
     @Inject('IMemberRepository') private readonly memberRepository: IMemberRepository,
   ) {}
 
-  async execute({ teamId, search, page, limit = 10, user }: Auth<GetMembersInput>) {
+  async execute({ teamId, search, page, pageSize, user }: Auth<GetMembersInput>) {
     const { cannot } = this.permissionService.defineAbilityFor(user)
     const rbacMember = this.permissionService.getMember(user)
     if (cannot('read', rbacMember)) {
@@ -23,14 +23,14 @@ export class GetMembersUseCase {
       teamId,
       search,
       page,
-      limit,
+      pageSize,
     })
     return {
       metadata: {
         page,
-        pageSize: limit,
+        pageSize: pageSize,
         total: count,
-        totalPages: Math.ceil(count / limit),
+        totalPages: Math.ceil(count / pageSize),
       },
       members: members.map(({ user, ...member }) => ({
         ...member,

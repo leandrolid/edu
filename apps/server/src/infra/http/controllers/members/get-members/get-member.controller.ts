@@ -36,7 +36,7 @@ export class GetMembersController implements IController {
       slug: params.slug,
       teamId: query.teamId,
       page: query.page,
-      limit: query.limit,
+      pageSize: query.pageSize,
       search: query.search,
     })
     return { data: output.members, metadata: output.metadata }

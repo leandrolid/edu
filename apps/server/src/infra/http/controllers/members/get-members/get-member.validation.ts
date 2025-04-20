@@ -13,7 +13,7 @@ export class GetMembersValidation implements IValidation {
       .number({ message: 'Página inválida' })
       .positive({ message: 'Página deve ser maior que 0' })
       .int({ message: 'Página deve ser um número inteiro' }),
-    limit: z.coerce
+    pageSize: z.coerce
       .number({ message: 'Limite inválido' })
       .positive({ message: 'Limite deve ser maior que 0' })
       .int({ message: 'Limite deve ser um número inteiro' })

@@ -2,10 +2,10 @@ export interface IController {
   execute(...args: any[]): Promise<{
     data: unknown
     metadata?: {
-      page?: number
-      perPage?: number
-      totalItems?: number
-      totalPages?: number
+      page: number
+      pageSize: number
+      total: number
+      totalPages: number
     }
   }>
 }
