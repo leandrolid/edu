@@ -36,5 +36,6 @@ export const permissions: Record<RbacRole, DefinePermissions> = {
   ORGANIZATION_BILLING(user, { can }) {
     can(['read', 'bill'], 'Organization', { id: user.organizationId })
     can('read', 'Member', { organizationId: user.organizationId })
+    can('read', 'Team', { organizationId: user.organizationId })
   },
 }

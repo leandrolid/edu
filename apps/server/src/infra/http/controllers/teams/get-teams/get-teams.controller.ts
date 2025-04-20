@@ -1,0 +1,29 @@
+import { GetTeamsUseCase } from '@app/teams/get-teams/get-teams.usecase'
+import type { GetTeamsInput } from '@app/teams/get-teams/get-teams.usecase.input'
+import type { IUser } from '@domain/dtos/user.dto'
+import { Controller, Docs, Get, MiddleWares, Query, User, Validate } from '@infra/_injection'
+import { GetTeamsValidation } from '@infra/http/controllers/teams/get-teams/get-teams.validation'
+import type { IController } from '@infra/http/interfaces/controller'
+import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
+
+@Docs({
+  title: 'Get all teams',
+  tags: ['Teams'],
+})
+@Controller('/organizations')
+@MiddleWares(JwtMiddleware)
+export class GetTeamsController implements IController {
+  constructor(private readonly getTeamsUseCase: GetTeamsUseCase) {}
+
+  @Get('/:slug/teams')
+  @Validate(new GetTeamsValidation())
+  async execute(@User() user: IUser, @Query() query: GetTeamsInput) {
+    const output = await this.getTeamsUseCase.execute({
+      user,
+      page: query.page,
+      pageSize: query.pageSize,
+      search: query.search,
+    })
+    return { data: output.teams, metadata: output.metadata }
+  }
+}
