@@ -1,6 +1,6 @@
-import { MemberListSkeleton } from '@/components/members/member-list-skeleton'
-import { UserFilter } from '@/components/members/user-filter'
-import { UserList } from '@/components/members/user-list'
+import { MemberListSkeleton } from '@/components/teams/member-list-skeleton'
+import { UserFilter } from '@/components/teams/user-filter'
+import { UserList } from '@/components/teams/user-list'
 import { Card, Flex, Heading, Inset } from '@radix-ui/themes'
 import { Suspense } from 'react'
 

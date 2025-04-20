@@ -1,11 +1,11 @@
-import { AdminFilter } from '@/components/members/admin-filter'
-import { AdminList } from '@/components/members/admin-list'
-import { MemberListSkeleton } from '@/components/members/member-list-skeleton'
+import { AdminFilter } from '@/components/teams/admin-filter'
+import { AdminList } from '@/components/teams/admin-list'
+import { MemberListSkeleton } from '@/components/teams/member-list-skeleton'
 import { XCircle } from '@phosphor-icons/react/dist/ssr'
 import { Button, Card, Flex, Heading, Inset, Table } from '@radix-ui/themes'
 import { Suspense } from 'react'
 
-export default async function MembersPage(props: {
+export default async function AdminPage(props: {
   searchParams?: Promise<{
     search?: string
     page?: string

@@ -21,7 +21,7 @@ export default async function MembersLayout({
         }}
       >
         <Heading as="h1" size="3">
-          Membros
+          Times
         </Heading>
         <LineVertical weight="bold" style={{ rotate: '20deg' }} />
       </Flex>
@@ -39,7 +39,7 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/${slug}/members`}>Administradores</Link>
+                <Link href={`/${slug}/teams`}>Geral</Link>
               </Button>
               <Button
                 asChild
@@ -50,7 +50,18 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/${slug}/members/users`}>Usuários</Link>
+                <Link href={`/${slug}/teams/admin`}>Administrador</Link>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                style={{
+                  boxSizing: 'border-box',
+                  textAlign: 'left',
+                  justifyContent: 'start',
+                }}
+              >
+                <Link href={`/${slug}/teams/user`}>Usuário</Link>
               </Button>
             </nav>
           </Flex>

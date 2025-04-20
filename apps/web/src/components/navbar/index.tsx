@@ -6,7 +6,7 @@ export const Navbar = async () => {
   const slug = await auth.getCurrentOrganization()
   return (
     <TabNav.Root>
-      <Navlink href={`/${slug}/members`}>Membros</Navlink>
+      <Navlink href={`/${slug}/teams`}>Times</Navlink>
       <Navlink href={`/${slug}/settings`}>Configurações</Navlink>
     </TabNav.Root>
   )
