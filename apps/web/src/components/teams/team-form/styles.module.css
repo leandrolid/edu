@@ -1,0 +1,9 @@
+.card {
+  &:has(button[data-state=checked]) {
+    background: var(--gray-3);
+
+    &::before {
+      box-shadow: 0 0 0 1px var(--indigo-9);
+    }
+  }
+}

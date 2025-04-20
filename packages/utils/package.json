@@ -10,6 +10,7 @@
   "devDependencies": {
     "@edu/eslint": "*",
     "@edu/prettier": "*",
+    "@edu/rbac": "*",
     "@edu/tsconfig": "*"
   },
   "prettier": "@edu/prettier",
