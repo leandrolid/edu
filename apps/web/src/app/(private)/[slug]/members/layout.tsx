@@ -50,18 +50,7 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/${slug}/members/teachers`}>Professores</Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                style={{
-                  boxSizing: 'border-box',
-                  textAlign: 'left',
-                  justifyContent: 'start',
-                }}
-              >
-                <Link href={`/${slug}/members/students`}>Estudantes</Link>
+                <Link href={`/${slug}/members/users`}>Usuários</Link>
               </Button>
             </nav>
           </Flex>
