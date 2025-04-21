@@ -67,12 +67,17 @@ model Account {
 
 enum Role {
   OWNER
-  MEMBER
-  USER
+  DEFAULT
   ORGANIZATION_ADMIN
   ORGANIZATION_CONTRIBUTOR
   ORGANIZATION_MEMBER
   ORGANIZATION_BILLING
+  TEAM_ADMIN
+  TEAM_CONTRIBUTOR
+  TEAM_MEMBER
+  MEMBER_ADMIN
+  MEMBER_CONTRIBUTOR
+  MEMBER
 }
 
 model Member {
@@ -96,10 +101,11 @@ model Member {
 }
 
 model Team {
-  id    String @id @default(uuid(7)) @db.Uuid
-  name  String
-  slug  String
-  roles Role[]
+  id          String @id @default(uuid(7)) @db.Uuid
+  name        String
+  description String
+  slug        String
+  roles       Role[]
 
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String       @map("organization_id") @db.Uuid
@@ -146,7 +152,7 @@ model Organization {
   invites  Invite[]
   members  Member[]
   projects Project[]
-  Team     Team[]
+  teams    Team[]
 
   @@map("organizations")
 }

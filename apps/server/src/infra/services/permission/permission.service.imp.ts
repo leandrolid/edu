@@ -1,5 +1,5 @@
 import type { IUser } from '@domain/dtos/user.dto'
-import { UnprocessableEntityError } from '@domain/errors/unprocessable-entity.error'
+import { BadRequestError } from '@domain/errors/bad-request.error'
 import {
   type AppAbility,
   defineAbilityFor,
@@ -20,7 +20,7 @@ export class PermissionService implements IPermissionService {
   defineAbilityFor(user: IUser): AppAbility {
     let inputUser: Required<IUser>
     if (!user.slug) {
-      inputUser = { id: user.id, roles: ['USER'], slug: '', organizationId: '' }
+      inputUser = { id: user.id, roles: ['DEFAULT'], slug: '', organizationId: '' }
     } else {
       inputUser = user as Required<IUser>
     }
@@ -32,7 +32,7 @@ export class PermissionService implements IPermissionService {
     try {
       return rbacUserSchema.parse(user)
     } catch (error) {
-      throw new UnprocessableEntityError('Usuário inválido')
+      throw new BadRequestError('Usuário inválido')
     }
   }
 
@@ -40,7 +40,7 @@ export class PermissionService implements IPermissionService {
     try {
       return rbacOrganizationSchema.parse({ id: user.organizationId, slug: user.slug })
     } catch (error) {
-      throw new UnprocessableEntityError('Organização inválida')
+      throw new BadRequestError('Organização inválida')
     }
   }
 
@@ -48,7 +48,7 @@ export class PermissionService implements IPermissionService {
     try {
       return rbacMemberSchema.parse({ userId: user.id, organizationId: user.organizationId })
     } catch (error) {
-      throw new UnprocessableEntityError('Membro inválido')
+      throw new BadRequestError('Membro inválido')
     }
   }
 
@@ -56,7 +56,7 @@ export class PermissionService implements IPermissionService {
     try {
       return rbacTeamSchema.parse({ organizationId: user.organizationId })
     } catch (error) {
-      throw new UnprocessableEntityError('Time inválido')
+      throw new BadRequestError('Time inválido')
     }
   }
 

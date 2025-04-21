@@ -11,7 +11,7 @@ export class GetOrganizationsUseCase {
   ) {}
 
   async execute({ user }: Auth) {
-    const { cannot } = await this.permissionService.defineAbilityFor(user)
+    const { cannot } = this.permissionService.defineAbilityFor(user)
     if (cannot('read', 'Organization')) {
       throw new ForbiddenError('Você não tem permissão para listar organizações')
     }

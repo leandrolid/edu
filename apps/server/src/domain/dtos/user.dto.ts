@@ -1,8 +1,8 @@
-import { Role } from '@prisma/client'
+import type { RbacRole } from '@edu/rbac'
 
 export interface IUser {
   id: string
   slug?: string
   organizationId?: string
-  roles?: Role[]
+  roles?: RbacRole[]
 }

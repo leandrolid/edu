@@ -21,7 +21,7 @@ export class CreateOrganizationUseCase {
     shouldAttachUserByDomain,
     user,
   }: Auth<CreateOrganizationInput>) {
-    const { cannot } = await this.permissionService.defineAbilityFor(user)
+    const { cannot } = this.permissionService.defineAbilityFor(user)
     if (cannot('create', 'Organization')) {
       throw new ForbiddenError('Usuário não autorizado a criar uma organização')
     }
@@ -38,6 +38,7 @@ export class CreateOrganizationUseCase {
     const team = await prisma.team.create({
       data: {
         name: 'Administrador',
+        description: 'Administrador padrão',
         slug: createSlug('Administrador'),
         organizationId: organization.id,
         roles: [Role.ORGANIZATION_ADMIN],
