@@ -4,6 +4,7 @@ export interface ITeamRepository {
   createOne(input: CreateTeamInput): Promise<Team>
   findOneBySlugOrFail(input: GetBySlugInput): Promise<Team>
   findManyAndCount(input: FindManyAndCountInput): Promise<FindManyAndCountOutput>
+  deleteById(teamId: string): Promise<void>
 }
 
 export type CreateTeamInput = {

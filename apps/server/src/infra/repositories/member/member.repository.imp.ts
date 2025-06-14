@@ -50,4 +50,10 @@ export class MemberRepository implements IMemberRepository {
       },
     })
   }
+
+  async findManyByTeamId(teamId: string): Promise<Member[]> {
+    return prisma.member.findMany({
+      where: { teamId },
+    })
+  }
 }

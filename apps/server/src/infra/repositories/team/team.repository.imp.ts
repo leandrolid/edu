@@ -51,4 +51,8 @@ export class TeamRepository implements ITeamRepository {
     ])
     return { teams, count }
   }
+
+  async deleteById(teamId: string): Promise<void> {
+    await prisma.team.delete({ where: { id: teamId } })
+  }
 }

@@ -4,6 +4,7 @@ export interface IMemberRepository {
   createOne(input: CreateMemberInput): Promise<Member>
   findManyAndCount(params: FindManyAndCountInput): Promise<FindManyAndCountOutput>
   findMembershipBySlug(input: FindMembershipInput): Promise<Member | null>
+  findManyByTeamId(teamId: string): Promise<Member[]>
 }
 
 export type CreateMemberInput = {

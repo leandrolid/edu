@@ -8,6 +8,7 @@ import { GetOrganizationController } from '@infra/http/controllers/organizations
 import { GetOrganizationsController } from '@infra/http/controllers/organizations/get-organizations/get-organizations.controller'
 import { UpdateOrganizationController } from '@infra/http/controllers/organizations/update-organization/update-organization.controller'
 import { CreateTeamController } from '@infra/http/controllers/teams/create-team/get-teams.controller'
+import { DeleteTeamController } from '@infra/http/controllers/teams/delete-team/delete-teams.controller'
 import { GetTeamsController } from '@infra/http/controllers/teams/get-teams/get-teams.controller'
 import { CreateAccountController } from '@infra/http/controllers/users/create-account/create-account.controller'
 import { HttpErrorHandler } from '@infra/http/errors/error.handler'
@@ -27,6 +28,6 @@ app.registerControllers([
   UpdateOrganizationController,
 ])
 app.registerControllers([GetMembersController])
-app.registerControllers([CreateTeamController, GetTeamsController])
+app.registerControllers([CreateTeamController, GetTeamsController, DeleteTeamController])
 app.registerErrorHandler(new HttpErrorHandler())
 app.start(PORT)
