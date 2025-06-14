@@ -6,9 +6,6 @@ import { HttpClient, HttpRequest } from './client'
 
 const client = axios.create({
   baseURL: env.NEXT_PUBLIC_API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 })
 
 class AxiosHttpClient implements HttpClient {
