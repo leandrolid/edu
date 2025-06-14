@@ -4,7 +4,7 @@ import { useQueryState } from '@/react/hooks/use-query-state'
 import { MagnifyingGlass } from '@phosphor-icons/react'
 import { TextField } from '@radix-ui/themes'
 
-export function UserFilter() {
+export function UsersSearch() {
   const { getQueryState, setQueryState } = useQueryState()
   return (
     <TextField.Root
