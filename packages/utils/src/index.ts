@@ -1,3 +1,4 @@
+export * from './channels/toast'
 export * from './constants/permissions-description'
 export * from './functions/create-fallback-name'
 export * from './functions/create-slug'
