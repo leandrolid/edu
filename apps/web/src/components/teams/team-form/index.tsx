@@ -1,15 +1,13 @@
 'use client'
 
+import { useFormState } from '@/react/hooks/use-form-state'
 import { PERMISSIONS_DESCRIPTION } from '@edu/utils'
 import { Button, CheckboxCards, Flex, Separator, Strong, Text, TextField } from '@radix-ui/themes'
-import { useActionState } from 'react'
+import { useRouter } from 'next/navigation'
 import styles from './styles.module.css'
 
 type Props = {
-  action: (
-    prev: any,
-    formData: FormData,
-  ) => Promise<{
+  action: (formData: FormData) => Promise<{
     success: boolean
     message: string | null
     errors: Record<string, string[]> | null
@@ -17,15 +15,12 @@ type Props = {
 }
 
 export function TeamForm({ action }: Props) {
-  const [state, formAction, isPending] = useActionState(action, {
-    success: false,
-    message: null,
-    errors: null,
-  })
+  const router = useRouter()
+  const [state, formAction, isPending] = useFormState(action, () => router.back())
 
   return (
     <Flex direction="column" gap="4" asChild>
-      <form action={formAction}>
+      <form onSubmit={formAction}>
         <Flex direction="column" gap="1">
           <Text as="label" size="2" weight="bold" htmlFor="name">
             Nome:

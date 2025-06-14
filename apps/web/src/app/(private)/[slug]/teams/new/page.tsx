@@ -1,3 +1,4 @@
+import { createTeamAction } from '@/app/(private)/[slug]/teams/new/actions'
 import { TeamForm } from '@/components/teams/team-form'
 import { Card, Flex, Heading, Inset } from '@radix-ui/themes'
 
@@ -11,7 +12,7 @@ export default async function NewTeamPage() {
               Criar novo time
             </Heading>
 
-            <TeamForm />
+            <TeamForm action={createTeamAction} />
           </Flex>
         </Inset>
       </Card>
