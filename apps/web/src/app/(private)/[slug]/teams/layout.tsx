@@ -61,7 +61,7 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/${slug}/teams/user`}>Usuário</Link>
+                <Link href={`/${slug}/teams/users`}>Usuários</Link>
               </Button>
             </nav>
           </Flex>
