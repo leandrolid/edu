@@ -1,9 +1,9 @@
 import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
+import { TeamActions } from '@/components/teams/team-actions'
 import { getTeams } from '@/http/services/teams/get-teams'
 import { errorBoundary, PERMISSIONS_DESCRIPTION } from '@edu/utils'
-import { DotsThree, Key, Trash } from '@phosphor-icons/react/dist/ssr'
-import { DropdownMenu, Flex, IconButton, Table, Text } from '@radix-ui/themes'
+import { Flex, Table, Text } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
 
 export async function TeamsList({ page, search }: { search: string; page: number }) {
@@ -42,26 +42,7 @@ export async function TeamsList({ page, search }: { search: string; page: number
                 </Text>
               </Table.Cell>
               <Table.Cell justify="end">
-                <Flex align="center" justify="end" gap="2">
-                  <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
-                      <IconButton variant="outline" color="gray" size="2" radius="full">
-                        <DotsThree weight="bold" />
-                      </IconButton>
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Content align="end" side="bottom">
-                      <DropdownMenu.Item>
-                        <Key weight="bold" />
-                        Permissões
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Separator />
-                      <DropdownMenu.Item color="red">
-                        <Trash weight="bold" />
-                        Apagar
-                      </DropdownMenu.Item>
-                    </DropdownMenu.Content>
-                  </DropdownMenu.Root>
-                </Flex>
+                <TeamActions teamId={team.id} />
               </Table.Cell>
             </Table.Row>
           ))}
