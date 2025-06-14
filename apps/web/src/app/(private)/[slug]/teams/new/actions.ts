@@ -1,13 +1,13 @@
 'use server'
 
 import { auth } from '@/auth'
+import { createTeam } from '@/http/services/teams/create-team'
 import { PERMISSIONS_DESCRIPTION } from '@edu/utils'
 import { formToJSON } from 'axios'
 import { z } from 'zod'
 
 export async function createTeamAction(formData: FormData) {
   try {
-    const slug = await auth.getCurrentOrganization()
     const team = formToJSON(formData) as Data
     const result = schema.safeParse({
       name: team.name,
@@ -16,13 +16,14 @@ export async function createTeamAction(formData: FormData) {
         ? team.roles.flat(PERMISSIONS_DESCRIPTION.length)
         : [team.roles],
     })
-    console.log({
-      slug,
-      data: result.data,
-    })
     if (!result.success) {
       return { success: false, message: null, errors: result.error.flatten().fieldErrors }
     }
+    const slug = await auth.getCurrentOrganization()
+    await createTeam({
+      slug: slug!,
+      ...result.data,
+    })
     return { success: true, message: null, errors: null }
   } catch (error) {
     console.error(error)
