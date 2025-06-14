@@ -1,5 +1,5 @@
 import { MemberListSkeleton } from '@/components/teams/member-list-skeleton'
-import { UserList } from '@/components/teams/user-list'
+import { UsersList } from '@/components/teams/users-list'
 import { UsersSearch } from '@/components/teams/users-search'
 import { Card, Flex, Heading, Inset } from '@radix-ui/themes'
 import { Suspense } from 'react'
@@ -28,7 +28,7 @@ export default async function UsersPage(props: {
             </Flex>
 
             <Suspense key={search + page} fallback={<MemberListSkeleton />}>
-              <UserList search={search} page={page} />
+              <UsersList search={search} page={page} />
             </Suspense>
           </Inset>
         </Card>

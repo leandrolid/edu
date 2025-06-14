@@ -50,7 +50,7 @@ export function TeamForm({ action }: Props) {
           )}
         </Flex>
 
-        <div>
+        <Flex direction="column" gap="1">
           <Text size="2" color="gray">
             Selecione as permissões que deseja conceder a este time:
           </Text>
@@ -59,7 +59,7 @@ export function TeamForm({ action }: Props) {
               {state.errors.roles[0]}
             </Text>
           )}
-        </div>
+        </Flex>
         <CheckboxCards.Root
           columns={{ initial: '1', sm: '2' }}
           gap="4"
