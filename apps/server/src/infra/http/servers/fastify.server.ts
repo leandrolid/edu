@@ -4,7 +4,7 @@ import fastifySwaggerUI from '@fastify/swagger-ui'
 import { Constructor, Container, Injectable, Scope } from '@infra/_injection'
 import { IErrorHandler } from '@infra/http/interfaces/error-handler'
 import { IServer } from '@infra/http/interfaces/server'
-import { DefaultValidation } from '@infra/http/servers/fastify.validation'
+import chalk from 'chalk'
 import fastify from 'fastify'
 import {
   jsonSchemaTransform,
@@ -14,13 +14,19 @@ import {
 } from 'fastify-type-provider-zod'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
-const defaultValidation = new DefaultValidation()
 
 @Injectable({ scope: Scope.Singleton })
 export class FastifyServer implements IServer {
+  private readonly controllers: { route: string; method: string; tag: string }[] = []
+
   async start(port: number): Promise<void> {
     await app.listen({ port })
-    console.log(`Server running on port ${port}`)
+    this.controllers.forEach((controller) => {
+      console.log(
+        chalk.yellow(`[HTTP] ${controller.tag} { ${controller.route}, ${controller.method} }`),
+      )
+    })
+    console.log(chalk.green(`Server running on port ${port}`))
   }
 
   cors(): void {
@@ -39,6 +45,12 @@ export class FastifyServer implements IServer {
     controllers.forEach((controller) => {
       // prettier-ignore
       const { instance, prefix, route, docs, validation, middlewares } = Container.instance.resolveController(controller)
+      const url = this.makePath(prefix, route.path)
+      this.controllers.push({
+        route: url,
+        method: route.method.toUpperCase(),
+        tag: docs?.tags?.at(0) || 'Untagged',
+      })
       app.register(async (appInstance) => {
         appInstance
           .withTypeProvider<ZodTypeProvider>()
@@ -48,7 +60,7 @@ export class FastifyServer implements IServer {
             )
           })
           .route({
-            url: this.makePath(prefix, route.path),
+            url,
             method: route.method,
             schema: this.removeUndefined({
               body: validation.body,

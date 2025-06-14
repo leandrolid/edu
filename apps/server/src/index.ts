@@ -21,9 +21,9 @@ app.registerControllers([CreateAccountController])
 app.registerControllers([BasicSignInController])
 app.registerControllers([
   CreateOrganizationController,
-  UpdateOrganizationController,
   GetOrganizationsController,
   GetOrganizationController,
+  UpdateOrganizationController,
 ])
 app.registerControllers([GetMembersController])
 app.registerControllers([GetTeamsController])
