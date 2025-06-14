@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { getTeams } from '@/http/services/teams/get-teams'
-import { errorBoundary } from '@edu/utils'
+import { errorBoundary, PERMISSIONS_DESCRIPTION } from '@edu/utils'
 import { DotsThree, Key, Trash } from '@phosphor-icons/react/dist/ssr'
 import { DropdownMenu, Flex, IconButton, Table, Text } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
@@ -32,7 +32,13 @@ export async function TeamsList({ page, search }: { search: string; page: number
               </Table.Cell>
               <Table.Cell>
                 <Text size="1" color="gray" truncate>
-                  {team.roles.join(', ')}
+                  {team.roles
+                    .map(
+                      (role) =>
+                        PERMISSIONS_DESCRIPTION.find((permission) => permission.value === role)
+                          ?.name || role,
+                    )
+                    .join(', ')}
                 </Text>
               </Table.Cell>
               <Table.Cell justify="end">
