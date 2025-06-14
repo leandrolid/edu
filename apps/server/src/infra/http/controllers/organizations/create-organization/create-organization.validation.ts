@@ -5,7 +5,11 @@ import z from 'zod'
 export class CreateOrganizationValidation implements IValidation {
   body?: IValidator<CreateOrganizationInput> = z.object({
     name: z.string({ message: 'Nome inválido' }),
-    domain: z.string({ message: 'O domínio é inválido' }).toLowerCase().nullable(),
+    domain: z
+      .string({ message: 'O domínio é inválido' })
+      .toLowerCase()
+      .nullable()
+      .transform((val) => (val?.length ? val.trim() : null)),
     avatarUrl: z
       .string({ message: 'O avatar é inválido' })
       .url({ message: 'O avatar é inválido' })

@@ -1,17 +1,23 @@
 import { Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import {
-  FindAndCountInput,
-  FindAndCountOutput,
+  FindManyAndCountInput,
+  FindManyAndCountOutput,
   IMemberRepository,
+  type CreateMemberInput,
+  type FindMembershipInput,
 } from '@infra/repositories/member/member.repository'
-import { Prisma } from '@prisma/client'
+import { Prisma, type Member } from '@prisma/client'
 
 @Injectable({
   token: 'IMemberRepository',
 })
 export class MemberRepository implements IMemberRepository {
-  async findAndCount(input: FindAndCountInput): Promise<FindAndCountOutput> {
+  async createOne(input: CreateMemberInput): Promise<Member> {
+    return prisma.member.create({ data: input })
+  }
+
+  async findManyAndCount(input: FindManyAndCountInput): Promise<FindManyAndCountOutput> {
     const where: Prisma.MemberFindManyArgs['where'] = {
       organizationId: input.organizationId,
       team: { slug: input.team },
@@ -34,5 +40,14 @@ export class MemberRepository implements IMemberRepository {
       prisma.member.count({ where }),
     ])
     return { members, count }
+  }
+
+  async findMembershipBySlug(input: FindMembershipInput): Promise<Member | null> {
+    return prisma.member.findFirst({
+      where: {
+        slug: input.slug,
+        userId: input.userId,
+      },
+    })
   }
 }

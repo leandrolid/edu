@@ -19,7 +19,7 @@ export class GetOrganizationUseCase {
     if (cannot('read', rbacOrganization)) {
       throw new ForbiddenError('Você não tem permissão para acessar esta organização')
     }
-    const organization = await this.organizationRepository.getBySlug(slug)
+    const organization = await this.organizationRepository.findOneBySlugOrFail(slug)
     return {
       id: organization.id,
       name: organization.name,

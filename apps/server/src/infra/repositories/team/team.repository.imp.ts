@@ -2,6 +2,7 @@ import { NotFoundError } from '@domain/errors/not-found.error'
 import { Injectable } from '@infra/_injection'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import type {
+  CreateTeamInput,
   FindManyAndCountInput,
   FindManyAndCountOutput,
   GetBySlugInput,
@@ -13,7 +14,11 @@ import type { Prisma, Team } from '@prisma/client'
   token: 'ITeamRepository',
 })
 export class TeamRepository implements ITeamRepository {
-  async getBySlug(input: GetBySlugInput): Promise<Team> {
+  async createOne(input: CreateTeamInput): Promise<Team> {
+    return prisma.team.create({ data: input })
+  }
+
+  async findOneBySlugOrFail(input: GetBySlugInput): Promise<Team> {
     const team = await prisma.team.findUnique({
       where: { slug_organizationId: input },
     })

@@ -2,13 +2,15 @@ import { UpdateOrganizationInput } from '@app/organizations/update-organization/
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
 import { Inject, Injectable } from '@infra/_injection'
-import { prisma } from '@infra/database/connections/prisma.connection'
+import type { IOrganizationRepository } from '@infra/repositories/organization/organization.repository'
 import type { IPermissionService } from '@infra/services/permission/permission.service'
 
 @Injectable()
 export class UpdateOrganizationUseCase {
   constructor(
     @Inject('IPermissionService') private readonly permissionService: IPermissionService,
+    @Inject('IOrganizationRepository')
+    private readonly organizationRepository: IOrganizationRepository,
   ) {}
 
   async execute({
@@ -23,13 +25,11 @@ export class UpdateOrganizationUseCase {
     if (cannot('update', rbacOrganization)) {
       throw new ForbiddenError('Usuário não autorizado a atualizar a organização')
     }
-    const organization = await prisma.organization.update({
-      where: { slug },
-      data: {
-        name,
-        avatarUrl,
-        shouldAttachUserByDomain,
-      },
+    const organization = await this.organizationRepository.updateOneBySlug({
+      slug,
+      name,
+      avatarUrl,
+      shouldAttachUserByDomain,
     })
     return {
       id: organization.id,

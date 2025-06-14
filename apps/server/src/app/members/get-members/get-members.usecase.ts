@@ -18,7 +18,7 @@ export class GetMembersUseCase {
     if (cannot('read', rbacMember)) {
       throw new ForbiddenError('Você não tem permissão para ver os membros dessa organização')
     }
-    const { members, count } = await this.memberRepository.findAndCount({
+    const { members, count } = await this.memberRepository.findManyAndCount({
       organizationId: user.organizationId!,
       team,
       search,

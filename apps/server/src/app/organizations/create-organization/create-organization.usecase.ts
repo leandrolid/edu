@@ -3,7 +3,9 @@ import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
 import { createSlug } from '@edu/utils'
 import { Inject, Injectable } from '@infra/_injection'
-import { prisma } from '@infra/database/connections/prisma.connection'
+import type { IMemberRepository } from '@infra/repositories/member/member.repository'
+import type { IOrganizationRepository } from '@infra/repositories/organization/organization.repository'
+import type { ITeamRepository } from '@infra/repositories/team/team.repository'
 import type { IPermissionService } from '@infra/services/permission/permission.service'
 import { Role } from '@prisma/client'
 
@@ -12,6 +14,10 @@ export class CreateOrganizationUseCase {
   constructor(
     @Inject('IPermissionService')
     private readonly permissionService: IPermissionService,
+    @Inject('IOrganizationRepository')
+    private readonly organizationRepository: IOrganizationRepository,
+    @Inject('IMemberRepository') private readonly memberRepository: IMemberRepository,
+    @Inject('ITeamRepository') private readonly teamRepository: ITeamRepository,
   ) {}
 
   async execute({
@@ -25,34 +31,28 @@ export class CreateOrganizationUseCase {
     if (cannot('create', 'Organization')) {
       throw new ForbiddenError('Usuário não autorizado a criar uma organização')
     }
-    const organization = await prisma.organization.create({
-      data: {
-        name,
-        slug: createSlug(name),
-        avatarUrl,
-        domain: !domain ? null : domain,
-        shouldAttachUserByDomain,
-        ownerId: user.id,
-      },
+    const organization = await this.organizationRepository.createOne({
+      name,
+      slug: createSlug(name),
+      avatarUrl,
+      domain,
+      shouldAttachUserByDomain,
+      ownerId: user.id,
     })
-    const team = await prisma.team.create({
-      data: {
-        name: 'Administrador',
-        description: 'Administrador padrão',
-        slug: createSlug('Administrador'),
-        organizationId: organization.id,
-        roles: [Role.ORGANIZATION_ADMIN],
-        ownerId: user.id,
-      },
+    const team = await this.teamRepository.createOne({
+      name: 'Administrador',
+      description: 'Administrador padrão',
+      slug: createSlug('Administrador'),
+      organizationId: organization.id,
+      roles: [Role.ORGANIZATION_ADMIN],
+      ownerId: user.id,
     })
-    await prisma.member.create({
-      data: {
-        organizationId: organization.id,
-        userId: user.id,
-        roles: [Role.ORGANIZATION_ADMIN],
-        slug: organization.slug,
-        teamId: team.id,
-      },
+    await this.memberRepository.createOne({
+      organizationId: organization.id,
+      userId: user.id,
+      slug: organization.slug,
+      roles: team.roles,
+      teamId: team.id,
     })
     return {
       id: organization.id,

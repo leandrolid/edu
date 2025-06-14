@@ -1,8 +1,18 @@
-import type { Team } from '@prisma/client'
+import type { Role, Team } from '@prisma/client'
 
 export interface ITeamRepository {
-  getBySlug(input: GetBySlugInput): Promise<Team>
+  createOne(input: CreateTeamInput): Promise<Team>
+  findOneBySlugOrFail(input: GetBySlugInput): Promise<Team>
   findManyAndCount(input: FindManyAndCountInput): Promise<FindManyAndCountOutput>
+}
+
+export type CreateTeamInput = {
+  name: string
+  description: string
+  slug: string
+  organizationId: string
+  roles: Role[]
+  ownerId: string
 }
 
 export type GetBySlugInput = {
