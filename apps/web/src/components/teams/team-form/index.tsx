@@ -2,17 +2,40 @@
 
 import { PERMISSIONS_DESCRIPTION } from '@edu/utils'
 import { Button, CheckboxCards, Flex, Separator, Strong, Text, TextField } from '@radix-ui/themes'
+import { useActionState } from 'react'
 import styles from './styles.module.css'
 
-export function TeamForm() {
+type Props = {
+  action: (
+    prev: any,
+    formData: FormData,
+  ) => Promise<{
+    success: boolean
+    message: string | null
+    errors: Record<string, string[]> | null
+  }>
+}
+
+export function TeamForm({ action }: Props) {
+  const [state, formAction, isPending] = useActionState(action, {
+    success: false,
+    message: null,
+    errors: null,
+  })
+
   return (
     <Flex direction="column" gap="4" asChild>
-      <form action="">
+      <form action={formAction}>
         <Flex direction="column" gap="1">
           <Text as="label" size="2" weight="bold" htmlFor="name">
             Nome:
           </Text>
           <TextField.Root name="name" id="name" />
+          {state.errors?.name && (
+            <Text size="1" color="red">
+              {state.errors.name[0]}
+            </Text>
+          )}
         </Flex>
 
         <Flex direction="column" gap="1">
@@ -20,12 +43,29 @@ export function TeamForm() {
             Descrição (opcional):
           </Text>
           <TextField.Root name="description" id="description" />
+          {state.errors?.description && (
+            <Text size="1" color="red">
+              {state.errors.description[0]}
+            </Text>
+          )}
         </Flex>
 
-        <Text size="2" color="gray">
-          Selecione as permissões que deseja conceder a este time:
-        </Text>
-        <CheckboxCards.Root columns={{ initial: '1', sm: '2' }} gap="4">
+        <div>
+          <Text size="2" color="gray">
+            Selecione as permissões que deseja conceder a este time:
+          </Text>
+          {state.errors?.roles && (
+            <Text size="1" color="red">
+              {state.errors.roles[0]}
+            </Text>
+          )}
+        </div>
+        <CheckboxCards.Root
+          columns={{ initial: '1', sm: '2' }}
+          gap="4"
+          variant="surface"
+          name="roles"
+        >
           {PERMISSIONS_DESCRIPTION.map((permission) => (
             <CheckboxCards.Item
               key={permission.value}
@@ -40,7 +80,6 @@ export function TeamForm() {
               </Flex>
             </CheckboxCards.Item>
           ))}
-          <Flex direction="column" gap="1"></Flex>
         </CheckboxCards.Root>
 
         <Separator orientation="horizontal" decorative size="4" />
@@ -49,7 +88,9 @@ export function TeamForm() {
           <Text size="1" color="gray">
             Você pode editar as permissões depois
           </Text>
-          <Button>Salvar</Button>
+          <Button loading={isPending} disabled={isPending}>
+            Salvar
+          </Button>
         </Flex>
       </form>
     </Flex>
