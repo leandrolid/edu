@@ -1,4 +1,4 @@
-import { CookiesFn, getCookie as getCookieFn, deleteCookie as deleteCookieFn } from 'cookies-next'
+import { CookiesFn, deleteCookie as deleteCookieFn, getCookie as getCookieFn } from 'cookies-next'
 
 export const auth = {
   async isAuthenticated() {

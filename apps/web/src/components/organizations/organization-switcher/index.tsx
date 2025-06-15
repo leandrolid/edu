@@ -1,13 +1,16 @@
+import { auth } from '@/auth'
 import { getOrganizations } from '@/http/services/organizations/get-organizations'
-import { createFallbackName } from '@edu/utils'
+import { createFallbackName, requestFallback } from '@edu/utils'
 import { CaretUpDown, PlusCircle } from '@phosphor-icons/react/dist/ssr'
 import { Avatar, Button, DropdownMenu, Flex, Text } from '@radix-ui/themes'
-import { cookies } from 'next/headers'
 import Link from 'next/link'
 
 export const OrganizationSwitcher = async () => {
-  const { data } = await getOrganizations()
-  const slug = await cookies().then((cookies) => cookies.get('slug')?.value)
+  const { data } = await requestFallback({
+    request: () => getOrganizations(),
+    onError: () => ({ data: [] }),
+  })
+  const slug = await auth.getCurrentOrganization()
   const organization = data.find((org) => org.slug === slug)
   return (
     <DropdownMenu.Root>
