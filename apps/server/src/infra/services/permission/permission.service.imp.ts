@@ -7,6 +7,7 @@ import {
   rbacMemberSchema,
   type RbacOrganization,
   rbacOrganizationSchema,
+  type RbacRole,
   type RbacTeam,
   rbacTeamSchema,
   rbacUserSchema,
@@ -17,14 +18,20 @@ import { get } from 'radash'
 @Injectable({ token: 'IPermissionService' })
 export class PermissionService implements IPermissionService {
   defineAbilityFor(user: IUser): AppAbility {
-    let inputUser: Required<IUser>
-    if (!user.slug) {
-      inputUser = { id: user.id, roles: ['DEFAULT'], slug: '', organizationId: '' }
-    } else {
-      inputUser = user as Required<IUser>
-    }
-    const rbacUser = this.parseUser(inputUser)
+    const rbacUser = this.parseUser({
+      id: user.id,
+      owner: user.owner,
+      roles: this.getUserRoles(user),
+      slug: user.slug || '',
+      organizationId: user.organizationId || '',
+    })
     return defineAbilityFor(rbacUser)
+  }
+
+  private getUserRoles(user: IUser): RbacRole[] {
+    if (user.owner) return ['OWNER']
+    if (Array.isArray(user.roles) && user.roles.length > 0) return user.roles
+    return ['DEFAULT']
   }
 
   private parseUser(user: IUser) {

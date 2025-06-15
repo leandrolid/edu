@@ -9,16 +9,17 @@ const main = async () => {
   await prisma.user.deleteMany()
 
   const passwordHash = await hash('12345678', 2)
-  prisma.$transaction(async (prisma) => {
+  await prisma.$transaction(async (prisma) => {
     const users = await prisma.user.createManyAndReturn({
       data: [
         {
           name: 'Leandro Augusto',
           email: 'leandro.augusto@email.com',
-          avatarUrl: 'https://avatar.iran.liara.run/public/boy',
+          avatarUrl: 'https://i.pravatar.cc/400?img=33',
           passwordHash,
+          owner: true,
         },
-        ...Array.from({ length: 20 }).map(() => ({
+        ...Array.from({ length: 50 }).map(() => ({
           name: faker.person.fullName(),
           email: faker.internet.email(),
           avatarUrl: faker.image.avatar(),

@@ -28,9 +28,9 @@ export class JwtMiddleware implements IMiddleware {
     const [bearer, token] = request.headers.authorization.split(' ')
     if (bearer !== 'Bearer') throw new UnauthorizedError('Token mal formatado')
     if (!token) throw new UnauthorizedError('Token mal formatado')
-    const payload = await this.tokenService.verify<{ id: string }>(token)
+    const payload = await this.tokenService.verify<{ id: string; owner: boolean }>(token)
     if (!request.params.slug) {
-      request.user = { id: payload.id }
+      request.user = { id: payload.id, owner: payload.owner }
       return
     }
     const membership = await this.memberRepository.findMembershipBySlug({
@@ -42,6 +42,7 @@ export class JwtMiddleware implements IMiddleware {
     }
     request.user = {
       id: payload.id,
+      owner: payload.owner,
       slug: membership.slug,
       organizationId: membership.organizationId,
       roles: membership.roles,

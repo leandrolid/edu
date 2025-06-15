@@ -23,7 +23,10 @@ export class BasicSignInUseCase {
     if (!isValidPassword) {
       throw new ForbiddenError('Usuário ou senha inválidos')
     }
-    const token = await this.tokenService.sign({ id: user.id }, { expiresIn: '7d' })
+    const token = await this.tokenService.sign(
+      { id: user.id, owner: user.owner },
+      { expiresIn: '7d' },
+    )
     return { token }
   }
 }
