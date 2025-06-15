@@ -47,17 +47,17 @@ export const PERMISSIONS_DESCRIPTION: Array<{
   },
   {
     value: 'MEMBER_ADMIN',
-    name: 'Administrador de Usuário',
-    description: 'Permissão total aos usuários',
+    name: 'Administrador de Integrante',
+    description: 'Permissão total aos integrantes',
   },
   {
     value: 'MEMBER_CONTRIBUTOR',
-    name: 'Colaborador de Usuário',
-    description: 'Permite ver e atualizar detalhes dos usuários',
+    name: 'Colaborador de Integrante',
+    description: 'Permite ver e atualizar detalhes dos integrantes',
   },
   {
     value: 'MEMBER',
-    name: 'Usuário',
-    description: 'Permite ver detalhes dos usuários',
+    name: 'Membro de Integrante',
+    description: 'Permite ver detalhes dos integrantes',
   },
 ]
