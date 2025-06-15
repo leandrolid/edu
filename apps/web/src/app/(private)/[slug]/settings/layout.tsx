@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
+import { AsideMenu } from '@/components/aside-menu'
 import { LineVertical } from '@phosphor-icons/react/dist/ssr'
-import { Box, Button, Container, Flex, Heading, Separator } from '@radix-ui/themes'
-import Link from 'next/link'
+import { Box, Container, Flex, Heading, Separator } from '@radix-ui/themes'
 
 export default async function SettingsLayout({
   children,
@@ -28,43 +28,11 @@ export default async function SettingsLayout({
       <Separator orientation="horizontal" size="4" />
       <Container size="4" p="4">
         <Flex gap="4">
-          <Flex direction="column" gap="2" width="250px" py="6" asChild>
-            <nav>
-              <Button
-                asChild
-                variant="ghost"
-                style={{
-                  boxSizing: 'border-box',
-                  textAlign: 'left',
-                  justifyContent: 'start',
-                }}
-              >
-                <Link href={`/${slug}/settings`}>Geral</Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                style={{
-                  boxSizing: 'border-box',
-                  textAlign: 'left',
-                  justifyContent: 'start',
-                }}
-              >
-                <Link href={`/${slug}/settings/billing`}>Financeiro</Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                style={{
-                  boxSizing: 'border-box',
-                  textAlign: 'left',
-                  justifyContent: 'start',
-                }}
-              >
-                <Link href={`/${slug}/settings/subsidiaries`}>Filiais</Link>
-              </Button>
-            </nav>
-          </Flex>
+          <AsideMenu.Root>
+            <AsideMenu.Item href={`/${slug}/settings`}>Geral</AsideMenu.Item>
+            <AsideMenu.Item href={`/${slug}/settings/billing`}>Financeiro</AsideMenu.Item>
+            <AsideMenu.Item href={`/${slug}/settings/subsidiaries`}>Filiais</AsideMenu.Item>
+          </AsideMenu.Root>
 
           <Flex direction="column" gap="4" flexGrow="1">
             {children}

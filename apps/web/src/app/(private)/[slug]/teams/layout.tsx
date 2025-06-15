@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
+import { AsideMenu } from '@/components/aside-menu'
 import { LineVertical } from '@phosphor-icons/react/dist/ssr'
-import { Box, Button, Container, Flex, Heading, Separator } from '@radix-ui/themes'
-import Link from 'next/link'
+import { Box, Container, Flex, Heading, Separator } from '@radix-ui/themes'
 
 export default async function MembersLayout({
   children,
@@ -28,32 +28,10 @@ export default async function MembersLayout({
       <Separator orientation="horizontal" size="4" />
       <Container size="4" p="4">
         <Flex gap="4">
-          <Flex direction="column" gap="2" width="250px" py="6" asChild>
-            <nav>
-              <Button
-                asChild
-                variant="ghost"
-                style={{
-                  boxSizing: 'border-box',
-                  textAlign: 'left',
-                  justifyContent: 'start',
-                }}
-              >
-                <Link href={`/${slug}/teams`}>Geral</Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                style={{
-                  boxSizing: 'border-box',
-                  textAlign: 'left',
-                  justifyContent: 'start',
-                }}
-              >
-                <Link href={`/${slug}/teams/users`}>Usuários</Link>
-              </Button>
-            </nav>
-          </Flex>
+          <AsideMenu.Root>
+            <AsideMenu.Item href={`/${slug}/teams`}>Geral</AsideMenu.Item>
+            <AsideMenu.Item href={`/${slug}/teams/users`}>Usuários</AsideMenu.Item>
+          </AsideMenu.Root>
 
           <Flex direction="column" gap="4" flexGrow="1">
             {children}
