@@ -4,6 +4,10 @@ import z from 'zod'
 
 export class GetOrganizationValidation implements IValidation {
   params: IValidator<GetOrganizationInput> = z.object({
-    slug: z.string({ message: 'Slug inválido' }).min(1, 'Slug é obrigatório'),
+    slug: slugSchema,
   })
 }
+
+export const slugSchema = z
+  .string({ message: 'Slug inválido' })
+  .min(1, { message: 'Slug não pode ser vazio' })

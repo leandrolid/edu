@@ -1,10 +1,11 @@
 import { GetMembersInput } from '@app/members/get-members/get-members.input'
+import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
 import { IValidation, IValidator } from '@infra/http/interfaces/controller'
 import z from 'zod'
 
 export class GetMembersValidation implements IValidation {
   params?: IValidator<Pick<GetMembersInput, 'slug' | 'team'>> = z.object({
-    slug: z.string({ message: 'Slug inválido' }).min(1, { message: 'Slug é obrigatório' }),
+    slug: slugSchema,
     team: z.string({ message: 'Time inválido' }).min(1, { message: 'Time é obrigatório' }),
   })
 
