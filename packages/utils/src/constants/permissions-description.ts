@@ -7,52 +7,52 @@ export const PERMISSIONS_DESCRIPTION: Array<{
 }> = [
   {
     value: 'ORGANIZATION_ADMIN',
-    name: 'Administrador de Organização',
+    name: 'Gerenciar Organização',
     description: 'Permissão total à organização',
   },
   {
     value: 'ORGANIZATION_CONTRIBUTOR',
-    name: 'Colaborador de Organização',
+    name: 'Atualizar Organização',
     description: 'Permite ver e atualizar detalhes da organização',
   },
   {
     value: 'ORGANIZATION_MEMBER',
-    name: 'Membro de Organização',
+    name: 'Visualizar Organização',
     description: 'Permite ver detalhes da organização',
   },
   {
     value: 'ORGANIZATION_BILLING',
-    name: 'Faturamento de Organização',
+    name: 'Visualizar Faturamento',
     description: 'Permite ver o faturamento da organização',
   },
   {
     value: 'TEAM_ADMIN',
-    name: 'Administrador de Time',
+    name: 'Gerenciar Time',
     description: 'Permissão total aos times',
   },
   {
     value: 'TEAM_CONTRIBUTOR',
-    name: 'Colaborador de Time',
+    name: 'Atualizar Time',
     description: 'Permite ver e atualizar detalhes dos times',
   },
   {
     value: 'TEAM_MEMBER',
-    name: 'Membro de Time',
+    name: 'Visualizar Time',
     description: 'Permite ver detalhes dos times',
   },
   {
     value: 'MEMBER_ADMIN',
-    name: 'Administrador de Integrante',
+    name: 'Gerenciar Integrante',
     description: 'Permissão total aos integrantes',
   },
   {
     value: 'MEMBER_CONTRIBUTOR',
-    name: 'Colaborador de Integrante',
+    name: 'Atualizar Integrante',
     description: 'Permite ver e atualizar detalhes dos integrantes',
   },
   {
     value: 'MEMBER',
-    name: 'Membro de Integrante',
+    name: 'Visualizar Integrante',
     description: 'Permite ver detalhes dos integrantes',
   },
 ]

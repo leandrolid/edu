@@ -33,7 +33,7 @@ export default async function UsersPage(props: {
               <Table.Root variant="surface">
                 <Table.Body>
                   <Table.Row align="center">
-                    <Table.Cell justify="start">Lucas</Table.Cell>
+                    <Table.Cell justify="start">fulano@email.com</Table.Cell>
                     <Table.Cell justify="center">ADMIN</Table.Cell>
                     <Table.Cell justify="end">
                       <Button variant="surface" color="red" size="2">
