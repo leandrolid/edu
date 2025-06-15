@@ -18,6 +18,10 @@ export class TeamRepository implements ITeamRepository {
     return prisma.team.create({ data: input })
   }
 
+  async findById(teamId: string): Promise<Team | null> {
+    return prisma.team.findUnique({ where: { id: teamId } })
+  }
+
   async findOneBySlugOrFail(input: GetBySlugInput): Promise<Team> {
     const team = await prisma.team.findUnique({
       where: { slug_organizationId: input },

@@ -2,6 +2,7 @@ import type { Role, Team } from '@prisma/client'
 
 export interface ITeamRepository {
   createOne(input: CreateTeamInput): Promise<Team>
+  findById(teamId: string): Promise<Team | null>
   findOneBySlugOrFail(input: GetBySlugInput): Promise<Team>
   findManyAndCount(input: FindManyAndCountInput): Promise<FindManyAndCountOutput>
   deleteById(teamId: string): Promise<void>
