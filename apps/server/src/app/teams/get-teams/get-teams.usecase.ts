@@ -1,4 +1,4 @@
-import type { GetTeamsInput } from '@app/teams/get-teams/get-teams.usecase.input'
+import type { GetTeamsInput } from '@app/teams/get-teams/get-teams.input'
 import type { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError } from '@domain/errors/forbidden.error'
 import { Inject, Injectable } from '@infra/_injection'
