@@ -1,25 +1,26 @@
 import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { getMembers } from '@/http/services/members/get-members'
-import { getTeams } from '@/http/services/teams/get-teams'
 import { createFallbackName, errorBoundary } from '@edu/utils'
 import { DotsThree, Key, Trash } from '@phosphor-icons/react/dist/ssr'
-import { Avatar, DropdownMenu, Flex, IconButton, Table, Tabs, Text } from '@radix-ui/themes'
+import { Avatar, DropdownMenu, Flex, IconButton, Table, Text } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
 
-export async function UsersList({ page, search }: { search: string; page: number }) {
+export async function UsersList({
+  page,
+  search,
+  team,
+}: {
+  search: string
+  page: number
+  team: string
+}) {
   const slug = await auth.getCurrentOrganization()
-  const { data: teams } = await errorBoundary({
-    input: { slug: slug!, page: 1, pageSize: 100 },
-    request: async (input) => {
-      return getTeams(input)
-    },
-    onError: () => redirect('/'),
-  })
+
   const { data: members, metadata } = await errorBoundary({
     input: {
       slug: slug!,
-      team: teams[0]?.slug || 'administrador',
+      team,
       page,
       search,
     },
@@ -28,16 +29,7 @@ export async function UsersList({ page, search }: { search: string; page: number
   })
 
   return (
-    <Flex direction="column">
-      <Tabs.Root defaultValue={teams[0]?.slug || 'administrador'} style={{ width: '100%' }}>
-        <Tabs.List>
-          {teams.map((team) => (
-            <Tabs.Trigger key={team.slug} value={team.slug}>
-              {team.name}
-            </Tabs.Trigger>
-          ))}
-        </Tabs.List>
-      </Tabs.Root>
+    <>
       <Table.Root variant="surface" style={{ borderRadius: 0 }}>
         <Table.Body>
           {members.map((member) => (
@@ -91,6 +83,6 @@ export async function UsersList({ page, search }: { search: string; page: number
         pageSize={metadata.pageSize}
         total={metadata.total}
       />
-    </Flex>
+    </>
   )
 }

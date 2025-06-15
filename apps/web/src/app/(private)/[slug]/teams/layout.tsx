@@ -50,17 +50,6 @@ export default async function MembersLayout({
                   justifyContent: 'start',
                 }}
               >
-                <Link href={`/${slug}/teams/admin`}>Administrador</Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                style={{
-                  boxSizing: 'border-box',
-                  textAlign: 'left',
-                  justifyContent: 'start',
-                }}
-              >
                 <Link href={`/${slug}/teams/users`}>Usuários</Link>
               </Button>
             </nav>
