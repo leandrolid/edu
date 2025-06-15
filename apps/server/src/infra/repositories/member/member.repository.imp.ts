@@ -6,6 +6,7 @@ import {
   IMemberRepository,
   type CreateMemberInput,
   type FindMembershipInput,
+  type UpdatePermissionsByTeamIdInput,
 } from '@infra/repositories/member/member.repository'
 import { Prisma, type Member } from '@prisma/client'
 
@@ -54,6 +55,13 @@ export class MemberRepository implements IMemberRepository {
   async findManyByTeamId(teamId: string): Promise<Member[]> {
     return prisma.member.findMany({
       where: { teamId },
+    })
+  }
+
+  async updatePermissionsByTeamId(input: UpdatePermissionsByTeamIdInput): Promise<Member[]> {
+    return prisma.member.updateManyAndReturn({
+      where: { teamId: input.teamId },
+      data: { roles: input.roles },
     })
   }
 }

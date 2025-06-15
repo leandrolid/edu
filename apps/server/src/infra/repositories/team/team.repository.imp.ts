@@ -7,6 +7,7 @@ import type {
   FindManyAndCountOutput,
   GetBySlugInput,
   ITeamRepository,
+  UpdateTeamByIdInput,
 } from '@infra/repositories/team/team.repository'
 import type { Prisma, Team } from '@prisma/client'
 
@@ -54,6 +55,13 @@ export class TeamRepository implements ITeamRepository {
       }),
     ])
     return { teams, count }
+  }
+
+  async updateById({ teamId, ...input }: UpdateTeamByIdInput): Promise<Team> {
+    return prisma.team.update({
+      where: { id: teamId },
+      data: input,
+    })
   }
 
   async deleteById(teamId: string): Promise<void> {

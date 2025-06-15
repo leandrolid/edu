@@ -5,6 +5,7 @@ export interface ITeamRepository {
   findById(teamId: string): Promise<Team | null>
   findOneBySlugOrFail(input: GetBySlugInput): Promise<Team>
   findManyAndCount(input: FindManyAndCountInput): Promise<FindManyAndCountOutput>
+  updateById(input: UpdateTeamByIdInput): Promise<Team>
   deleteById(teamId: string): Promise<void>
 }
 
@@ -32,4 +33,11 @@ export type FindManyAndCountInput = {
 export type FindManyAndCountOutput = {
   teams: Team[]
   count: number
+}
+
+export type UpdateTeamByIdInput = {
+  teamId: string
+  name: string
+  description?: string
+  roles: Role[]
 }

@@ -7,10 +7,11 @@ import { CreateOrganizationController } from '@infra/http/controllers/organizati
 import { GetOrganizationController } from '@infra/http/controllers/organizations/get-organization/get-organization.controller'
 import { GetOrganizationsController } from '@infra/http/controllers/organizations/get-organizations/get-organizations.controller'
 import { UpdateOrganizationController } from '@infra/http/controllers/organizations/update-organization/update-organization.controller'
-import { CreateTeamController } from '@infra/http/controllers/teams/create-team/get-teams.controller'
+import { CreateTeamController } from '@infra/http/controllers/teams/create-team/create-team.controller'
 import { DeleteTeamController } from '@infra/http/controllers/teams/delete-team/delete-teams.controller'
 import { GetTeamController } from '@infra/http/controllers/teams/get-team/get-team.controller'
 import { GetTeamsController } from '@infra/http/controllers/teams/get-teams/get-teams.controller'
+import { UpdateTeamController } from '@infra/http/controllers/teams/update-team/update-team.controller'
 import { CreateAccountController } from '@infra/http/controllers/users/create-account/create-account.controller'
 import { HttpErrorHandler } from '@infra/http/errors/error.handler'
 import { FastifyServer } from '@infra/http/servers/fastify.server'
@@ -33,6 +34,7 @@ app.registerControllers([
   CreateTeamController,
   GetTeamsController,
   GetTeamController,
+  UpdateTeamController,
   DeleteTeamController,
 ])
 app.registerErrorHandler(new HttpErrorHandler())
