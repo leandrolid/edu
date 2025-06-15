@@ -2,7 +2,7 @@ import { Role, type Member } from '@prisma/client'
 
 export interface IMemberRepository {
   createOne(input: CreateMemberInput): Promise<Member>
-  findManyAndCount(params: FindManyAndCountInput): Promise<FindManyAndCountOutput>
+  findManyAndCount(params: FindManyMembersAndCountInput): Promise<FindManyMembersAndCountOutput>
   findMembershipBySlug(input: FindMembershipInput): Promise<Member | null>
   findManyByTeamId(teamId: string): Promise<Member[]>
   updatePermissionsByTeamId(input: UpdatePermissionsByTeamIdInput): Promise<Member[]>
@@ -16,7 +16,7 @@ export type CreateMemberInput = {
   teamId: string
 }
 
-export type FindManyAndCountInput = {
+export type FindManyMembersAndCountInput = {
   organizationId: string
   team: string
   search?: string
@@ -24,7 +24,7 @@ export type FindManyAndCountInput = {
   pageSize: number
 }
 
-export type FindManyAndCountOutput = {
+export type FindManyMembersAndCountOutput = {
   count: number
   members: Array<
     Member & {

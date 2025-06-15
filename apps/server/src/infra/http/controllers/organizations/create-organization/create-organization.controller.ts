@@ -1,10 +1,17 @@
 import type { CreateOrganizationInput } from '@app/organizations/create-organization/create-organization.input'
 import { CreateOrganizationUseCase } from '@app/organizations/create-organization/create-organization.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
-import { Body, Controller, Docs, Post, User, Validate } from '@infra/_injection'
-import { MiddleWares } from '@infra/_injection/decorators/middlewares'
+import {
+  Body,
+  Controller,
+  Docs,
+  MiddleWares,
+  Post,
+  User,
+  Validate,
+  type IController,
+} from '@edu/framework'
 import { CreateOrganizationValidation } from '@infra/http/controllers/organizations/create-organization/create-organization.validation'
-import type { IController } from '@infra/http/interfaces/controller'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({

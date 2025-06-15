@@ -1,4 +1,4 @@
-import { HttpStatusCode } from 'src/domain/enums/http-statuscode.enum'
+import { HttpStatusCode } from '../enums/http-statuscode.enum'
 
 export class HttpError extends Error {
   constructor(

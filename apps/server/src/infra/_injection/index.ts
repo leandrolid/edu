@@ -1,6 +1,0 @@
-export * from './container'
-export * from './decorators/controller'
-export * from './decorators/docs'
-export * from './decorators/inject'
-export * from './decorators/injectable'
-export * from './decorators/middlewares'

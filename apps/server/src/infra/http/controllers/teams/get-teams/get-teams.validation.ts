@@ -1,5 +1,5 @@
 import type { GetTeamsInput } from '@app/teams/get-teams/get-teams.input'
-import type { IValidation, IValidator } from '@infra/http/interfaces/controller'
+import type { IValidation, IValidator } from '@edu/framework'
 import z from 'zod'
 
 export class GetTeamsValidation implements IValidation {

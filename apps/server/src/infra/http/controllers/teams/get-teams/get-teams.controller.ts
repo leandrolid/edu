@@ -1,9 +1,17 @@
 import type { GetTeamsInput } from '@app/teams/get-teams/get-teams.input'
 import { GetTeamsUseCase } from '@app/teams/get-teams/get-teams.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
-import { Controller, Docs, Get, MiddleWares, Query, User, Validate } from '@infra/_injection'
+import {
+  Controller,
+  Docs,
+  Get,
+  MiddleWares,
+  Query,
+  User,
+  Validate,
+  type IController,
+} from '@edu/framework'
 import { GetTeamsValidation } from '@infra/http/controllers/teams/get-teams/get-teams.validation'
-import type { IController } from '@infra/http/interfaces/controller'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({

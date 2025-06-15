@@ -1,8 +1,6 @@
 import type { GetTeamInput } from '@app/teams/get-team/get-team.input'
 import type { Auth } from '@domain/dtos/auth.dto'
-import { ForbiddenError } from '@domain/errors/forbidden.error'
-import { NotFoundError } from '@domain/errors/not-found.error'
-import { Inject, Injectable } from '@infra/_injection'
+import { ForbiddenError, Inject, Injectable, NotFoundError } from '@edu/framework'
 import type { ITeamRepository } from '@infra/repositories/team/team.repository'
 import type { IPermissionService } from '@infra/services/permission/permission.service'
 

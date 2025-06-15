@@ -1,0 +1,26 @@
+{
+  "name": "@edu/framework",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "private": true,
+  "dependencies": {
+    "@fastify/cors": "^11.0.0",
+    "@fastify/swagger": "^9.4.2",
+    "@fastify/swagger-ui": "^5.2.2",
+    "fastify": "^5.2.1",
+    "fastify-type-provider-zod": "^4.0.2",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@edu/eslint": "*",
+    "@edu/prettier": "*",
+    "@edu/tsconfig": "*"
+  },
+  "prettier": "@edu/prettier",
+  "eslintConfig": {
+    "extends": [
+      "@edu/eslint/base"
+    ]
+  }
+}

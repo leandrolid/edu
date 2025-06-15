@@ -1,5 +1,5 @@
-import { HttpStatusCode } from 'src/domain/enums/http-statuscode.enum'
-import { HttpError } from 'src/domain/errors/http.error'
+import { HttpStatusCode } from '../enums/http-statuscode.enum'
+import { HttpError } from './http.error'
 
 export class BadRequestError extends HttpError {
   constructor(message: string) {

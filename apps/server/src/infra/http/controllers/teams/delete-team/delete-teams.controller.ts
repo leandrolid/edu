@@ -1,9 +1,17 @@
 import type { DeleteTeamInput } from '@app/teams/delete-team/delete-team.input'
 import { DeleteTeamUseCase } from '@app/teams/delete-team/delete-team.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
-import { Controller, Delete, Docs, MiddleWares, Params, User, Validate } from '@infra/_injection'
+import {
+  Controller,
+  Delete,
+  Docs,
+  MiddleWares,
+  Params,
+  User,
+  Validate,
+  type IController,
+} from '@edu/framework'
 import { DeleteTeamValidation } from '@infra/http/controllers/teams/delete-team/delete-teams.validation'
-import type { IController } from '@infra/http/interfaces/controller'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({

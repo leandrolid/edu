@@ -1,6 +1,6 @@
-import { HttpStatusCode } from '@domain/enums/http-statuscode.enum'
-import { Constructor, Container } from '@infra/_injection/container'
-import { IValidation } from '@infra/http/interfaces/controller'
+import { Constructor, Container } from '../container'
+import { HttpStatusCode } from '../enums/http-statuscode.enum'
+import { IValidation } from '../interfaces/controller'
 
 export type Route = {
   path: string

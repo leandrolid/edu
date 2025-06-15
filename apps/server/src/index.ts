@@ -1,6 +1,4 @@
-import '@infra/_injection/register'
-
-import { Container } from '@infra/_injection'
+import { createFastifyServer } from '@edu/framework'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
 import { GetMembersController } from '@infra/http/controllers/members/get-members/get-member.controller'
 import { CreateOrganizationController } from '@infra/http/controllers/organizations/create-organization/create-organization.controller'
@@ -14,28 +12,45 @@ import { GetTeamsController } from '@infra/http/controllers/teams/get-teams/get-
 import { UpdateTeamController } from '@infra/http/controllers/teams/update-team/update-team.controller'
 import { CreateAccountController } from '@infra/http/controllers/users/create-account/create-account.controller'
 import { HttpErrorHandler } from '@infra/http/errors/error.handler'
-import { FastifyServer } from '@infra/http/servers/fastify.server'
+import { MemberRepository } from '@infra/repositories/member/member.repository.imp'
+import { OrganizationRepository } from '@infra/repositories/organization/organization.repository.imp'
+import { TeamRepository } from '@infra/repositories/team/team.repository.imp'
+import { UserRepository } from '@infra/repositories/user/user.repository.imp'
+import { PermissionService } from '@infra/services/permission/permission.service.imp'
+import { TokenService } from '@infra/services/token/token.service.imp'
 
 const PORT = Number(process.env.PORT || 3333)
-const app = Container.instance.resolve(FastifyServer)
-app.cors()
-app.registerValidationProvider()
-app.registerDocs()
-app.registerControllers([CreateAccountController])
-app.registerControllers([BasicSignInController])
-app.registerControllers([
-  CreateOrganizationController,
-  GetOrganizationsController,
-  GetOrganizationController,
-  UpdateOrganizationController,
-])
-app.registerControllers([GetMembersController])
-app.registerControllers([
-  CreateTeamController,
-  GetTeamsController,
-  GetTeamController,
-  UpdateTeamController,
-  DeleteTeamController,
-])
-app.registerErrorHandler(new HttpErrorHandler())
-app.start(PORT)
+
+async function main() {
+  const app = createFastifyServer({
+    docs: true,
+    zodValidation: true,
+    cors: ['*'],
+    providers: [
+      UserRepository,
+      OrganizationRepository,
+      TeamRepository,
+      MemberRepository,
+      PermissionService,
+      TokenService,
+    ],
+    controllers: [
+      CreateAccountController,
+      BasicSignInController,
+      CreateOrganizationController,
+      GetOrganizationsController,
+      GetOrganizationController,
+      UpdateOrganizationController,
+      GetMembersController,
+      CreateTeamController,
+      GetTeamsController,
+      GetTeamController,
+      UpdateTeamController,
+      DeleteTeamController,
+    ],
+    errorHandler: new HttpErrorHandler(),
+  })
+  await app.start(PORT)
+}
+
+main()

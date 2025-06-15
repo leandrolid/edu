@@ -1,5 +1,5 @@
-import { HttpStatusCode } from '@domain/enums/http-statuscode.enum'
-import { HttpError } from '@domain/errors/http.error'
+import { HttpStatusCode } from '../enums/http-statuscode.enum'
+import { HttpError } from './http.error'
 
 export class NotFoundError extends HttpError {
   constructor(message: string) {

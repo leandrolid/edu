@@ -1,7 +1,5 @@
 import { BasicSignInInput } from '@app/auth/basic-sign-in/basic-sign-in.input'
-import { BadRequestError } from '@domain/errors/bad-request.error'
-import { ForbiddenError } from '@domain/errors/forbidden.error'
-import { Inject, Injectable } from '@infra/_injection'
+import { BadRequestError, ForbiddenError, Inject, Injectable } from '@edu/framework'
 import type { IUserRepository } from '@infra/repositories/user/user.repository'
 import type { ITokenService } from '@infra/services/token/token.service'
 import { compare } from 'bcrypt'

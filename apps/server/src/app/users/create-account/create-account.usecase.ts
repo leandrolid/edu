@@ -1,6 +1,5 @@
 import { CreateAccountInput } from '@app/users/create-account/create-account.input'
-import { BadRequestError } from '@domain/errors/bad-request.error'
-import { Inject, Injectable } from '@infra/_injection'
+import { BadRequestError, Inject, Injectable } from '@edu/framework'
 import type { IUserRepository } from '@infra/repositories/user/user.repository'
 import { hash } from 'bcrypt'
 

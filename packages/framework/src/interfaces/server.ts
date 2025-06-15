@@ -1,11 +1,12 @@
-import { Constructor } from '@infra/_injection'
-import { IErrorHandler } from '@infra/http/interfaces/error-handler'
+import type { Constructor } from '../container'
+import type { IErrorHandler } from './error-handler'
 
 export type IServer = {
   start(port: number): Promise<void>
-  cors(): void
+  cors(origins: string[]): void
   registerValidationProvider(): void
   registerControllers(controllers: Constructor[]): void
   registerErrorHandler(errorHandler: IErrorHandler): void
   registerDocs(): void
+  registerProviders(providers: Constructor[]): void
 }

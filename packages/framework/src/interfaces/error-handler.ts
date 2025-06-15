@@ -1,4 +1,4 @@
-import { IResponse } from '@infra/http/interfaces/controller'
+import type { IResponse } from './controller'
 
 export interface IErrorHandler {
   execute(error: Error, res: IResponse): void

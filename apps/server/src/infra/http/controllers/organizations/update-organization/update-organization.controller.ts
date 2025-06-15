@@ -1,9 +1,18 @@
 import { UpdateOrganizationInput } from '@app/organizations/update-organization/update-organization.input'
 import { UpdateOrganizationUseCase } from '@app/organizations/update-organization/update-organization.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
-import { Body, Controller, Docs, MiddleWares, Params, Put, User, Validate } from '@infra/_injection'
+import {
+  Body,
+  Controller,
+  Docs,
+  MiddleWares,
+  Params,
+  Put,
+  User,
+  Validate,
+  type IController,
+} from '@edu/framework'
 import { UpdateOrganizationValidation } from '@infra/http/controllers/organizations/update-organization/update-organization.validation'
-import { IController } from '@infra/http/interfaces/controller'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({

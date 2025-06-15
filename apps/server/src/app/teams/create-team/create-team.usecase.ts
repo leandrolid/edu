@@ -1,8 +1,7 @@
 import type { CreateTeamInput } from '@app/teams/create-team/create-team.input'
 import type { Auth } from '@domain/dtos/auth.dto'
-import { ForbiddenError } from '@domain/errors/forbidden.error'
+import { ForbiddenError, Inject, Injectable } from '@edu/framework'
 import { createSlug } from '@edu/utils'
-import { Inject, Injectable } from '@infra/_injection'
 import type { ITeamRepository } from '@infra/repositories/team/team.repository'
 import type { IPermissionService } from '@infra/services/permission/permission.service'
 

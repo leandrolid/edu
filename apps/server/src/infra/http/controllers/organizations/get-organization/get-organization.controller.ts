@@ -1,9 +1,17 @@
 import type { GetOrganizationInput } from '@app/organizations/get-organization/get-organization.input'
 import { GetOrganizationUseCase } from '@app/organizations/get-organization/get-organization.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
-import { Controller, Docs, Get, MiddleWares, Params, User, Validate } from '@infra/_injection'
+import {
+  Controller,
+  Docs,
+  Get,
+  MiddleWares,
+  Params,
+  User,
+  Validate,
+  type IController,
+} from '@edu/framework'
 import { GetOrganizationValidation } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
-import { IController } from '@infra/http/interfaces/controller'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({

@@ -1,6 +1,6 @@
 import type { DeleteTeamInput } from '@app/teams/delete-team/delete-team.input'
+import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
-import type { IValidation, IValidator } from '@infra/http/interfaces/controller'
 import z from 'zod'
 
 export class DeleteTeamValidation implements IValidation {

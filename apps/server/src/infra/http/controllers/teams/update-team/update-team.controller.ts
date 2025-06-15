@@ -1,9 +1,18 @@
 import type { UpdateTeamInput } from '@app/teams/update-team/update-team.input'
 import { UpdateTeamUseCase } from '@app/teams/update-team/update-team.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
-import { Body, Controller, Docs, MiddleWares, Params, Put, User, Validate } from '@infra/_injection'
+import {
+  Body,
+  Controller,
+  Docs,
+  MiddleWares,
+  Params,
+  Put,
+  User,
+  Validate,
+  type IController,
+} from '@edu/framework'
 import { UpdateTeamValidation } from '@infra/http/controllers/teams/update-team/update-team.validation'
-import type { IController } from '@infra/http/interfaces/controller'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({

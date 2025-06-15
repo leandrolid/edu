@@ -1,5 +1,5 @@
 import { GetOrganizationInput } from '@app/organizations/get-organization/get-organization.input'
-import { IValidation, IValidator } from '@infra/http/interfaces/controller'
+import type { IValidation, IValidator } from '@edu/framework'
 import z from 'zod'
 
 export class GetOrganizationValidation implements IValidation {

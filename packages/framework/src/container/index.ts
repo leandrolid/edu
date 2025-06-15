@@ -1,9 +1,9 @@
 import 'reflect-metadata'
 
-import { REQUEST_METADATA_KEYS, Route } from '@infra/_injection/decorators/controller'
-import { DocsConfig } from '@infra/_injection/decorators/docs'
-import { IRequest, IResponse, IValidation } from '@infra/http/interfaces/controller'
-import { IMiddleware } from '@infra/http/interfaces/middleware'
+import { REQUEST_METADATA_KEYS, Route } from '../decorators/controller'
+import { DocsConfig } from '../decorators/docs'
+import { IRequest, IResponse, IValidation } from '../interfaces/controller'
+import { IMiddleware } from '../interfaces/middleware'
 
 export enum Scope {
   Singleton,
@@ -110,6 +110,7 @@ export class Container {
     const paramCount = method.length
     const args = Array.from({ length: paramCount })
     this.getKeys(REQUEST_METADATA_KEYS).forEach((reqKey) => {
+      // @ts-ignore
       this.resolveParams(REQUEST_METADATA_KEYS[reqKey], instance, execute, args, request[reqKey])
     })
     this.resolveParams('custom:request', instance, execute, args, request)

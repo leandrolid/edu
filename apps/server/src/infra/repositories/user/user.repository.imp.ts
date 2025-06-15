@@ -1,4 +1,4 @@
-import { Injectable } from '@infra/_injection'
+import { Injectable } from '@edu/framework'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import type { CreateUserInput, IUserRepository } from '@infra/repositories/user/user.repository'
 import type { User } from '@prisma/client'

@@ -1,5 +1,5 @@
 import type { IUser } from '@domain/dtos/user.dto'
-import { BadRequestError } from '@domain/errors/bad-request.error'
+import { BadRequestError, Injectable } from '@edu/framework'
 import {
   type AppAbility,
   defineAbilityFor,
@@ -11,7 +11,6 @@ import {
   rbacTeamSchema,
   rbacUserSchema,
 } from '@edu/rbac'
-import { Injectable } from '@infra/_injection'
 import type { IPermissionService } from '@infra/services/permission/permission.service'
 import { get } from 'radash'
 

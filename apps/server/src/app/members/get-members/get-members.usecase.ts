@@ -1,7 +1,6 @@
 import type { GetMembersInput } from '@app/members/get-members/get-members.input'
 import type { Auth } from '@domain/dtos/auth.dto'
-import { ForbiddenError } from '@domain/errors/forbidden.error'
-import { Inject, Injectable } from '@infra/_injection'
+import { ForbiddenError, Inject, Injectable } from '@edu/framework'
 import type { IMemberRepository } from '@infra/repositories/member/member.repository'
 import type { IPermissionService } from '@infra/services/permission/permission.service'
 

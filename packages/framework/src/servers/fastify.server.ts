@@ -1,9 +1,6 @@
 import fastifyCors from '@fastify/cors'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
-import { Constructor, Container, Injectable, Scope } from '@infra/_injection'
-import { IErrorHandler } from '@infra/http/interfaces/error-handler'
-import { IServer } from '@infra/http/interfaces/server'
 import chalk from 'chalk'
 import fastify from 'fastify'
 import {
@@ -12,6 +9,9 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
+import { Container, Scope, type Constructor } from '../container'
+import { Injectable } from '../decorators'
+import type { IErrorHandler, IServer } from '../interfaces'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -19,7 +19,7 @@ const app = fastify().withTypeProvider<ZodTypeProvider>()
 export class FastifyServer implements IServer {
   private readonly controllers: { route: string; method: string; tag: string }[] = []
 
-  async start(port: number): Promise<void> {
+  public async start(port: number): Promise<void> {
     await app.listen({ port })
     this.controllers.forEach((controller) => {
       console.log(
@@ -29,19 +29,19 @@ export class FastifyServer implements IServer {
     console.log(chalk.green(`Server running on port ${port}`))
   }
 
-  cors(): void {
+  public cors(origins: string[]): void {
     app.register(fastifyCors, {
-      origin: '*',
+      origin: origins,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     })
   }
 
-  registerValidationProvider(): void {
+  public registerValidationProvider(): void {
     app.setSerializerCompiler(serializerCompiler)
     app.setValidatorCompiler(validatorCompiler)
   }
 
-  registerControllers(controllers: Constructor[]): void {
+  public registerControllers(controllers: Constructor[]): void {
     controllers.forEach((controller) => {
       // prettier-ignore
       const { instance, prefix, route, docs, validation, middlewares } = Container.instance.resolveController(controller)
@@ -86,21 +86,11 @@ export class FastifyServer implements IServer {
     })
   }
 
-  private removeUndefined(obj: Record<string, unknown>): Record<string, unknown> {
-    return Object.entries(obj).reduce(
-      (acc, [key, value]) => {
-        if (!value) return acc
-        return { ...acc, [key]: value }
-      },
-      {} as Record<string, unknown>,
-    )
-  }
-
-  registerErrorHandler(handler: IErrorHandler): void {
+  public registerErrorHandler(handler: IErrorHandler): void {
     app.setErrorHandler((error, _request, reply) => handler.execute(error, reply))
   }
 
-  registerDocs(): void {
+  public registerDocs(): void {
     app.register(fastifySwagger, {
       openapi: {
         info: {
@@ -126,7 +116,19 @@ export class FastifyServer implements IServer {
     })
   }
 
+  public registerProviders(_providers: Constructor[]): void {}
+
   private makePath(prefix: string, path: string): string {
     return `/${[...prefix.split('/'), ...path.split('/')].filter(Boolean).join('/')}`
+  }
+
+  private removeUndefined(obj: Record<string, unknown>): Record<string, unknown> {
+    return Object.entries(obj).reduce(
+      (acc, [key, value]) => {
+        if (!value) return acc
+        return { ...acc, [key]: value }
+      },
+      {} as Record<string, unknown>,
+    )
   }
 }

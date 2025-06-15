@@ -1,4 +1,4 @@
-import { Constructor } from '@infra/_injection/container'
+import { Constructor } from '../container'
 
 export function MiddleWares(...middlewares: Constructor[]) {
   return function (target: Constructor) {

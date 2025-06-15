@@ -1,13 +1,16 @@
 import type { IUser } from '@domain/dtos/user.dto'
-import { ForbiddenError } from '@domain/errors/forbidden.error'
-import { UnauthorizedError } from '@domain/errors/unauthorized.error'
-import { Inject, Injectable } from '@infra/_injection'
-import type { IRequest } from '@infra/http/interfaces/controller'
-import type { IMiddleware } from '@infra/http/interfaces/middleware'
+import {
+  ForbiddenError,
+  Inject,
+  Injectable,
+  UnauthorizedError,
+  type IMiddleware,
+  type IRequest,
+} from '@edu/framework'
 import type { IMemberRepository } from '@infra/repositories/member/member.repository'
 import type { ITokenService } from '@infra/services/token/token.service'
 
-declare module '@infra/http/interfaces/controller' {
+declare module '@edu/framework' {
   interface IRequest {
     user?: IUser
   }

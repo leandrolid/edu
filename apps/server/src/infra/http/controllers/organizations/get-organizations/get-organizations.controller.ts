@@ -1,7 +1,6 @@
 import { GetOrganizationsUseCase } from '@app/organizations/get-organizations/get-organizations.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
-import { Controller, Docs, Get, MiddleWares, User } from '@infra/_injection'
-import { IController } from '@infra/http/interfaces/controller'
+import { Controller, Docs, Get, MiddleWares, User, type IController } from '@edu/framework'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({

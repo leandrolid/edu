@@ -1,7 +1,4 @@
-import { HttpStatusCode } from '@domain/enums/http-statuscode.enum'
-import { HttpError } from '@domain/errors/http.error'
-import { IResponse } from '@infra/http/interfaces/controller'
-import { IErrorHandler } from '@infra/http/interfaces/error-handler'
+import { HttpError, HttpStatusCode, IErrorHandler, type IResponse } from '@edu/framework'
 import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod'
 
 export class HttpErrorHandler implements IErrorHandler {

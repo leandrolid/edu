@@ -1,10 +1,9 @@
-import { NotFoundError } from '@domain/errors/not-found.error'
-import { Injectable } from '@infra/_injection'
+import { Injectable, NotFoundError } from '@edu/framework'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import type {
   CreateTeamInput,
-  FindManyAndCountInput,
-  FindManyAndCountOutput,
+  FindManyTeamsAndCountInput,
+  FindManyTeamsAndCountOutput,
   GetBySlugInput,
   ITeamRepository,
   UpdateTeamByIdInput,
@@ -36,7 +35,7 @@ export class TeamRepository implements ITeamRepository {
     pageSize,
     organizationId,
     search,
-  }: FindManyAndCountInput): Promise<FindManyAndCountOutput> {
+  }: FindManyTeamsAndCountInput): Promise<FindManyTeamsAndCountOutput> {
     const where: Prisma.TeamFindManyArgs['where'] = {
       organizationId: organizationId,
       ...(search && {

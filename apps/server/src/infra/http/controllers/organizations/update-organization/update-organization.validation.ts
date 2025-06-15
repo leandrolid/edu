@@ -1,6 +1,6 @@
 import { UpdateOrganizationInput } from '@app/organizations/update-organization/update-organization.input'
+import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
-import { IValidation, IValidator } from '@infra/http/interfaces/controller'
 import z from 'zod'
 
 export class UpdateOrganizationValidation implements IValidation {

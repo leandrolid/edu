@@ -10,9 +10,9 @@ import {
   Query,
   User,
   Validate,
-} from '@infra/_injection'
+  type IController,
+} from '@edu/framework'
 import { GetMembersValidation } from '@infra/http/controllers/members/get-members/get-member.validation'
-import { IController } from '@infra/http/interfaces/controller'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({

@@ -1,6 +1,6 @@
 import type { CreateTeamInput } from '@app/teams/create-team/create-team.input'
+import type { IValidation, IValidator } from '@edu/framework'
 import { rbacRoleSchema, type RbacRole } from '@edu/rbac'
-import type { IValidation, IValidator } from '@infra/http/interfaces/controller'
 import z from 'zod'
 
 export class CreateTeamValidation implements IValidation {
