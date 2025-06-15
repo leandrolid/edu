@@ -40,7 +40,7 @@ export function TeamActions({ teamId }: { teamId: string }) {
           <DropdownMenu.Separator />
           <DropdownMenu.Item color="red" disabled={isPending} onClick={handleDelete}>
             <Trash weight="bold" />
-            Apagar
+            Excluir
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>

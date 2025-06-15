@@ -1,7 +1,7 @@
 import { updateTeamAction } from '@/app/(private)/[slug]/teams/[team]/actions'
 import { TeamForm } from '@/components/teams/team-form'
 import { getTeam } from '@/http/services/teams/get-team'
-import { errorBoundary } from '@edu/utils'
+import { requestFallback } from '@edu/utils'
 import { Card, Flex, Heading, Inset } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
 
@@ -11,9 +11,8 @@ export default async function EditTeamPage({
   params: Promise<{ slug: string; team: string }>
 }) {
   const { slug, team: teamId } = await params
-  const { data: team } = await errorBoundary({
-    input: { teamId, slug },
-    request: getTeam,
+  const { data: team } = await requestFallback({
+    request: () => getTeam({ teamId, slug }),
     onError: () => redirect(`/${slug}/teams`),
   })
   return (

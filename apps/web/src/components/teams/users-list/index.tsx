@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { getMembers } from '@/http/services/members/get-members'
-import { createFallbackName, errorBoundary } from '@edu/utils'
+import { createFallbackName, requestFallback } from '@edu/utils'
 import { DotsThree, Key, Trash } from '@phosphor-icons/react/dist/ssr'
 import { Avatar, DropdownMenu, Flex, IconButton, Table, Text } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
@@ -17,14 +17,14 @@ export async function UsersList({
 }) {
   const slug = await auth.getCurrentOrganization()
 
-  const { data: members, metadata } = await errorBoundary({
-    input: {
-      slug: slug!,
-      team,
-      page,
-      search,
-    },
-    request: getMembers,
+  const { data: members, metadata } = await requestFallback({
+    request: () =>
+      getMembers({
+        slug: slug!,
+        team,
+        page,
+        search,
+      }),
     onError: () => redirect('/'),
   })
 
@@ -67,7 +67,7 @@ export async function UsersList({
                       <DropdownMenu.Separator />
                       <DropdownMenu.Item color="red">
                         <Trash weight="bold" />
-                        Remover
+                        Excluir
                       </DropdownMenu.Item>
                     </DropdownMenu.Content>
                   </DropdownMenu.Root>

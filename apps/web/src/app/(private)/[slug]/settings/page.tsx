@@ -1,11 +1,18 @@
-import { OrganizationForm } from '@/components/organizations/organization-form'
 import { auth } from '@/auth'
+import { OrganizationForm } from '@/components/organizations/organization-form'
 import { getOrganization } from '@/http/services/organizations/get-organization'
+import { requestFallback } from '@edu/utils'
 import { Card, Flex, Heading, Inset } from '@radix-ui/themes'
+import { redirect } from 'next/navigation'
 
 export default async function SettingsPage() {
-  const org = await auth.getCurrentOrganization()
-  const { data: organization } = await getOrganization(org!)
+  const { data: organization } = await requestFallback({
+    request: async () => {
+      const slug = await auth.getCurrentOrganization()
+      return await getOrganization(slug!)
+    },
+    onError: () => redirect('/'),
+  })
   return (
     <>
       <Card variant="surface" style={{ width: '100%' }}>

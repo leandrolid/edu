@@ -3,8 +3,10 @@
 import { UpdatePermissionsAlert } from '@/components/teams/update-permissions-alert'
 import { useFormState } from '@/react/hooks/use-form-state'
 import { PERMISSIONS_DESCRIPTION } from '@edu/utils'
+import { Warning } from '@phosphor-icons/react/dist/ssr'
 import {
   Button,
+  Callout,
   Checkbox,
   CheckboxCards,
   Flex,
@@ -46,6 +48,14 @@ export function TeamForm({ isUpdating, team, action }: Props) {
   return (
     <Flex direction="column" gap="4" asChild>
       <form onSubmit={formAction}>
+        {!state.success && state.message && (
+          <Callout.Root color="red">
+            <Callout.Icon>
+              <Warning weight="regular" />
+            </Callout.Icon>
+            <Callout.Text>{state.message}</Callout.Text>
+          </Callout.Root>
+        )}
         <input type="hidden" name="teamId" value={team?.id} />
         <Flex direction="column" gap="1">
           <Text as="label" size="2" weight="bold" htmlFor="name">

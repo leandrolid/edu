@@ -1,21 +1,21 @@
 import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { getMembers } from '@/http/services/members/get-members'
-import { createFallbackName, errorBoundary } from '@edu/utils'
+import { createFallbackName, requestFallback } from '@edu/utils'
 import { ArrowsLeftRight, DotsThree, Key, Trash } from '@phosphor-icons/react/dist/ssr'
 import { Avatar, DropdownMenu, Flex, IconButton, Table, Text } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
 
 export const AdminList = async ({ page, search }: { search: string; page: number }) => {
   const slug = await auth.getCurrentOrganization()
-  const { data: members, metadata } = await errorBoundary({
-    input: {
-      slug: slug!,
-      team: 'administrador',
-      page,
-      search,
-    },
-    request: getMembers,
+  const { data: members, metadata } = await requestFallback({
+    request: () =>
+      getMembers({
+        slug: slug!,
+        team: 'administrador',
+        page,
+        search,
+      }),
     onError: () => redirect('/'),
   })
 

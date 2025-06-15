@@ -1,6 +1,7 @@
 'use server'
 
 import { auth } from '@/auth'
+import { HttpError } from '@/http/errors/http.error'
 import { updateTeam } from '@/http/services/teams/update-team'
 import { PERMISSIONS_DESCRIPTION } from '@edu/utils'
 import { formToJSON } from 'axios'
@@ -28,7 +29,9 @@ export async function updateTeamAction(formData: FormData) {
     })
     return { success: true, message: null, errors: null }
   } catch (error) {
-    console.error(error)
+    if (error instanceof HttpError) {
+      return { success: false, message: error.message, errors: error.errors || null }
+    }
     return { success: false, message: 'Por favor, tente novamente mais tarde.', errors: null }
   }
 }

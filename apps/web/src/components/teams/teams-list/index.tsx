@@ -2,16 +2,15 @@ import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { TeamActions } from '@/components/teams/team-actions'
 import { getTeams } from '@/http/services/teams/get-teams'
-import { errorBoundary, PERMISSIONS_DESCRIPTION } from '@edu/utils'
+import { PERMISSIONS_DESCRIPTION, requestFallback } from '@edu/utils'
 import { Flex, Table, Text } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
 
 export async function TeamsList({ page, search }: { search: string; page: number }) {
   const slug = await auth.getCurrentOrganization()
-  const { data: teams, metadata } = await errorBoundary({
-    input: { slug: slug!, page: 1, pageSize: 10, search },
-    request: getTeams,
-    onError: () => redirect('/'),
+  const { data: teams, metadata } = await requestFallback({
+    request: () => getTeams({ slug: slug!, page: 1, pageSize: 10, search }),
+    onError: () => redirect(`/${slug}`),
   })
 
   return (
