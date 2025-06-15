@@ -6,11 +6,6 @@ export const PERMISSIONS_DESCRIPTION: Array<{
   value: RbacRole
 }> = [
   {
-    value: 'OWNER',
-    name: 'Dono',
-    description: 'Acesso total aos dados e funcionalidades do sistema',
-  },
-  {
     value: 'ORGANIZATION_ADMIN',
     name: 'Administrador de Organização',
     description: 'Permissão total à organização',
