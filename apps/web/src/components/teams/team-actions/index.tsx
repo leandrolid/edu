@@ -2,7 +2,7 @@
 
 import { deleteTeamAction } from '@/components/teams/team-actions/actions'
 import { toast } from '@edu/utils'
-import { DotsThree, Key, Trash } from '@phosphor-icons/react/dist/ssr'
+import { DotsThree, Pencil, Trash } from '@phosphor-icons/react/dist/ssr'
 import { DropdownMenu, Flex, IconButton } from '@radix-ui/themes'
 import Link from 'next/link'
 import { useTransition } from 'react'
@@ -33,8 +33,8 @@ export function TeamActions({ teamId }: { teamId: string }) {
         <DropdownMenu.Content align="end" side="bottom">
           <DropdownMenu.Item disabled={isPending} asChild>
             <Link href={`teams/${teamId}`} style={{ cursor: 'pointer' }}>
-              <Key weight="bold" />
-              Permissões
+              <Pencil weight="bold" />
+              Editar
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Separator />
