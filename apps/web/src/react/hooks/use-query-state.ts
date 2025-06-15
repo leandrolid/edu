@@ -9,15 +9,17 @@ export const useQueryState = () => {
   const { replace } = useRouter()
   const timer = useRef<NodeJS.Timeout | null>(null)
 
-  const setQueryState = (key: string, value: string) => {
+  const setQueryState = (newState: Record<string, string>) => {
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(() => {
       const params = new URLSearchParams(searchParams.toString())
-      if (value) {
-        params.set(key, value)
-      } else {
-        params.delete(key)
-      }
+      Object.entries(newState).forEach(([key, value]) => {
+        if (value) {
+          params.set(key, value)
+        } else {
+          params.delete(key)
+        }
+      })
       replace(`${pathname}?${params.toString()}`)
     }, 300)
   }

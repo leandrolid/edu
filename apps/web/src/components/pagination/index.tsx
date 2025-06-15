@@ -35,7 +35,7 @@ export const Pagination = ({
           color="gray"
           size="2"
           disabled={page === 1}
-          onClick={() => setQueryState('page', String(page - 1))}
+          onClick={() => setQueryState({ page: String(page - 1) })}
         >
           <CaretLeft weight="bold" />
         </IconButton>
@@ -49,7 +49,7 @@ export const Pagination = ({
                   style={{ margin: 0 }}
                   color="gray"
                   size="2"
-                  onClick={() => setQueryState('page', String(currentPage))}
+                  onClick={() => setQueryState({ page: String(currentPage) })}
                 >
                   {currentPage}
                 </IconButton>
@@ -63,7 +63,7 @@ export const Pagination = ({
                 style={{ margin: 0 }}
                 color="gray"
                 size="2"
-                onClick={() => setQueryState('page', String(totalPages - (2 - index)))}
+                onClick={() => setQueryState({ page: String(totalPages - (2 - index)) })}
               >
                 {totalPages - (2 - index)}
               </IconButton>
@@ -76,7 +76,7 @@ export const Pagination = ({
           color="gray"
           size="2"
           disabled={page >= totalPages}
-          onClick={() => setQueryState('page', String(page + 1))}
+          onClick={() => setQueryState({ page: String(page + 1) })}
         >
           <CaretRight weight="bold" />
         </IconButton>

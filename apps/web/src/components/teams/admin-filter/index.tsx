@@ -10,7 +10,7 @@ export const AdminFilter = () => {
     <TextField.Root
       defaultValue={getQueryState('search')?.toString()}
       onChange={({ target }) => {
-        setQueryState('search', target.value)
+        setQueryState({ search: target.value, page: '1' })
       }}
       placeholder="Busque por administradores"
       size="2"

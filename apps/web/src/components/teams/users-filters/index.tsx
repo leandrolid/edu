@@ -50,7 +50,7 @@ export function UsersFilters() {
       <Tabs.Root
         style={{ width: '100%' }}
         defaultValue={getQueryState('team') || teams[0]?.slug}
-        onValueChange={(value) => setQueryState('team', value)}
+        onValueChange={(value) => setQueryState({ team: value })}
       >
         <Tabs.List>
           {teams.map((team) => (
@@ -76,7 +76,7 @@ export function UsersFilters() {
         <TextField.Root
           defaultValue={getQueryState('search')?.toString()}
           onChange={({ target }) => {
-            setQueryState('search', target.value)
+            setQueryState({ search: target.value, page: '1' })
           }}
           placeholder="Busque por usuários"
           size="2"
