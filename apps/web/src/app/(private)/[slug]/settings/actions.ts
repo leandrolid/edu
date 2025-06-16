@@ -2,6 +2,7 @@
 
 import { auth } from '@/auth'
 import { HttpError } from '@/http/errors/http.error'
+import { deleteOrganization } from '@/http/services/organizations/delete-organization'
 import { updateOrganization } from '@/http/services/organizations/update-organization'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
@@ -44,15 +45,7 @@ const schema = z.object({
 export const deleteOrganizationAction = async (slug: string) => {
   let success = false
   try {
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (slug) {
-          resolve(true)
-        } else {
-          reject('Organização não encontrada')
-        }
-      }, 1000)
-    })
+    await deleteOrganization({ slug })
     success = true
   } catch (error) {
     if (error instanceof HttpError) {

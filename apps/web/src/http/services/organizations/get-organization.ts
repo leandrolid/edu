@@ -1,8 +1,8 @@
 import { httpClient } from '@/http/clients'
 
-export const getOrganization = async (org: string) => {
+export const getOrganization = async ({ slug }: { slug: string }) => {
   return httpClient.request<GetOrganizationOutput>({
-    url: `/organizations/${org}`,
+    url: `/organizations/${slug}`,
     method: 'GET',
   })
 }

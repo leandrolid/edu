@@ -14,7 +14,7 @@ export default async function SettingsPage() {
   const { data: organization } = await requestFallback({
     request: async () => {
       const slug = await auth.getCurrentOrganization()
-      return await getOrganization(slug!)
+      return await getOrganization({ slug: slug! })
     },
     onError: () => redirect('/'),
   })
