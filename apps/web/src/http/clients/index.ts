@@ -23,7 +23,7 @@ class AxiosHttpClient implements HttpClient {
       })
       return response.data
     } catch (error) {
-      console.error('Error in request', error)
+      console.error('[HTTP]:', error)
       if (error instanceof AxiosError && error.response) {
         throw new HttpError(
           error.response.status,

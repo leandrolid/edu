@@ -7,7 +7,6 @@ export class HttpErrorHandler implements IErrorHandler {
     if (error instanceof HttpError) {
       return res.status(error.statusCode).send({ message: error.message })
     }
-
     if (hasZodFastifySchemaValidationErrors(error)) {
       return res.status(400).send({
         message: 'Erro de validação',
@@ -20,7 +19,6 @@ export class HttpErrorHandler implements IErrorHandler {
         ),
       })
     }
-    console.error(error)
     return {
       message: 'Internal server error',
       statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,

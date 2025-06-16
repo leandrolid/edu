@@ -1,11 +1,11 @@
-import { Injectable, NotFoundError } from '@edu/framework'
+import { ConflictError, Injectable, NotFoundError } from '@edu/framework'
 import { prisma } from '@infra/database/connections/prisma.connection'
 import {
   IOrganizationRepository,
   type CreateOrganizationInput,
   type UpdateBySlugInput,
 } from '@infra/repositories/organization/organization.repository'
-import { Organization } from '@prisma/client'
+import { Organization, Prisma } from '@prisma/client'
 
 @Injectable({
   token: 'IOrganizationRepository',
@@ -50,6 +50,19 @@ export class OrganizationRepository implements IOrganizationRepository {
   }
 
   async deleteBySlug(slug: string): Promise<void> {
-    await prisma.organization.delete({ where: { slug } })
+    try {
+      await prisma.organization.delete({ where: { slug } })
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+        throw new NotFoundError('Organização não encontrada')
+      }
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
+        throw new ConflictError(
+          'Não foi possível excluir a organização. Ela está vinculada a outros recursos.',
+        )
+      }
+      console.error(error)
+      throw new ConflictError('Não foi possível excluir a organização.')
+    }
   }
 }
