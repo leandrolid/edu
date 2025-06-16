@@ -2,11 +2,8 @@ import { CreateOrganizationInput } from '@app/organizations/create-organization/
 import { Auth } from '@domain/dtos/auth.dto'
 import { ForbiddenError, Inject, Injectable } from '@edu/framework'
 import { createSlug } from '@edu/utils'
-import type { IMemberRepository } from '@infra/repositories/member/member.repository'
 import type { IOrganizationRepository } from '@infra/repositories/organization/organization.repository'
-import type { ITeamRepository } from '@infra/repositories/team/team.repository'
 import type { IPermissionService } from '@infra/services/permission/permission.service'
-import { Role } from '@prisma/client'
 
 @Injectable()
 export class CreateOrganizationUseCase {
@@ -15,8 +12,6 @@ export class CreateOrganizationUseCase {
     private readonly permissionService: IPermissionService,
     @Inject('IOrganizationRepository')
     private readonly organizationRepository: IOrganizationRepository,
-    @Inject('IMemberRepository') private readonly memberRepository: IMemberRepository,
-    @Inject('ITeamRepository') private readonly teamRepository: ITeamRepository,
   ) {}
 
   async execute({
@@ -37,21 +32,6 @@ export class CreateOrganizationUseCase {
       domain,
       shouldAttachUserByDomain,
       ownerId: user.id,
-    })
-    const team = await this.teamRepository.createOne({
-      name: 'Administrador',
-      description: 'Administrador padrão',
-      slug: createSlug('Administrador'),
-      organizationId: organization.id,
-      roles: [Role.ORGANIZATION_ADMIN],
-      ownerId: user.id,
-    })
-    await this.memberRepository.createOne({
-      organizationId: organization.id,
-      userId: user.id,
-      slug: organization.slug,
-      roles: team.roles,
-      teamId: team.id,
     })
     return {
       id: organization.id,
