@@ -63,6 +63,7 @@ export class FastifyServer implements IServer {
             url,
             method: route.method,
             schema: this.removeUndefined({
+              security: [{ bearerAuth: [] }],
               body: validation.body,
               query: validation.query,
               params: validation.params,
@@ -104,9 +105,11 @@ export class FastifyServer implements IServer {
               type: 'http',
               scheme: 'bearer',
               bearerFormat: 'JWT',
+              description: 'JWT Bearer Token for authentication',
             },
           },
         },
+        security: [{ bearerAuth: [] }],
       },
       transform: jsonSchemaTransform,
     })
