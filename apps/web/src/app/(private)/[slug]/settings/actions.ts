@@ -39,3 +39,28 @@ const schema = z.object({
     .optional()
     .default(false),
 })
+
+export const deleteOrganizationAction = async (slug: string) => {
+  try {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (slug) {
+          resolve(true)
+        } else {
+          reject('Organização não encontrada')
+        }
+      }, 1000)
+    })
+    return { success: true, message: 'Organização excluída com sucesso', errors: null }
+  } catch (error) {
+    if (error instanceof HttpError) {
+      return { success: false, message: error.message, errors: error.errors }
+    }
+    console.error(error)
+    return {
+      success: false,
+      message: 'Erro ao excluir a organização. Tente novamente mais tarde.',
+      errors: null,
+    }
+  }
+}

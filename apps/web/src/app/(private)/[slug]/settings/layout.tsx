@@ -34,7 +34,7 @@ export default async function SettingsLayout({
             <AsideMenu.Item href={`/${slug}/settings/subsidiaries`}>Filiais</AsideMenu.Item>
           </AsideMenu.Root>
 
-          <Flex direction="column" gap="4" flexGrow="1">
+          <Flex direction="column" gap="6" flexGrow="1">
             {children}
           </Flex>
         </Flex>
