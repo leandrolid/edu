@@ -2,7 +2,8 @@ import { Container, type Constructor } from '../container'
 import type { IErrorHandler } from '../interfaces'
 import { FastifyServer } from './fastify.server'
 
-export function createFastifyServer({
+export function createServer({
+  implementation = 'fastify',
   providers,
   controllers,
   errorHandler,
@@ -10,6 +11,7 @@ export function createFastifyServer({
   zodValidation,
   cors,
 }: {
+  implementation?: 'fastify'
   providers?: Constructor[]
   controllers?: Constructor[]
   errorHandler?: IErrorHandler
@@ -19,7 +21,7 @@ export function createFastifyServer({
 }): {
   start: (port: number) => Promise<void>
 } {
-  const app = Container.instance.resolve(FastifyServer)
+  const app = getServerImplementation(implementation)
   if (cors) app.cors(cors)
   if (zodValidation) app.registerValidationProvider()
   if (docs) app.registerDocs()
@@ -27,4 +29,13 @@ export function createFastifyServer({
   if (controllers) app.registerControllers(controllers)
   if (errorHandler) app.registerErrorHandler(errorHandler)
   return app
+}
+
+function getServerImplementation(implementation: 'fastify') {
+  switch (implementation) {
+    case 'fastify':
+      return Container.instance.resolve(FastifyServer)
+    default:
+      throw new Error(`Unsupported server implementation: ${implementation}`)
+  }
 }

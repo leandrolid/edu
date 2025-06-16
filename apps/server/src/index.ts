@@ -1,4 +1,4 @@
-import { createFastifyServer } from '@edu/framework'
+import { createServer } from '@edu/framework'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
 import { GetMembersController } from '@infra/http/controllers/members/get-members/get-member.controller'
 import { CreateOrganizationController } from '@infra/http/controllers/organizations/create-organization/create-organization.controller'
@@ -23,7 +23,7 @@ import { TokenService } from '@infra/services/token/token.service.imp'
 const PORT = Number(process.env.PORT || 3333)
 
 async function main() {
-  const app = createFastifyServer({
+  const app = createServer({
     docs: true,
     zodValidation: true,
     cors: ['*'],
