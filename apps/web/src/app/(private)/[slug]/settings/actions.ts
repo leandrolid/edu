@@ -3,6 +3,7 @@
 import { auth } from '@/auth'
 import { HttpError } from '@/http/errors/http.error'
 import { updateOrganization } from '@/http/services/organizations/update-organization'
+import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
 export const updateOrganizationAction = async (data: FormData) => {
@@ -41,6 +42,7 @@ const schema = z.object({
 })
 
 export const deleteOrganizationAction = async (slug: string) => {
+  let success = false
   try {
     await new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -51,7 +53,7 @@ export const deleteOrganizationAction = async (slug: string) => {
         }
       }, 1000)
     })
-    return { success: true, message: 'Organização excluída com sucesso', errors: null }
+    success = true
   } catch (error) {
     if (error instanceof HttpError) {
       return { success: false, message: error.message, errors: error.errors }
@@ -63,4 +65,8 @@ export const deleteOrganizationAction = async (slug: string) => {
       errors: null,
     }
   }
+  if (!success) {
+    return { success: false, message: 'Erro ao excluir a organização', errors: null }
+  }
+  return redirect('/')
 }
