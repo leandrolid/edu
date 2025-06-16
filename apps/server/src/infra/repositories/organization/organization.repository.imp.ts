@@ -48,4 +48,8 @@ export class OrganizationRepository implements IOrganizationRepository {
       },
     })
   }
+
+  async deleteBySlug(slug: string): Promise<void> {
+    await prisma.organization.delete({ where: { slug } })
+  }
 }

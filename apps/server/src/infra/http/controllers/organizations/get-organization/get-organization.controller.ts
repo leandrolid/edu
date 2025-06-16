@@ -15,7 +15,7 @@ import { GetOrganizationValidation } from '@infra/http/controllers/organizations
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({
-  title: 'Get one organization',
+  title: 'Get organization by slug',
   tags: ['Organizations'],
 })
 @Controller('/organizations')

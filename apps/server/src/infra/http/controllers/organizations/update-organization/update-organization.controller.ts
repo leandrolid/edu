@@ -16,7 +16,7 @@ import { UpdateOrganizationValidation } from '@infra/http/controllers/organizati
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({
-  title: 'Update an existing organization',
+  title: 'Update organization by slug',
   tags: ['Organizations'],
 })
 @Controller('/organizations')

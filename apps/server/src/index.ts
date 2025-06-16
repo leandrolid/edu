@@ -2,6 +2,7 @@ import { createFastifyServer } from '@edu/framework'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
 import { GetMembersController } from '@infra/http/controllers/members/get-members/get-member.controller'
 import { CreateOrganizationController } from '@infra/http/controllers/organizations/create-organization/create-organization.controller'
+import { DeleteOrganizationController } from '@infra/http/controllers/organizations/delete-organization/delete-organization.controller'
 import { GetOrganizationController } from '@infra/http/controllers/organizations/get-organization/get-organization.controller'
 import { GetOrganizationsController } from '@infra/http/controllers/organizations/get-organizations/get-organizations.controller'
 import { UpdateOrganizationController } from '@infra/http/controllers/organizations/update-organization/update-organization.controller'
@@ -41,6 +42,7 @@ async function main() {
       GetOrganizationsController,
       GetOrganizationController,
       UpdateOrganizationController,
+      DeleteOrganizationController,
       GetMembersController,
       CreateTeamController,
       GetTeamsController,

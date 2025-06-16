@@ -1,6 +1,7 @@
 export interface IController {
   execute(...args: any[]): Promise<{
-    data: unknown
+    message?: string
+    data?: unknown
     metadata?: {
       page: number
       pageSize: number

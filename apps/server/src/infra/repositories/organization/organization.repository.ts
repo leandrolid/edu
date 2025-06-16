@@ -5,6 +5,7 @@ export interface IOrganizationRepository {
   updateOneBySlug(input: UpdateBySlugInput): Promise<Organization>
   findOneBySlugOrFail(slug: string): Promise<Organization>
   findManyByUserId(userId: string): Promise<Organization[]>
+  deleteBySlug(slug: string): Promise<void>
 }
 
 export type CreateOrganizationInput = {

@@ -30,6 +30,6 @@ export class DeleteTeamController implements IController {
       user,
       teamId: params.teamId,
     })
-    return { data: output.message }
+    return { message: output.message }
   }
 }
