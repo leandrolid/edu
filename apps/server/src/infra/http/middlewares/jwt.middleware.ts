@@ -8,6 +8,7 @@ import {
   type IRequest,
 } from '@edu/framework'
 import type { IMemberRepository } from '@infra/repositories/member/member.repository'
+import type { IOrganizationRepository } from '@infra/repositories/organization/organization.repository'
 import type { ITokenService } from '@infra/services/token/token.service'
 
 declare module '@edu/framework' {
@@ -21,6 +22,8 @@ export class JwtMiddleware implements IMiddleware {
   constructor(
     @Inject('ITokenService') private readonly tokenService: ITokenService,
     @Inject('IMemberRepository') private readonly memberRepository: IMemberRepository,
+    @Inject('IOrganizationRepository')
+    private readonly organizationRepository: IOrganizationRepository,
   ) {}
 
   async execute(request: IRequest<any, any, Record<string, string>, Record<string, string>>) {
@@ -31,6 +34,16 @@ export class JwtMiddleware implements IMiddleware {
     const payload = await this.tokenService.verify<{ id: string; owner: boolean }>(token)
     if (!request.params.slug) {
       request.user = { id: payload.id, owner: payload.owner }
+      return
+    }
+    if (payload.owner) {
+      const org = await this.organizationRepository.findOneBySlugOrFail(request.params.slug)
+      request.user = {
+        id: payload.id,
+        owner: payload.owner,
+        slug: org.slug,
+        organizationId: org.id,
+      }
       return
     }
     const membership = await this.memberRepository.findMembershipBySlug({
