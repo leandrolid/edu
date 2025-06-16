@@ -1,3 +1,4 @@
+import { createOrganizationAction } from '@/app/(private)/new-organization/actions'
 import { OrganizationForm } from '@/components/organizations/organization-form'
 import { Card, Container, Flex, Heading, Inset } from '@radix-ui/themes'
 
@@ -11,7 +12,7 @@ export default function NewOrgPage() {
               Criar nova organização
             </Heading>
           </Flex>
-          <OrganizationForm />
+          <OrganizationForm action={createOrganizationAction} />
         </Inset>
       </Card>
     </Container>

@@ -14,8 +14,9 @@ export const createOrganization = async (input: {
   })
 }
 
-type CreateOrganizationOutput = {
+export type CreateOrganizationOutput = {
   data: {
     id: string
+    slug: string
   }
 }

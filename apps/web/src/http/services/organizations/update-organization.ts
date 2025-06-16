@@ -1,16 +1,16 @@
 import { httpClient } from '@/http/clients'
 
 export const updateOrganization = async ({
-  org,
+  slug,
   ...input
 }: {
-  org: string
+  slug: string
   name: string
   domain: string | null
   shouldAttachUserByDomain?: boolean
 }) => {
   return httpClient.request({
-    url: `/organizations/${org}`,
+    url: `/organizations/${slug}`,
     method: 'PUT',
     body: input,
   })

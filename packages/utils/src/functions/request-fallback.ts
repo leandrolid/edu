@@ -1,3 +1,5 @@
+import { isObject } from 'radash'
+
 export async function requestFallback<Output>({
   request,
   onError,
@@ -8,7 +10,9 @@ export async function requestFallback<Output>({
   try {
     return await request()
   } catch (error) {
-    console.error(error)
+    if (isObject(error) && !Reflect.has(error, 'status')) {
+      console.error(error)
+    }
     return onError?.(error)
   }
 }

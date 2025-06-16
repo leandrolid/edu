@@ -1,9 +1,7 @@
 'use client'
 
+import { useFormState, type FormState } from '@/react/hooks/use-form-state'
 import { Button, Checkbox, Flex, Separator, Text, TextField } from '@radix-ui/themes'
-import { useFormState } from '@/react/hooks/use-form-state'
-import { createOrganizationAction } from '@/app/(private)/new-organization/actions'
-import { updateOrganizationAction } from '@/app/(private)/[slug]/settings/actions'
 
 type Props = {
   organization?: {
@@ -14,12 +12,11 @@ type Props = {
     avatarUrl: string | null
   }
   isUpdating?: boolean
+  action: (data: FormData) => Promise<FormState>
 }
 
-export function OrganizationForm({ organization, isUpdating }: Props) {
-  const [state, formAction, isPending] = useFormState(
-    isUpdating ? updateOrganizationAction : createOrganizationAction,
-  )
+export function OrganizationForm({ organization, isUpdating, action }: Props) {
+  const [state, formAction, isPending] = useFormState(action)
 
   return (
     <form onSubmit={formAction}>

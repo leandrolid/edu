@@ -1,3 +1,5 @@
+'use server'
+
 import { auth } from '@/auth'
 import { HttpError } from '@/http/errors/http.error'
 import { updateOrganization } from '@/http/services/organizations/update-organization'
@@ -9,19 +11,19 @@ export const updateOrganizationAction = async (data: FormData) => {
     return { success: false, message: null, errors: result.error.flatten().fieldErrors }
   }
   try {
-    const org = await auth.getCurrentOrganization()
+    const slug = await auth.getCurrentOrganization()
     await updateOrganization({
-      org: org!,
+      slug: slug!,
       name: result.data.name,
       domain: result.data.domain,
       shouldAttachUserByDomain: result.data.autoJoin,
     })
     return { success: true, message: null, errors: null }
   } catch (error) {
-    console.error(error)
     if (error instanceof HttpError) {
       return { success: false, message: error.message, errors: error.errors }
     }
+    console.error(error)
     return { success: false, message: 'Por favor, tente novamente mais tarde.', errors: null }
   }
 }

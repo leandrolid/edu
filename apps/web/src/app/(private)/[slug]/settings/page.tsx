@@ -1,3 +1,4 @@
+import { updateOrganizationAction } from '@/app/(private)/[slug]/settings/actions'
 import { auth } from '@/auth'
 import { OrganizationForm } from '@/components/organizations/organization-form'
 import { getOrganization } from '@/http/services/organizations/get-organization'
@@ -22,7 +23,11 @@ export default async function SettingsPage() {
               Configurações básicas
             </Heading>
           </Flex>
-          <OrganizationForm isUpdating organization={organization} />
+          <OrganizationForm
+            isUpdating
+            organization={organization}
+            action={updateOrganizationAction}
+          />
         </Inset>
       </Card>
     </>
