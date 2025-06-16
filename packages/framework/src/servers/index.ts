@@ -20,11 +20,11 @@ export function createFastifyServer({
   start: (port: number) => Promise<void>
 } {
   const app = Container.instance.resolve(FastifyServer)
+  if (cors) app.cors(cors)
+  if (zodValidation) app.registerValidationProvider()
+  if (docs) app.registerDocs()
   if (providers) app.registerProviders(providers)
   if (controllers) app.registerControllers(controllers)
   if (errorHandler) app.registerErrorHandler(errorHandler)
-  if (docs) app.registerDocs()
-  if (zodValidation) app.registerValidationProvider()
-  if (cors) app.cors(cors)
   return app
 }

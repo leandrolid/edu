@@ -1,5 +1,3 @@
-import 'reflect-metadata'
-
 import { REQUEST_METADATA_KEYS, Route } from '../decorators/controller'
 import { DocsConfig } from '../decorators/docs'
 import { IRequest, IResponse, IValidation } from '../interfaces/controller'
