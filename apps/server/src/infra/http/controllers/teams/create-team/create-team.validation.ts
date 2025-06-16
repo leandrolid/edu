@@ -1,6 +1,6 @@
 import type { CreateTeamInput } from '@app/teams/create-team/create-team.input'
 import type { IValidation, IValidator } from '@edu/framework'
-import { rbacRoleSchema, type RbacRole } from '@edu/rbac'
+import { rbacRoleSchema } from '@edu/rbac'
 import z from 'zod'
 
 export class CreateTeamValidation implements IValidation {
@@ -10,11 +10,7 @@ export class CreateTeamValidation implements IValidation {
       .min(3, { message: 'Nome deve ter pelo menos 3 caracteres' }),
     description: z.string({ message: 'Descrição deve ser um texto' }).optional(),
     roles: z
-      .array(
-        z.custom<RbacRole>((value) => rbacRoleSchema.safeParse(value).success, {
-          message: 'Permissão é obrigatória',
-        }),
-      )
+      .array(rbacRoleSchema.exclude(['OWNER']))
       .min(1, { message: 'Selecione pelo menos uma permissão' }),
   })
 }
