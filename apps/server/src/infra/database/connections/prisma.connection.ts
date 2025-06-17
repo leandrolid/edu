@@ -1,12 +1,14 @@
+import { Logger } from '@edu/framework/src/utils'
 import { PrismaClient } from '@prisma/client'
-import chalk from 'chalk'
 
 export const prisma = new PrismaClient({
   log: [{ level: 'query', emit: 'event' }, 'error', 'info', 'warn'],
 })
 
+const logger = new Logger('Query')
+
 prisma.$on('query', (e) => {
-  console.log(chalk.blue(`[QUERY] ${prepareQuery(e.query, JSON.parse(e.params))}`))
+  logger.info(`${prepareQuery(e.query, JSON.parse(e.params))}`)
 })
 
 function prepareQuery(query: string, parameters?: any[]) {

@@ -1,7 +1,6 @@
 import fastifyCors from '@fastify/cors'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
-import chalk from 'chalk'
 import fastify from 'fastify'
 import {
   jsonSchemaTransform,
@@ -12,21 +11,21 @@ import {
 import { Container, Scope, type Constructor } from '../container'
 import { Injectable } from '../decorators'
 import type { IErrorHandler, IServer } from '../interfaces'
+import { Logger } from '../utils'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 @Injectable({ scope: Scope.Singleton })
 export class FastifyServer implements IServer {
   private readonly controllers: { route: string; method: string; tag: string }[] = []
+  private readonly logger = new Logger('Server')
 
   public async start(port: number): Promise<void> {
     await app.listen({ port })
     this.controllers.forEach((controller) => {
-      console.log(
-        chalk.yellow(`[HTTP] ${controller.tag} { ${controller.route}, ${controller.method} }`),
-      )
+      this.logger.warn(`[HTTP] ${controller.tag} { ${controller.route}, ${controller.method} }`)
     })
-    console.log(chalk.green(`Server running on port ${port}`))
+    this.logger.success(`Server running on port ${port}`)
   }
 
   public cors(origins: string[]): void {
