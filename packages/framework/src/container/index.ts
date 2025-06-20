@@ -1,6 +1,6 @@
 import { REQUEST_METADATA_KEYS, Route } from '../decorators/controller'
 import { DocsConfig } from '../decorators/docs'
-import { IRequest, IResponse, IValidation } from '../interfaces/controller'
+import { IValidation } from '../interfaces/controller'
 import { IMiddleware } from '../interfaces/middleware'
 
 export enum Scope {
@@ -101,8 +101,8 @@ export class Container {
   }: {
     instance: any
     execute: string
-    request: IRequest
-    response: IResponse
+    request: unknown
+    response: unknown
   }) {
     const method = instance[execute]
     const paramCount = method.length

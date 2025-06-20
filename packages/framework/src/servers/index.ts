@@ -1,5 +1,5 @@
 import { Container, type Constructor } from '../container'
-import type { IErrorHandler } from '../interfaces'
+import type { IErrorHandler, MultipartFormConfig } from '../interfaces'
 import { FastifyServer } from './fastify.server'
 
 export function createServer({
@@ -10,6 +10,7 @@ export function createServer({
   docs,
   zodValidation,
   cors,
+  multipartForm,
 }: {
   implementation?: 'fastify'
   providers?: Constructor[]
@@ -18,12 +19,14 @@ export function createServer({
   docs?: boolean
   zodValidation?: boolean
   cors?: string[]
+  multipartForm?: MultipartFormConfig
 }): {
   start: (port: number) => Promise<void>
 } {
   const app = getServerImplementation(implementation)
   if (cors) app.cors(cors)
   if (zodValidation) app.registerValidationProvider()
+  if (multipartForm) app.registerMultipartForm(multipartForm)
   if (docs) app.registerDocs()
   if (providers) app.registerProviders(providers)
   if (controllers) app.registerControllers(controllers)

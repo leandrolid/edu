@@ -42,7 +42,7 @@ export function Validate(validation: IValidation) {
   }
 }
 
-export type RequestMetadataKeys = 'body' | 'query' | 'params' | 'headers' | 'user'
+export type RequestMetadataKeys = 'body' | 'query' | 'params' | 'headers' | 'user' | 'form'
 
 export const REQUEST_METADATA_KEYS: { [Key in RequestMetadataKeys]: `custom:${Key}` } = {
   body: 'custom:body',
@@ -50,6 +50,7 @@ export const REQUEST_METADATA_KEYS: { [Key in RequestMetadataKeys]: `custom:${Ke
   params: 'custom:params',
   headers: 'custom:headers',
   user: 'custom:user',
+  form: 'custom:form',
 }
 
 function createRequestDecorator<K extends RequestMetadataKeys>(key: K) {
@@ -68,6 +69,7 @@ export const Query = createRequestDecorator('query')
 export const Params = createRequestDecorator('params')
 export const Headers = createRequestDecorator('headers')
 export const User = createRequestDecorator('user')
+export const Form = createRequestDecorator('form')
 
 export function Response() {
   return function (target: any, propertyKey: string | symbol, parameterIndex: number) {

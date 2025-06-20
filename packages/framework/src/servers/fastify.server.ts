@@ -1,7 +1,8 @@
 import fastifyCors from '@fastify/cors'
+import fastifyMultipart, { type Multipart } from '@fastify/multipart'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
-import fastify from 'fastify'
+import fastify, { type FastifyRequest } from 'fastify'
 import {
   jsonSchemaTransform,
   serializerCompiler,
@@ -10,8 +11,9 @@ import {
 } from 'fastify-type-provider-zod'
 import { Container, Scope, type Constructor } from '../container'
 import { Injectable } from '../decorators'
-import type { IErrorHandler, IServer } from '../interfaces'
+import type { IErrorHandler, IFile, IServer, MultipartFormConfig } from '../interfaces'
 import { Logger } from '../utils'
+import { FormFile } from '../utils/form-file'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -72,11 +74,18 @@ export class FastifyServer implements IServer {
               tags: docs.tags,
               response: docs.response,
             }),
-            handler: async (request, response) => {
+            handler: async (requestInput, response) => {
               const output = await Container.instance.resolveRouteHandler({
                 instance,
                 execute: route.execute,
-                request,
+                request: {
+                  ...requestInput,
+                  headers: requestInput.headers,
+                  query: requestInput.query,
+                  params: requestInput.params,
+                  body: requestInput.body,
+                  form: await this.getMultipartForm(requestInput),
+                },
                 response,
               })
               return response.status(route.status).send(output)
@@ -120,6 +129,12 @@ export class FastifyServer implements IServer {
 
   public registerProviders(_providers: Constructor[]): void {}
 
+  public registerMultipartForm(config?: MultipartFormConfig): void {
+    app.register(fastifyMultipart, {
+      limits: config,
+    })
+  }
+
   private makePath(prefix: string, path: string): string {
     return `/${[...prefix.split('/'), ...path.split('/')].filter(Boolean).join('/')}`
   }
@@ -132,5 +147,31 @@ export class FastifyServer implements IServer {
       },
       {} as Record<string, unknown>,
     )
+  }
+
+  private async getMultipartForm(request: FastifyRequest) {
+    if (!request.isMultipart()) return {}
+    const multipart = await request.file()
+    if (!multipart || !multipart.fields) return {}
+    return Object.entries(multipart.fields).reduce(
+      (acc, [fieldName, fileValue]) => ({
+        ...acc,
+        [fieldName]: this.getMultipartFormHelper(fileValue),
+      }),
+      {},
+    )
+  }
+
+  private getMultipartFormHelper(
+    field: Multipart | Multipart[] | undefined,
+  ): IFile | IFile[] | unknown | undefined {
+    if (!field) return undefined
+    if (Array.isArray(field)) {
+      return field.map((item) => this.getMultipartFormHelper(item))
+    }
+    if (field.type === 'field') {
+      return field.value
+    }
+    return new FormFile(field)
   }
 }

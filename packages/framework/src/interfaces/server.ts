@@ -9,4 +9,10 @@ export type IServer = {
   registerErrorHandler(errorHandler: IErrorHandler): void
   registerDocs(): void
   registerProviders(providers: Constructor[]): void
+  registerMultipartForm(config?: MultipartFormConfig): void
+}
+
+export type MultipartFormConfig = {
+  fileSize?: number
+  files?: number
 }

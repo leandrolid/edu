@@ -1,3 +1,5 @@
+import { Readable } from 'node:stream'
+
 export interface IController {
   execute(...args: any[]): Promise<{
     message?: string
@@ -33,3 +35,13 @@ export interface IResponse {
   status: (code: number) => this
   send: (data: any) => void
 }
+
+export type IFile = {
+  filename: string
+  encoding: string
+  mimetype: string
+  getBuffer: () => Promise<Buffer>
+  getFileStream: () => IStream
+}
+
+export type IStream = Readable & { bytesRead: number }
