@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --log-prefix=none --log-order=stream",
     "migrate:dev": "turbo run migrate:dev",
     "seed:dev": "turbo run seed:dev",
     "lint": "turbo run lint",
