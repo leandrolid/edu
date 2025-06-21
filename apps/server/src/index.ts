@@ -1,5 +1,7 @@
 import { createServer } from '@edu/framework'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
+import { CreateVideoController } from '@infra/http/controllers/materials/create-video/create-video.controller'
+import { StreamVideoController } from '@infra/http/controllers/materials/stream-video/stream-video.controller'
 import { GetMembersController } from '@infra/http/controllers/members/get-members/get-member.controller'
 import { CreateOrganizationController } from '@infra/http/controllers/organizations/create-organization/create-organization.controller'
 import { DeleteOrganizationController } from '@infra/http/controllers/organizations/delete-organization/delete-organization.controller'
@@ -26,6 +28,10 @@ async function main() {
   const app = createServer({
     docs: true,
     zodValidation: true,
+    multipartForm: {
+      fileSize: 100 * 1024 * 1024,
+      files: 1,
+    },
     cors: ['*'],
     providers: [
       UserRepository,
@@ -49,6 +55,8 @@ async function main() {
       GetTeamController,
       UpdateTeamController,
       DeleteTeamController,
+      CreateVideoController,
+      StreamVideoController,
     ],
     errorHandler: new HttpErrorHandler(),
   })
