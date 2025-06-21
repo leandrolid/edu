@@ -99,11 +99,13 @@ export class Container {
     instance,
     execute,
     request,
+    requestNode,
     response,
   }: {
     instance: any
     execute: string
     request: unknown
+    requestNode: unknown
     response: unknown
   }) {
     const method = instance[execute]
@@ -114,6 +116,7 @@ export class Container {
       this.resolveParams(REQUEST_METADATA_KEYS[reqKey], instance, execute, args, request[reqKey])
     })
     this.resolveParams('custom:request', instance, execute, args, request)
+    this.resolveParams('custom:requestNode', instance, execute, args, requestNode)
     this.resolveParams('custom:response', instance, execute, args, response)
     return method.apply(instance, args)
   }

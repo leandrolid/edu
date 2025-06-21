@@ -1,5 +1,5 @@
 import type { MultipartFile } from '@fastify/multipart'
-import type { IFile, IStream } from '../interfaces'
+import type { IFile, IReadStream } from '../interfaces'
 
 export class FormFile implements IFile {
   public filename: string
@@ -15,7 +15,7 @@ export class FormFile implements IFile {
   getBuffer(): Promise<Buffer> {
     return this.field.toBuffer()
   }
-  getFileStream(): IStream {
+  getFileStream(): IReadStream {
     return this.field.file
   }
 }

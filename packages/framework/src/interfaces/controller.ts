@@ -1,5 +1,5 @@
-import type { ServerResponse } from 'node:http'
-import { Readable } from 'node:stream'
+import type { ClientRequest, ServerResponse } from 'node:http'
+import { Readable, Writable } from 'node:stream'
 
 export interface IController {
   execute(...args: any[]): Promise<{
@@ -32,6 +32,8 @@ export interface IRequest<B = unknown, Q = unknown, P = unknown, H = unknown> {
   headers: H
 }
 
+export interface IRequestNode extends IRequest, ClientRequest {}
+
 export interface IResponse {
   status: (code: number) => this
   send: (data: any) => void
@@ -44,7 +46,8 @@ export type IFile = {
   encoding: string
   mimetype: string
   getBuffer: () => Promise<Buffer>
-  getFileStream: () => IStream
+  getFileStream: () => IReadStream
 }
 
-export type IStream = Readable & { bytesRead: number }
+export type IReadStream = Readable & { bytesRead?: number }
+export type IWriteStream = Writable

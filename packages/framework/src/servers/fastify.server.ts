@@ -86,6 +86,7 @@ export class FastifyServer implements IServer {
                   body: requestInput.body,
                   form: await this.getMultipartForm(requestInput),
                 },
+                requestNode: requestInput.raw,
                 response: response.raw,
               })
               if (!isStream) return response.status(route.status).send(output)

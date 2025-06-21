@@ -89,6 +89,15 @@ export function Request() {
   }
 }
 
+export function RequestNode() {
+  return function (target: any, propertyKey: string | symbol, parameterIndex: number) {
+    const existingIndices: number[] =
+      Reflect.getOwnMetadata('custom:requestNode', target, propertyKey) || []
+    existingIndices.push(parameterIndex)
+    Reflect.defineMetadata('custom:requestNode', existingIndices, target, propertyKey)
+  }
+}
+
 export function Stream() {
   return function (target: any) {
     Reflect.defineMetadata('stream', true, target)
