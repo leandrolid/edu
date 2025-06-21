@@ -45,7 +45,7 @@ export class FastifyServer implements IServer {
   public registerControllers(controllers: Constructor[]): void {
     controllers.forEach((controller) => {
       // prettier-ignore
-      const { instance, prefix, route, docs, validation, middlewares } = Container.instance.resolveController(controller)
+      const { instance, prefix, route, docs, validation, middlewares, isStream } = Container.instance.resolveController(controller)
       const url = this.makePath(prefix, route.path)
       this.controllers.push({
         route: url,
@@ -86,9 +86,9 @@ export class FastifyServer implements IServer {
                   body: requestInput.body,
                   form: await this.getMultipartForm(requestInput),
                 },
-                response,
+                response: response.raw,
               })
-              return response.status(route.status).send(output)
+              if (!isStream) return response.status(route.status).send(output)
             },
           })
       })

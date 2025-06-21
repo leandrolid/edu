@@ -88,3 +88,9 @@ export function Request() {
     Reflect.defineMetadata('custom:request', existingIndices, target, propertyKey)
   }
 }
+
+export function Stream() {
+  return function (target: any) {
+    Reflect.defineMetadata('stream', true, target)
+  }
+}

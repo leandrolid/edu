@@ -1,3 +1,4 @@
+import type { ServerResponse } from 'node:http'
 import { Readable } from 'node:stream'
 
 export interface IController {
@@ -35,6 +36,8 @@ export interface IResponse {
   status: (code: number) => this
   send: (data: any) => void
 }
+
+export interface IResponseNode extends IResponse, ServerResponse {}
 
 export type IFile = {
   filename: string

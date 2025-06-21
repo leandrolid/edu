@@ -83,6 +83,7 @@ export class Container {
     const docs: DocsConfig = Reflect.getMetadata('docs', token) || {}
     const validation: IValidation = Reflect.getMetadata('validation', token) || {}
     const middlewares = this.resolveMiddlewares(token)
+    const isStream = Reflect.getMetadata('stream', token) || false
     return {
       instance,
       route,
@@ -90,6 +91,7 @@ export class Container {
       docs,
       validation,
       middlewares,
+      isStream,
     }
   }
 
