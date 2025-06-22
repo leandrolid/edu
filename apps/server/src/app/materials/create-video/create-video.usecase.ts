@@ -20,12 +20,13 @@ export class CreateVideoUseCase {
       maxResolution: videoInfo.video.height,
     })
     try {
+      const uuid = crypto.randomUUID()
       const uploads = await Promise.all(
         processors.map((processor) => {
           onClose(() => processor.onError())
           processor.process(buffer)
           return this.storageService.uploadStream({
-            key: `${slug}/videos/${processor.resolution}/output.mp4`,
+            key: `${slug}/videos/${uuid}/${processor.resolution}.mp4`,
             stream: processor.toStream(),
           })
         }),
