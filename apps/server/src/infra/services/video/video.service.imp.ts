@@ -1,19 +1,15 @@
-import {
-  BadRequestError,
-  Injectable,
-  InternalServerError,
-  Logger,
-  type IReadStream,
-} from '@edu/framework'
+import { BadRequestError, Injectable, InternalServerError, Logger } from '@edu/framework'
 import { FfmpegBuilder } from '@infra/adapters/ffmpeg/ffmpeg.builder'
 import { FfProbeBuilder } from '@infra/adapters/ffmpeg/ffprobe.builder'
 import type {
+  GetInfoInput,
   GetMp4ProccessorsForResolutionsInput,
   GetMp4ProcessorOutput,
   GetVideoInfoOutput,
   IVideoService,
   Resolution,
 } from '@infra/services/video/video.service'
+import { Readable } from 'node:stream'
 
 const RESOLUTIONS = [
   { label: '1080p', height: 1080, bitrate: '5000k' },
@@ -27,34 +23,8 @@ const RESOLUTIONS = [
 @Injectable({
   token: 'IVideoService',
 })
-export class FfmpegService implements IVideoService {
+export class VideoService implements IVideoService {
   private readonly logger = new Logger('FFmpeg')
-
-  public getMp4Processor(): GetMp4ProcessorOutput {
-    const ffmpeg = FfmpegBuilder.init(this.logger)
-      .addInput('pipe:0')
-      .addAccel('cuda')
-      .addVideoCodec('libx264')
-      .addAudioCodec('aac')
-      .addMovFlags('frag_keyframe+empty_moov+default_base_moof')
-      // .addBitrate('5000k')
-      // .addMaxRate('5000k')
-      .addBufSize('1000k')
-      .addFormat('mp4')
-      .addOutput('pipe:1')
-      .build()
-    return {
-      resolution: 'original',
-      in: ffmpeg.stdin,
-      out: ffmpeg.stdout,
-      kill: () => ffmpeg.kill(),
-      onError: (error?: unknown) => {
-        ffmpeg.stdout.destroy(error as Error)
-        ffmpeg.stdin.destroy(error as Error)
-        ffmpeg.kill()
-      },
-    }
-  }
 
   public getMp4Processors(input: GetMp4ProccessorsForResolutionsInput): GetMp4ProcessorOutput[] {
     return RESOLUTIONS.filter((resolution) => resolution.height <= input.maxResolution).map(
@@ -67,14 +37,17 @@ export class FfmpegService implements IVideoService {
           .addBitrate(bitrate)
           .addMaxRate(bitrate)
           .addBufSize('1000k')
-          // .addVideoFilter(`scale=-2:min(${height}\\,ih)`)
+          .addVideoFilter(`"scale=-2:min(${height}\\,ih)"`)
           .addFormat('mp4')
           .addOutput('pipe:1')
           .build()
         return {
           resolution: label as Resolution,
-          in: ffmpeg.stdin,
-          out: ffmpeg.stdout,
+          process: (buffer: Buffer) => {
+            const stream = Readable.from(buffer)
+            stream.pipe(ffmpeg.stdin)
+          },
+          toStream: () => ffmpeg.stdout,
           kill: () => ffmpeg.kill(),
           onError: (error?: unknown) => {
             ffmpeg.stdout.destroy(error as Error)
@@ -86,7 +59,8 @@ export class FfmpegService implements IVideoService {
     )
   }
 
-  public async getInfo(stream: IReadStream): Promise<GetVideoInfoOutput> {
+  public async getInfo(input: GetInfoInput): Promise<GetVideoInfoOutput> {
+    const stream = Readable.from(input.buffer)
     const ffprobe = FfProbeBuilder.init(this.logger)
       .addLogLevel('error')
       .addPrintFormat('json')

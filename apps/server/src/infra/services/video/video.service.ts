@@ -1,23 +1,26 @@
-import type { IReadStream, IWriteStream } from '@edu/framework'
+import type { IReadStream } from '@edu/framework'
 
 export interface IVideoService {
-  getMp4Processor(): GetMp4ProcessorOutput
   getMp4Processors(input: GetMp4ProccessorsForResolutionsInput): GetMp4ProcessorOutput[]
-  getInfo(input: IReadStream): Promise<GetVideoInfoOutput>
+  getInfo(input: GetInfoInput): Promise<GetVideoInfoOutput>
 }
 
 export type Resolution = '1080p' | '720p' | '480p' | '360p' | '240p' | '144p'
 
 export type GetMp4ProcessorOutput = {
-  resolution: Resolution | 'original'
-  in: IWriteStream
-  out: IReadStream
+  resolution: Resolution
+  process(buffer: Buffer): void
+  toStream: () => IReadStream
   kill: () => void
   onError: (error?: unknown) => void
 }
 
 export type GetMp4ProccessorsForResolutionsInput = {
   maxResolution: number
+}
+
+export type GetInfoInput = {
+  buffer: Buffer
 }
 
 export type GetVideoInfoOutput = {
