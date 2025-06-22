@@ -13,14 +13,14 @@ export class CreateVideoUseCase {
     private readonly ffmpegService: IFfmpegService,
   ) {}
 
-  async execute({ file }: Auth<CreateVideoInput>) {
+  async execute({ file, slug }: Auth<CreateVideoInput>) {
     const inputStream = file.getFileStream()
     const ffmpeg = this.ffmpegService.getMp4Proccessor()
     try {
       inputStream.pipe(ffmpeg.in)
       // onClose(() => ffmpeg.onError())
       const { key, url } = await this.storageService.uploadStream({
-        key: 'output.mp4',
+        key: `${slug}/videos/output.mp4`,
         stream: ffmpeg.out,
       })
       return { key, url }
