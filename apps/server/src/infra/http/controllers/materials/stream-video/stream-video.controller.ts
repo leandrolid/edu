@@ -4,34 +4,45 @@ import {
   Docs,
   Get,
   Headers,
+  HttpStatusCode,
+  MiddleWares,
   Params,
-  Response,
+  ResponseNode,
   Stream,
+  Validate,
   type IResponseNode,
 } from '@edu/framework'
+import {
+  StreamVideoValidation,
+  type StreamVideoHeaders,
+  type StreamVideoParams,
+} from '@infra/http/controllers/materials/stream-video/stream-video.validation'
+import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({
   title: 'Stream a video',
   tags: ['Materials'],
 })
-@Controller('/materials')
-// @MiddleWares(JwtMiddleware)
+@Controller('/organizations/:slug/videos')
+@MiddleWares(JwtMiddleware)
 @Stream()
 export class StreamVideoController {
   constructor(private readonly streamVideoUseCase: StreamVideoUseCase) {}
 
-  @Get('/videos/:videoId/stream')
+  @Get('/:videoId/stream')
+  @Validate(new StreamVideoValidation())
   async execute(
-    @Headers() headers: { range?: string },
-    @Params() params: { videoId: string },
-    @Response() response: IResponseNode,
+    @Headers() headers: StreamVideoHeaders,
+    @Params() params: StreamVideoParams,
+    @ResponseNode() response: IResponseNode,
   ) {
     const { videoStream, start, end, videoSize, contentLength } =
       await this.streamVideoUseCase.execute({
+        slug: params.slug,
         videoId: params.videoId,
         range: headers.range,
       })
-    response.writeHead(206, {
+    response.writeHead(HttpStatusCode.PARTIAL_CONTENT, {
       'Content-Range': `bytes ${start}-${end}/${videoSize}`,
       'Accept-Ranges': 'bytes',
       'Content-Length': contentLength,
