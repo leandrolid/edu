@@ -13,7 +13,7 @@ export class CreateVideoUseCase {
     private readonly videoService: IVideoService,
   ) {}
 
-  async execute({ file, slug }: Auth<CreateVideoInput>) {
+  async execute({ file, slug, onClose }: Auth<CreateVideoInput>) {
     const buffer = await file.getBuffer()
     const videoInfo = await this.videoService.getInfo({ buffer })
     const processors = this.videoService.getMp4Processors({
@@ -22,6 +22,7 @@ export class CreateVideoUseCase {
     try {
       const uploads = await Promise.all(
         processors.map((processor) => {
+          onClose(() => processor.onError())
           processor.process(buffer)
           return this.storageService.uploadStream({
             key: `${slug}/videos/${processor.resolution}/output.mp4`,

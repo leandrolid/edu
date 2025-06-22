@@ -8,9 +8,11 @@ import {
   Params,
   Post,
   RequestNode,
+  ResponseNode,
   User,
   type IController,
   type IRequestNode,
+  type IResponseNode,
 } from '@edu/framework'
 import type {
   CreateVideoForm,
@@ -30,6 +32,7 @@ export class CreateVideoController implements IController {
   @Post('/')
   async execute(
     @RequestNode() request: IRequestNode,
+    @ResponseNode() response: IResponseNode,
     @User() user: IUser,
     @Params() params: CreateVideoParams,
     @Form() form: CreateVideoForm,
@@ -39,9 +42,8 @@ export class CreateVideoController implements IController {
       slug: params.slug,
       file: form.file,
       onClose(callback: () => void) {
-        request.once('error', () => {
-          callback()
-        })
+        request.once('close', () => callback())
+        response.once('close', () => callback())
       },
     })
     return { data: output }
