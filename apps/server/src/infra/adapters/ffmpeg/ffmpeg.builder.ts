@@ -16,6 +16,11 @@ export class FfmpegBuilder {
     return this
   }
 
+  addAccel(accel: 'cuda' | 'vaapi' | 'vdpau' | 'qsv') {
+    this.ffmpegArgs.push('-hwaccel', accel)
+    return this
+  }
+
   addVideoCodec(codec: 'libx264' | 'h264' | 'vp9' | 'hevc') {
     this.ffmpegArgs.push('-vcodec', codec)
     return this
@@ -43,6 +48,11 @@ export class FfmpegBuilder {
 
   addBufSize(bufSize: string) {
     this.ffmpegArgs.push('-bufsize', bufSize)
+    return this
+  }
+
+  addVideoFilter(filter: string) {
+    this.ffmpegArgs.push('-vf', filter)
     return this
   }
 
