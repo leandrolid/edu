@@ -83,7 +83,7 @@ export class FfmpegBuilder {
         this.logger.success('FFmpeg processing completed successfully')
       }
     })
-    process.stderr.on('data', (error) => this.logger.error(error.toString()))
+    process.stderr.on('data', (error) => this.logger.info(error.toString()))
     process.stdout.on('data', (data) => this.logger.debug(data.toString()))
     process.stdout.on('error', (error) => {
       process.stdin.destroy(error)

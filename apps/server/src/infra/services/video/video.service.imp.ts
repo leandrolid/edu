@@ -48,7 +48,6 @@ export class VideoService implements IVideoService {
             stream.pipe(ffmpeg.stdin)
           },
           toStream: () => ffmpeg.stdout,
-          kill: () => ffmpeg.kill(),
           onError: (error?: unknown) => {
             ffmpeg.stdout.destroy(error as Error)
             ffmpeg.stdin.destroy(error as Error)

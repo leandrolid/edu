@@ -11,7 +11,6 @@ export type GetMp4ProcessorOutput = {
   resolution: Resolution
   process(buffer: Buffer): void
   toStream: () => IReadStream
-  kill: () => void
   onError: (error?: unknown) => void
 }
 
