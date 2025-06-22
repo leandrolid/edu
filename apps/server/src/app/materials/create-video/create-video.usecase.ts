@@ -1,33 +1,39 @@
 import type { CreateVideoInput } from '@app/materials/create-video/create-video.input'
 import type { Auth } from '@domain/dtos/auth.dto'
 import { ConflictError, Inject, Injectable } from '@edu/framework'
-import type { IFfmpegService } from '@infra/services/ffmpeg/ffmpeg.service'
 import type { IStorageService } from '@infra/services/storage/storage.service'
+import type { IVideoService } from '@infra/services/video/video.service'
 
 @Injectable()
 export class CreateVideoUseCase {
   constructor(
     @Inject('IStorageService')
     private readonly storageService: IStorageService,
-    @Inject('IFfmpegService')
-    private readonly ffmpegService: IFfmpegService,
+    @Inject('IVideoService')
+    private readonly videoService: IVideoService,
   ) {}
 
   async execute({ file, slug }: Auth<CreateVideoInput>) {
-    const inputStream = file.getFileStream()
-    const ffmpeg = this.ffmpegService.getMp4Proccessor()
+    const buffer = await file.getBuffer()
+    const videoInfo = await this.videoService.getInfo({ buffer })
+    const processors = this.videoService.getMp4Processors({
+      maxResolution: videoInfo.video.height,
+    })
     try {
-      inputStream.pipe(ffmpeg.in)
-      // onClose(() => ffmpeg.onError())
-      const { key, url } = await this.storageService.uploadStream({
-        key: `${slug}/videos/output.mp4`,
-        stream: ffmpeg.out,
-      })
-      return { key, url }
+      const uploads = await Promise.all(
+        processors.map((processor) => {
+          processor.process(buffer)
+          return this.storageService.uploadStream({
+            key: `${slug}/videos/${processor.resolution}/output.mp4`,
+            stream: processor.toStream(),
+          })
+        }),
+      )
+      return uploads
     } catch (error) {
       console.error(error)
-      ffmpeg.onError(error)
-      throw new ConflictError('Failed to process video stream')
+      processors.map((processor) => processor.onError(error))
+      throw new ConflictError('Erro ao processar o vídeo')
     }
   }
 }
