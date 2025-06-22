@@ -27,10 +27,7 @@ export class JwtMiddleware implements IMiddleware {
   ) {}
 
   async execute(request: IRequest<any, any, Record<string, string>, Record<string, string>>) {
-    if (!request.headers.authorization) throw new UnauthorizedError('Token não fornecido')
-    const [bearer, token] = request.headers.authorization.split(' ')
-    if (bearer !== 'Bearer') throw new UnauthorizedError('Token mal formatado')
-    if (!token) throw new UnauthorizedError('Token mal formatado')
+    const token = this.getTokenOrFail(request.headers)
     const payload = await this.tokenService.verify<{ id: string; owner: boolean }>(token)
     if (!request.params.slug) {
       request.user = { id: payload.id, owner: payload.owner }
@@ -60,5 +57,13 @@ export class JwtMiddleware implements IMiddleware {
       organizationId: membership.organizationId,
       roles: membership.roles,
     }
+  }
+
+  private getTokenOrFail(headers: Record<string, string>) {
+    if (!headers.authorization) throw new UnauthorizedError('Token não fornecido')
+    const [bearer, token] = headers.authorization.split(' ')
+    if (bearer !== 'Bearer') throw new UnauthorizedError('Token mal formatado')
+    if (!token) throw new UnauthorizedError('Token mal formatado')
+    return token
   }
 }
