@@ -87,6 +87,12 @@ export class FfmpegBuilder {
     process.stdout.on('data', (data) => this.logger.debug(data.toString()))
     process.stdout.on('error', (error) => {
       process.stdin.destroy(error)
+      process.stdout.destroy(error)
+      process.kill()
+    })
+    process.stdout.on('end', () => {
+      process.stdin.destroy()
+      process.stdout.destroy()
       process.kill()
     })
     return process
