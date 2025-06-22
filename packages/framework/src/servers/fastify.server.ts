@@ -56,9 +56,9 @@ export class FastifyServer implements IServer {
         appInstance
           .withTypeProvider<ZodTypeProvider>()
           .addHook('preHandler', async (request, response) => {
-            return Promise.all(
-              middlewares.map((middleware) => middleware.execute(request, response)),
-            )
+            for (const middleware of middlewares) {
+              await middleware.execute(request, response)
+            }
           })
           .route({
             url,
@@ -87,7 +87,8 @@ export class FastifyServer implements IServer {
                   form: await this.getMultipartForm(requestInput),
                 },
                 requestNode: requestInput.raw,
-                response: response.raw,
+                response,
+                responseNode: response.raw,
               })
               if (!isStream) return response.status(route.status).send(output)
             },

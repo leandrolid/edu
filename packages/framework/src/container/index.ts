@@ -101,12 +101,14 @@ export class Container {
     request,
     requestNode,
     response,
+    responseNode,
   }: {
     instance: any
     execute: string
     request: unknown
     requestNode: unknown
     response: unknown
+    responseNode: unknown
   }) {
     const method = instance[execute]
     const paramCount = method.length
@@ -118,6 +120,7 @@ export class Container {
     this.resolveParams('custom:request', instance, execute, args, request)
     this.resolveParams('custom:requestNode', instance, execute, args, requestNode)
     this.resolveParams('custom:response', instance, execute, args, response)
+    this.resolveParams('custom:responseNode', instance, execute, args, responseNode)
     return method.apply(instance, args)
   }
 

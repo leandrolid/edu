@@ -80,6 +80,15 @@ export function Response() {
   }
 }
 
+export function ResponseNode() {
+  return function (target: any, propertyKey: string | symbol, parameterIndex: number) {
+    const existingIndices: number[] =
+      Reflect.getOwnMetadata('custom:responseNode', target, propertyKey) || []
+    existingIndices.push(parameterIndex)
+    Reflect.defineMetadata('custom:responseNode', existingIndices, target, propertyKey)
+  }
+}
+
 export function Request() {
   return function (target: any, propertyKey: string | symbol, parameterIndex: number) {
     const existingIndices: number[] =
