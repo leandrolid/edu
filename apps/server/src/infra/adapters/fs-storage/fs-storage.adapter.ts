@@ -8,6 +8,7 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { join, resolve as resolvePath } from 'node:path'
 
 export class FsStorageAdapter {
@@ -22,7 +23,11 @@ export class FsStorageAdapter {
   public saveToFile({ fileName, inputStream }: { fileName: string; inputStream: IReadStream }) {
     const filePath = join(this.baseDir, fileName)
     rmSync(filePath, { force: true })
-    const outputStream = createWriteStream(filePath, { flags: 'w' })
+    const fileDir = filePath.split('/').slice(0, -1).join('/')
+    if (!existsSync(fileDir)) {
+      mkdirSync(fileDir, { recursive: true })
+    }
+    const outputStream = createWriteStream(filePath)
     inputStream.pipe(outputStream)
     return {
       outputStream,
@@ -37,9 +42,7 @@ export class FsStorageAdapter {
               fileName,
             })
           })
-          outputStream.on('error', (error) => {
-            reject(error)
-          })
+          outputStream.on('error', (error) => reject(error))
         })
       },
     }
@@ -57,6 +60,9 @@ export class FsStorageAdapter {
       fileSize: stats.size,
       toStream: (options?: { start: number; end: number }) => {
         return createReadStream(filePath, options)
+      },
+      toBuffer: () => {
+        return readFile(filePath)
       },
     }
   }

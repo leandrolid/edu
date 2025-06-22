@@ -36,6 +36,9 @@ export class StorageService implements Storage.IStorageService {
       toStream: (options) => {
         return file.toStream(options)
       },
+      toBuffer: () => {
+        return file.toBuffer()
+      },
     }
   }
 }

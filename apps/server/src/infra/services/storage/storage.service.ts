@@ -20,4 +20,5 @@ export type GetOneOutput = {
   url: string
   size: number
   toStream: (options?: { start: number; end: number }) => IReadStream
+  toBuffer: () => Promise<Buffer>
 }
