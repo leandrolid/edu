@@ -15,7 +15,7 @@ export class StreamVideoUseCase {
     if (start === null || start === undefined) {
       throw new BadRequestError('Range header is required for video streaming')
     }
-    const video = await this.storageService.getOne(`${slug}/videos/${videoId}`)
+    const video = await this.storageService.getOne(`${slug}/videos/720p/${videoId}`)
     const end = Math.min(start + ONE_MEGABYTE, video.size - 1)
     const videoStream = video.toStream({ start, end })
     return {
