@@ -1,8 +1,8 @@
 'use client'
 
 import { auth } from '@/auth'
+import { createVideo } from '@/http/services/materials/create-video'
 import { Flex, Progress } from '@radix-ui/themes'
-import axios from 'axios'
 import { useState } from 'react'
 
 export function VideoForm() {
@@ -12,21 +12,15 @@ export function VideoForm() {
     const file = event.target.files?.[0]
     setProgress(0)
     if (!file) return
-    const token = await auth.getToken()
-    const res = await axios.post(
-      'http://localhost:3333/materials/videos',
-      { file },
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-        onUploadProgress(progressEvent) {
-          setProgress(progressEvent.progress ?? 0)
-        },
+    const slug = await auth.getCurrentOrganization()
+    const output = await createVideo({
+      slug: slug!,
+      file,
+      onProgress: ({ progress }) => {
+        setProgress(progress)
       },
-    )
-    console.log('Upload response:', res.data)
+    })
+    console.log('Video created:', output)
   }
 
   return (
@@ -37,11 +31,6 @@ export function VideoForm() {
         <p>Selecione um arquivo de vídeo para fazer o upload.</p>
       )}
       <input type="file" name="" id="" onChange={handleFileChange} />
-
-      <video controls width="100%">
-        <source src="http://localhost:3333/materials/videos/1/stream" type="video/mp4" />
-        Seu navegador não suporta o elemento de vídeo.
-      </video>
     </Flex>
   )
 }
