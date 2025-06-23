@@ -17,11 +17,10 @@ export class AxiosHttpClient implements HttpClient {
     responseType?: 'json' | 'text' | 'stream' | 'blob'
   }): Promise<Body> {
     try {
-      await this.authorize(request)
       const response = await client.request({
         url: request.url,
         method: request.method,
-        headers: request.headers,
+        headers: await this.authorize(request.headers),
         params: request.query,
         data: request.multipartForm ? toFormData(request.body) : request.body,
         signal: request.signal,
@@ -73,14 +72,12 @@ export class AxiosHttpClient implements HttpClient {
     )
   }
 
-  private async authorize(request: HttpRequest): Promise<void> {
+  private async authorize(headers?: Record<string, string>): Promise<Record<string, string>> {
     const token = await getCookie('token')
-    if (token) {
-      Object.assign(request, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    if (!token) return headers || {}
+    return {
+      ...(headers || {}),
+      Authorization: `Bearer ${token}`,
     }
   }
 }
