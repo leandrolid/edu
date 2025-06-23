@@ -1,4 +1,4 @@
-import { CookiesFn, deleteCookie as deleteCookieFn, getCookie as getCookieFn } from 'cookies-next'
+import { deleteCookie, getCookie } from '@/lib/cookies-next'
 
 export const auth = {
   async isAuthenticated() {
@@ -17,22 +17,4 @@ export const auth = {
     await deleteCookie('token')
     await deleteCookie('slug')
   },
-}
-
-const getCookie = async (key: string) => {
-  let cookieStore: CookiesFn | undefined
-  if (typeof window === 'undefined') {
-    const { cookies: serverCookies } = await import('next/headers')
-    cookieStore = serverCookies
-  }
-  return getCookieFn(key, { cookies: cookieStore })
-}
-
-const deleteCookie = async (key: string) => {
-  let cookieStore: CookiesFn | undefined
-  if (typeof window === 'undefined') {
-    const { cookies: serverCookies } = await import('next/headers')
-    cookieStore = serverCookies
-  }
-  return deleteCookieFn(key, { cookies: cookieStore })
 }
