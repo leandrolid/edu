@@ -8,6 +8,7 @@ import { DeleteOrganizationController } from '@infra/http/controllers/organizati
 import { GetOrganizationController } from '@infra/http/controllers/organizations/get-organization/get-organization.controller'
 import { GetOrganizationsController } from '@infra/http/controllers/organizations/get-organizations/get-organizations.controller'
 import { UpdateOrganizationController } from '@infra/http/controllers/organizations/update-organization/update-organization.controller'
+import { SpeedController } from '@infra/http/controllers/status/speed/speed.controller'
 import { CreateTeamController } from '@infra/http/controllers/teams/create-team/create-team.controller'
 import { DeleteTeamController } from '@infra/http/controllers/teams/delete-team/delete-teams.controller'
 import { GetTeamController } from '@infra/http/controllers/teams/get-team/get-team.controller'
@@ -46,6 +47,7 @@ async function main() {
       VideoService,
     ],
     controllers: [
+      SpeedController,
       CreateAccountController,
       BasicSignInController,
       CreateOrganizationController,
