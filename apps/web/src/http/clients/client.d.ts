@@ -10,5 +10,6 @@ export type HttpRequest = {
   query?: Record<string, any>
   body?: any
   signal?: AbortSignal
-  submenu?: 'desafios'
+  multipartForm?: boolean
+  onUploadProgress?: (input: { progress: number }) => void
 }

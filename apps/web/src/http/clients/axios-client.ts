@@ -1,0 +1,66 @@
+import { HttpError } from '@/http/errors/http.error'
+import { getCookie } from '@/lib/cookies-next'
+import { env } from '@edu/env'
+import axios, { AxiosError, toFormData } from 'axios'
+import { HttpClient, HttpRequest } from './client'
+
+const client = axios.create({
+  baseURL: env.NEXT_PUBLIC_API_URL,
+})
+
+export class AxiosHttpClient implements HttpClient {
+  async request<Body>({ onUploadProgress, ...request }: HttpRequest): Promise<Body> {
+    try {
+      await this.authorize(request)
+      const response = await client.request({
+        url: request.url,
+        method: request.method,
+        headers: request.headers,
+        params: request.query,
+        data: request.multipartForm ? toFormData(request.body) : request.body,
+        signal: request.signal,
+        adapter: onUploadProgress ? axios.defaults.adapter : 'fetch',
+        onUploadProgress: (progressEvent) => {
+          if (!onUploadProgress) return
+          console.log('Progress event:', progressEvent)
+          onUploadProgress({ progress: progressEvent.progress ?? 0 })
+        },
+      })
+      return response.data
+    } catch (error) {
+      console.error('[HTTP]:', error)
+      if (error instanceof AxiosError && error.response) {
+        throw new HttpError(
+          error.response.status,
+          error.response.data.message,
+          error.response.data.errors,
+        )
+      }
+      throw new HttpError(500, (error as any)?.message ?? 'Erro interno')
+    }
+  }
+
+  onStatusCode(cb: (statusCode: number) => void): number {
+    return client.interceptors.response.use(
+      (response) => {
+        cb(response.status)
+        return Promise.resolve(response)
+      },
+      (error: AxiosError) => {
+        cb(error.status ?? error.response?.status!)
+        return Promise.reject(error)
+      },
+    )
+  }
+
+  private async authorize(request: HttpRequest): Promise<void> {
+    const token = await getCookie('token')
+    if (token) {
+      Object.assign(request, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    }
+  }
+}
