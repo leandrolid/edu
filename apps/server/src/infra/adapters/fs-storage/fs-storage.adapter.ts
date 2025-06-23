@@ -68,6 +68,12 @@ export class FsStorageAdapter {
     }
   }
 
+  async clear() {
+    if (!existsSync(this.baseDir)) return
+    rmSync(this.baseDir, { recursive: true, force: true })
+    mkdirSync(this.baseDir, { recursive: true })
+  }
+
   private getMimeType(fileName: string): string {
     const ext = fileName.split('.').pop()?.toLowerCase()
     switch (ext) {

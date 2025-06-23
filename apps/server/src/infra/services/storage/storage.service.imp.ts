@@ -9,7 +9,7 @@ import { resolve } from 'node:path'
 export class StorageService implements Storage.IStorageService {
   private readonly storage: FsStorageAdapter
   constructor() {
-    this.storage = new FsStorageAdapter(resolve(__dirname, '../../../../../../node_modules/.temp'))
+    this.storage = new FsStorageAdapter(resolve(process.cwd(), './node_modules/.temp'))
   }
 
   async uploadStream({
@@ -41,5 +41,9 @@ export class StorageService implements Storage.IStorageService {
         return file.toBuffer()
       },
     }
+  }
+
+  async clear(): Promise<void> {
+    await this.storage.clear()
   }
 }
