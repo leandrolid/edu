@@ -12,12 +12,13 @@ import type {
 import { Readable } from 'node:stream'
 
 const RESOLUTIONS = [
-  { label: '1080p', height: 1080, bitrate: '5000k' },
-  { label: '720p', height: 720, bitrate: '3000k' },
-  { label: '480p', height: 480, bitrate: '1500k' },
-  { label: '360p', height: 360, bitrate: '800k' },
-  { label: '240p', height: 240, bitrate: '500k' },
-  { label: '144p', height: 144, bitrate: '200k' },
+  { label: '1080p', height: 1080, bitrate: '5000k', extension: 'webm' },
+  { label: '720p', height: 720, bitrate: '3000k', extension: 'webm' },
+  // { label: '480p', height: 480, bitrate: '1500k', extension: 'webm' },
+  // { label: '360p', height: 360, bitrate: '800k', extension: 'webm' },
+  // { label: '240p', height: 240, bitrate: '500k', extension: 'webm' },
+  { label: '144p', height: 144, bitrate: '200k', extension: 'webm' },
+  { label: 'audio', height: 0, bitrate: '128k', extension: 'webm' },
 ]
 
 @Injectable({
@@ -28,21 +29,35 @@ export class VideoService implements IVideoService {
 
   public getMp4Processors(input: GetMp4ProccessorsForResolutionsInput): GetMp4ProcessorOutput[] {
     return RESOLUTIONS.filter((resolution) => resolution.height <= input.maxResolution).map(
-      ({ height, bitrate, label }) => {
-        const ffmpeg = FfmpegBuilder.init(this.logger)
-          .addInput('pipe:0')
-          .addVideoCodec('libx264')
-          .addAudioCodec('aac')
-          .addMovFlags('frag_keyframe+empty_moov+default_base_moof')
-          .addBitrate(bitrate)
-          .addMaxRate(bitrate)
-          .addBufSize('1000k')
-          .addVideoFilter(`"scale=-2:min(${height}\\,ih)"`)
-          .addFormat('mp4')
-          .addOutput('pipe:1')
-          .build()
+      (resolution) => {
+        const ffmpeg =
+          resolution.height > 0
+            ? FfmpegBuilder.init(this.logger)
+                .addInput('pipe:0')
+                .addVideoCodec('libvpx-vp9')
+                .addMinKeyframe(150)
+                .addGopSize(150)
+                .addTileColumns(4)
+                .addFrameParallel(1)
+                .addFormat('webm')
+                .addDash(1)
+                .addAudioDisable()
+                .addVideoFilter(`"scale=-2:min(${resolution.height}\\,ih)"`)
+                .addBitrate(resolution.bitrate)
+                .addMaxRate(resolution.bitrate)
+                .addDash(1)
+                .addOutput('pipe:1')
+                .build()
+            : FfmpegBuilder.init(this.logger)
+                .addInput('pipe:0')
+                .addAudioCodec('libvorbis')
+                .addAudioBitrate(resolution.bitrate)
+                .addDash(1)
+                .addOutput('pipe:1')
+                .build()
         return {
-          resolution: label as Resolution,
+          resolution: resolution.label as Resolution,
+          extension: resolution.extension,
           process: (buffer: Buffer) => {
             const stream = Readable.from(buffer)
             stream.pipe(ffmpeg.stdin)

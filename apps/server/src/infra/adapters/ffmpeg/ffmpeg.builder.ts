@@ -21,12 +21,12 @@ export class FfmpegBuilder {
     return this
   }
 
-  addVideoCodec(codec: 'libx264' | 'h264' | 'vp9' | 'hevc') {
+  addVideoCodec(codec: 'libx264' | 'h264' | 'vp9' | 'hevc' | 'libvpx-vp9') {
     this.ffmpegArgs.push('-vcodec', codec)
     return this
   }
 
-  addAudioCodec(codec: 'aac' | 'mp3' | 'opus') {
+  addAudioCodec(codec: 'aac' | 'mp3' | 'opus' | 'libvorbis') {
     this.ffmpegArgs.push('-acodec', codec)
     return this
   }
@@ -66,7 +66,48 @@ export class FfmpegBuilder {
     return this
   }
 
+  addVideoCodecStreamCopy(codec: 'libx264' | 'h264' | 'vp9' | 'hevc' | 'libvpx-vp9') {
+    this.ffmpegArgs.push('-c:v', codec)
+    return this
+  }
+
+  addMinKeyframe(minKeyframe: number) {
+    this.ffmpegArgs.push('-keyint_min', minKeyframe.toString())
+    return this
+  }
+
+  addGopSize(gopSize: number) {
+    this.ffmpegArgs.push('-g', gopSize.toString())
+    return this
+  }
+
+  addTileColumns(tileColumns: number) {
+    this.ffmpegArgs.push('-tile-columns', tileColumns.toString())
+    return this
+  }
+
+  addFrameParallel(frameParallel: number) {
+    this.ffmpegArgs.push('-frame-parallel', frameParallel.toString())
+    return this
+  }
+
+  addDash(dash: number) {
+    this.ffmpegArgs.push('-dash', dash.toString())
+    return this
+  }
+
+  addAudioDisable() {
+    this.ffmpegArgs.push('-an')
+    return this
+  }
+
+  addAudioBitrate(bitrate: string) {
+    this.ffmpegArgs.push('-ab', bitrate)
+    return this
+  }
+
   build() {
+    this.logger.debug(`ffmpeg ${this.ffmpegArgs.join(' ')}`)
     const process = spawn('ffmpeg', this.ffmpegArgs, {
       stdio: 'pipe',
       detached: true,
