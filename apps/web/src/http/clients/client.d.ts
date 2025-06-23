@@ -1,5 +1,7 @@
 export type HttpClient = {
   request: <Body>(params: HttpRequest) => Promise<Body>
+  stream: (params: HttpRequest) => Promise<ReadableStream>
+  save: (params: HttpRequest) => Promise<Blob>
   onStatusCode: (cb: (statusCode: number) => void) => number
 }
 

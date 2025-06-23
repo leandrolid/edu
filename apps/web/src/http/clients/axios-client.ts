@@ -9,7 +9,13 @@ const client = axios.create({
 })
 
 export class AxiosHttpClient implements HttpClient {
-  async request<Body>({ onUploadProgress, ...request }: HttpRequest): Promise<Body> {
+  async request<Body>({
+    onUploadProgress,
+    responseType,
+    ...request
+  }: HttpRequest & {
+    responseType?: 'json' | 'text' | 'stream' | 'blob'
+  }): Promise<Body> {
     try {
       await this.authorize(request)
       const response = await client.request({
@@ -22,9 +28,9 @@ export class AxiosHttpClient implements HttpClient {
         adapter: onUploadProgress ? axios.defaults.adapter : 'fetch',
         onUploadProgress: (progressEvent) => {
           if (!onUploadProgress) return
-          console.log('Progress event:', progressEvent)
           onUploadProgress({ progress: progressEvent.progress ?? 0 })
         },
+        responseType,
       })
       return response.data
     } catch (error) {
@@ -38,6 +44,20 @@ export class AxiosHttpClient implements HttpClient {
       }
       throw new HttpError(500, (error as any)?.message ?? 'Erro interno')
     }
+  }
+
+  async stream(request: HttpRequest): Promise<ReadableStream> {
+    return this.request({
+      ...request,
+      responseType: 'stream',
+    })
+  }
+
+  async save(request: HttpRequest): Promise<Blob> {
+    return this.request({
+      ...request,
+      responseType: 'blob',
+    })
   }
 
   onStatusCode(cb: (statusCode: number) => void): number {

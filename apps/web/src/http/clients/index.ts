@@ -1,3 +1,4 @@
 import { AxiosHttpClient } from '@/http/clients/axios-client'
+import type { HttpClient } from '@/http/clients/client'
 
-export const httpClient = new AxiosHttpClient()
+export const httpClient: HttpClient = new AxiosHttpClient()
