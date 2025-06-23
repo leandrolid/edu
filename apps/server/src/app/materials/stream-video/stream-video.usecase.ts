@@ -19,32 +19,29 @@ export class StreamVideoUseCase {
     private readonly storageService: IStorageService,
   ) {}
 
-  async execute({ range: start, videoId, slug, networkSpeedMbps }: StreamVideoInput) {
-    const databaseVideo = {
-      resolutions: ['720p', '480p', '360p', '240p', '144p'],
-    }
-    const resolution = this.getResolutionBySpeed({
-      networkSpeedMbps,
-      availableResolutions: databaseVideo.resolutions,
-    })
-    const video = await this.storageService.getOne(`${slug}/videos/${videoId}/${resolution}.mp4`)
-    if (typeof start !== 'number' || start < 0) {
+  async execute({ range, videoId, slug, fileName }: StreamVideoInput) {
+    const video = await this.storageService.getOne(`${slug}/videos/${videoId}/${fileName}`)
+    if (!range || !range.match(/bytes=(\d+)-(\d+)?/)) {
       return {
         videoStream: video.toStream(),
         start: 0,
         end: video.size - 1,
         videoSize: video.size,
         contentLength: video.size,
+        contentType: video.mimetype,
       }
     }
-    const end = Math.min(start + ONE_MEGABYTE, video.size - 1)
-    const videoStream = video.toStream({ start, end })
+    const [, rangeStart, rangeEnd] = range.match(/bytes=(\d+)-(\d+)?/)!
+    const start = Number(rangeStart) || 0
+    const end = Number(rangeEnd) || Math.min(start + ONE_MEGABYTE, video.size - 1)
+    const videoStream = video.toStream({ start: start, end })
     return {
       videoStream,
       start,
       end,
       videoSize: video.size,
       contentLength: end - start + 1,
+      contentType: video.mimetype,
     }
   }
 

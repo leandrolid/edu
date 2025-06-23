@@ -3,33 +3,22 @@ import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
 import z from 'zod'
 
-export type StreamVideoHeaders = Pick<StreamVideoInput, 'range' | 'networkSpeedMbps'>
-export type StreamVideoParams = Pick<StreamVideoInput, 'videoId'> & {
+export type StreamVideoHeaders = Pick<StreamVideoInput, 'range'>
+export type StreamVideoParams = Pick<StreamVideoInput, 'videoId' | 'fileName'> & {
   slug: string
 }
 
 export class StreamVideoValidation implements IValidation {
-  headers?: IValidator<StreamVideoHeaders> = z
-    .object({
-      range: z
-        .string({ message: 'É necessário informar o cabeçalho Range para streaming de vídeo' })
-        .transform((value) => Number(value.replace(/\D/g, '')))
-        .optional(),
-      authorization: z.string({ message: 'Cabeçalho de autenticação inválido' }).optional(),
-      'x-network-speed-mbps': z.coerce
-        .number({
-          message: 'É necessário informar a velocidade da rede em Mbps',
-        })
-        .optional()
-        .default(0),
-    })
-    .transform((data) => ({
-      ...data,
-      networkSpeedMbps: data['x-network-speed-mbps'],
-    }))
+  headers?: IValidator<StreamVideoHeaders> = z.object({
+    range: z
+      .string({ message: 'É necessário informar o cabeçalho Range para streaming de vídeo' })
+      .optional(),
+    authorization: z.string({ message: 'Cabeçalho de autenticação inválido' }).optional(),
+  })
 
   params?: IValidator<StreamVideoParams> = z.object({
     videoId: z.string({ message: 'É necessário informar o ID do vídeo' }),
+    fileName: z.string({ message: 'É necessário informar a resolução do vídeo' }),
     slug: slugSchema,
   })
 }

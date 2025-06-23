@@ -1,6 +1,6 @@
 export type StreamVideoInput = {
   slug: string
   videoId: string
-  range?: number
-  networkSpeedMbps: number
+  fileName: string
+  range?: string
 }
