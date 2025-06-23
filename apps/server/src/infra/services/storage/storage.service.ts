@@ -19,6 +19,7 @@ export type GetOneOutput = {
   key: string
   url: string
   size: number
+  mimetype: string
   toStream: (options?: { start: number; end: number }) => IReadStream
   toBuffer: () => Promise<Buffer>
 }

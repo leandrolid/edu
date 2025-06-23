@@ -58,12 +58,27 @@ export class FsStorageAdapter {
       fileName,
       pathName: `file://${resolvePath(filePath)}`,
       fileSize: stats.size,
+      mimeType: this.getMimeType(fileName),
       toStream: (options?: { start: number; end: number }) => {
         return createReadStream(filePath, options)
       },
       toBuffer: () => {
         return readFile(filePath)
       },
+    }
+  }
+
+  private getMimeType(fileName: string): string {
+    const ext = fileName.split('.').pop()?.toLowerCase()
+    switch (ext) {
+      case 'mp4':
+        return 'video/mp4'
+      case 'webm':
+        return 'video/webm'
+      case 'mpd':
+        return 'application/dash+xml'
+      default:
+        return 'application/octet-stream'
     }
   }
 }

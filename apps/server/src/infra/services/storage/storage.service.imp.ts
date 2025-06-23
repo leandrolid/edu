@@ -33,6 +33,7 @@ export class StorageService implements Storage.IStorageService {
       key: file.fileName,
       url: file.pathName,
       size: file.fileSize,
+      mimetype: file.mimeType,
       toStream: (options) => {
         return file.toStream(options)
       },
