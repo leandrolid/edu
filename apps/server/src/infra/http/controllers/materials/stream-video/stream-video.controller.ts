@@ -41,13 +41,22 @@ export class StreamVideoController {
         slug: params.slug,
         videoId: params.videoId,
         range: headers.range,
+        networkSpeedMbps: headers.networkSpeedMbps,
       })
-    response.writeHead(HttpStatusCode.PARTIAL_CONTENT, {
-      'Content-Range': `bytes ${start}-${end}/${videoSize}`,
-      'Accept-Ranges': 'bytes',
-      'Content-Length': contentLength,
-      'Content-Type': 'video/mp4',
-    })
+    if (contentLength === videoSize) {
+      response.writeHead(HttpStatusCode.OK, {
+        'Content-Length': contentLength,
+        'Content-Type': 'video/mp4',
+        'access-control-allow-origin': '*',
+      })
+    } else {
+      response.writeHead(HttpStatusCode.PARTIAL_CONTENT, {
+        'Content-Range': `bytes ${start}-${end}/${videoSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': contentLength,
+        'Content-Type': 'video/mp4',
+      })
+    }
     videoStream.pipe(response)
   }
 }
