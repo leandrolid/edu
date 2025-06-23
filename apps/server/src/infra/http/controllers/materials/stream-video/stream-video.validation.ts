@@ -16,13 +16,16 @@ export class StreamVideoValidation implements IValidation {
         .transform((value) => Number(value.replace(/\D/g, '')))
         .optional(),
       authorization: z.string({ message: 'Cabeçalho de autenticação inválido' }).optional(),
-      'x-network-speed-mbps': z.coerce.number({
-        message: 'É necessário informar a velocidade da rede em Mbps',
-      }),
+      'x-network-speed-mbps': z.coerce
+        .number({
+          message: 'É necessário informar a velocidade da rede em Mbps',
+        })
+        .optional()
+        .default(0),
     })
     .transform((data) => ({
       ...data,
-      networkSpeedMbps: data['x-network-speed-mbps'] ?? 0,
+      networkSpeedMbps: data['x-network-speed-mbps'],
     }))
 
   params?: IValidator<StreamVideoParams> = z.object({
