@@ -1,4 +1,5 @@
-import { createServer } from '@edu/framework'
+import { ProcessVideoListener } from '@app/events/videos/process-video.listener'
+import { createServer, EVENT_SERVICE, EventsService } from '@edu/framework'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
 import { CreateVideoController } from '@infra/http/controllers/materials/create-video/create-video.controller'
 import { StreamVideoController } from '@infra/http/controllers/materials/stream-video/stream-video.controller'
@@ -37,6 +38,10 @@ async function main() {
     },
     cors: ['*'],
     providers: [
+      {
+        provide: EVENT_SERVICE,
+        useClass: EventsService,
+      },
       UserRepository,
       OrganizationRepository,
       TeamRepository,
@@ -45,6 +50,7 @@ async function main() {
       TokenService,
       StorageService,
       VideoService,
+      ProcessVideoListener,
     ],
     controllers: [
       SpeedController,

@@ -18,7 +18,7 @@ import type {
   IFile,
   IServer,
   MultipartFormConfig,
-  RegisterProviderInput,
+  Provider,
 } from '../interfaces'
 import { FormFile, Logger } from '../utils'
 
@@ -136,12 +136,18 @@ export class FastifyServer implements IServer {
     })
   }
 
-  public registerProviders(providers: RegisterProviderInput): void {
-    providers.forEach((provider) => {
+  public registerProviders(providers?: Provider[]): void {
+    providers?.forEach((provider) => {
       if (!('provide' in provider)) return
       Container.instance.register(provider.provide, {
         useClass: provider.useClass,
       })
+    })
+  }
+
+  public registerListeners(providers?: Provider[]): void {
+    providers?.forEach((provider) => {
+      Container.instance.resolveListener('provide' in provider ? provider.useClass : provider)
     })
   }
 

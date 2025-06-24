@@ -8,8 +8,9 @@ export type IServer = {
   registerControllers(controllers: Constructor[]): void
   registerErrorHandler(errorHandler: IErrorHandler): void
   registerDocs(): void
-  registerProviders(providers: RegisterProviderInput): void
+  registerProviders(providers: Provider[]): void
   registerMultipartForm(config?: MultipartFormConfig): void
+  registerListeners(providers: Provider[]): void
 }
 
 export type MultipartFormConfig = {
@@ -17,6 +18,9 @@ export type MultipartFormConfig = {
   files?: number
 }
 
-export type RegisterProviderInput = Array<
-  Constructor | { provide: Constructor | string; useClass: Constructor }
->
+export type Provider =
+  | Constructor
+  | {
+      provide: Constructor | string
+      useClass: Constructor
+    }

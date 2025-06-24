@@ -1,12 +1,20 @@
 import { REQUEST_METADATA_KEYS, Route } from '../decorators/controller'
 import { DocsConfig } from '../decorators/docs'
 import { Scope } from '../enums'
-import type { Constructor, InjectionToken, Provider } from '../interfaces'
+import type { Constructor, InjectionToken } from '../interfaces'
 import { IValidation } from '../interfaces/controller'
 import { IMiddleware } from '../interfaces/middleware'
+import { EVENT_SERVICE, type IEventsService } from '../utils'
 
 export class Container {
-  private providers = new Map<string, Provider>()
+  private providers = new Map<
+    string,
+    {
+      useClass: Constructor
+      scope: Scope
+      instance?: InstanceType<Constructor>
+    }
+  >()
 
   private static _instance: Container
 
@@ -105,6 +113,18 @@ export class Container {
     this.resolveParams('custom:response', instance, execute, args, response)
     this.resolveParams('custom:responseNode', instance, execute, args, responseNode)
     return method.apply(instance, args)
+  }
+
+  resolveListener(token: Constructor | string) {
+    const isListener = Reflect.hasMetadata('listener', token)
+    if (!isListener) return
+    const listener = Reflect.getMetadata('listener', token)
+    const eventsService = this.resolve<IEventsService>(EVENT_SERVICE)
+    if (!eventsService) throw new Error(`Events service not found`)
+    const instance = this.resolve(token)
+    eventsService.on(listener.event, async (...args: any[]) => {
+      instance[listener.execute].apply(instance, args)
+    })
   }
 
   private getKeys<T extends object>(obj: T): Array<keyof T> {
