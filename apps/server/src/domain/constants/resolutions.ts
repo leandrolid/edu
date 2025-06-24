@@ -1,12 +1,5 @@
 export const RESOLUTIONS = [
   {
-    label: 'audio',
-    width: 0,
-    height: 0,
-    bitrate: '128k',
-    extension: 'webm',
-  },
-  {
     label: '144p',
     width: 256,
     height: 144,
@@ -46,6 +39,13 @@ export const RESOLUTIONS = [
     width: 1920,
     height: 1080,
     bitrate: '5000k',
+    extension: 'webm',
+  },
+  {
+    label: 'audio',
+    width: 0,
+    height: 0,
+    bitrate: '128k',
     extension: 'webm',
   },
 ] as const

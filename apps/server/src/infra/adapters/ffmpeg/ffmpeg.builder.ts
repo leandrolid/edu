@@ -11,6 +11,11 @@ export class FfmpegBuilder {
     private readonly logger: Logger,
   ) {}
 
+  addAcceleration() {
+    this.ffmpegArgs.push('-hwaccel auto')
+    return this
+  }
+
   input(input: string) {
     this.ffmpegArgs.push(
       `-i ${input} -c:v libvpx-vp9 -keyint_min 150 -g 150 -tile-columns 4 -frame-parallel 1 -f webm -dash 1`,
@@ -59,16 +64,18 @@ export class FfmpegBuilder {
     return this
   }
 
-  toManifest(resolutions: string[], audio: string, output: string) {
-    resolutions.forEach((res) => {
-      this.ffmpegArgs.push(`-y -f webm_dash_manifest -i ${res}`)
+  toManifest(files: string[], output: string) {
+    files.forEach((file) => {
+      this.ffmpegArgs.push(`-f webm_dash_manifest -i ${file}`)
     })
-    this.ffmpegArgs.push(`-f webm_dash_manifest -i ${audio}`)
     this.ffmpegArgs.push(
       '-c copy',
-      resolutions.map((_, index) => `-map ${index}`).join(' '),
+      files.map((_, index) => `-map ${index}`).join(' '),
       '-f webm_dash_manifest',
-      `-adaptation_sets "id=0,streams=${resolutions.map((_, index) => index).join(',')} id=1,streams=${resolutions.length - 1}"`,
+      `-adaptation_sets "id=0,streams=${files
+        .slice(0, files.length - 1)
+        .map((_, index) => index)
+        .join(',')} id=1,streams=${files.length - 1}"`,
       output,
     )
     return this

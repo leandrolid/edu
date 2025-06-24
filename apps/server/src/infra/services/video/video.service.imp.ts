@@ -28,6 +28,7 @@ export class VideoService implements IVideoService {
   public async processFile(input: ProcessFileInput): Promise<ProcessFileOutput> {
     const tempDir = crypto.randomUUID()
     const ffmpeg = FfmpegBuilder.init(this.logger)
+      .addAcceleration()
       .input('pipe:0')
       .to144p(input.maxResolution, join(process.cwd(), `node_modules/.temp/144p.webm`))
       .to240p(input.maxResolution, join(process.cwd(), `node_modules/.temp/240p.webm`))
@@ -139,7 +140,6 @@ export class VideoService implements IVideoService {
     const ffmpeg = FfmpegBuilder.init(this.logger)
       .toManifest(
         files.map((file) => join(process.cwd(), `node_modules/.temp/${file.name}`)),
-        join(process.cwd(), `node_modules/.temp/audio.webm`),
         outputPath,
       )
       .build()

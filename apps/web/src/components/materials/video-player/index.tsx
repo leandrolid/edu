@@ -14,7 +14,7 @@ export function VideoPlayer() {
       if (!container) return null
       player.initialize(
         container,
-        'http://localhost:3333/organizations/macedo-nogueira/videos/4abf5fa7-6347-493e-ba26-057febbc7973/manifest.mpd',
+        'http://localhost:3333/organizations/macedo-nogueira/videos/7cda934c-2007-48e2-a01f-8d6142a8575a/manifest.mpd',
         false,
       )
       return player
