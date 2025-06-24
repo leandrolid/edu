@@ -9,7 +9,10 @@ export class TmpStorageAdapter {
       path: string
       dispose: () => void
     }>((resolve, reject) => {
-      const tmpFile = fileSync({ postfix: `.${extension}`, keep: true })
+      const tmpFile = fileSync({
+        postfix: `.${extension}`,
+        keep: true,
+      })
       const writeStream = createWriteStream(tmpFile.name)
       stream.pipe(writeStream)
       writeStream.on('finish', () =>

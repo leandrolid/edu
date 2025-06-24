@@ -1,0 +1,51 @@
+export const RESOLUTIONS = [
+  // {
+  //   label: '1080p',
+  //   width: 1920,
+  //   height: 1080,
+  //   bitrate: '5000k',
+  //   extension: 'webm',
+  // },
+  // {
+  //   label: '720p',
+  //   width: 1280,
+  //   height: 720,
+  //   bitrate: '3000k',
+  //   extension: 'webm',
+  // },
+  // {
+  //   label: '480p',
+  //   width: 854,
+  //   height: 480,
+  //   bitrate: '1500k',
+  //   extension: 'webm',
+  // },
+  // {
+  //   label: '360p',
+  //   width: 640,
+  //   height: 360,
+  //   bitrate: '800k',
+  //   extension: 'webm',
+  // },
+  {
+    label: '240p',
+    width: 426,
+    height: 240,
+    bitrate: '500k',
+    extension: 'webm',
+  },
+  {
+    label: '144p',
+    width: 256,
+    height: 144,
+    bitrate: '200k',
+    extension: 'webm',
+  },
+  {
+    label: 'audio',
+    width: 0,
+    height: 0,
+    bitrate: '128k',
+    extension: 'webm',
+  },
+]
