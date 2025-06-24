@@ -1,5 +1,6 @@
 export * from './controller'
 export * from './docs'
+export * from './events'
 export * from './inject'
 export * from './injectable'
 export * from './middlewares'
