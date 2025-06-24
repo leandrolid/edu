@@ -1,7 +1,16 @@
-import { BadRequestError, Injectable, InternalServerError, Logger } from '@edu/framework'
+import { RESOLUTIONS } from '@domain/constants/resolutions'
+import {
+  BadRequestError,
+  ConflictError,
+  Injectable,
+  InternalServerError,
+  Logger,
+} from '@edu/framework'
 import { FfmpegBuilder } from '@infra/adapters/ffmpeg/ffmpeg.builder'
 import { FfProbeBuilder } from '@infra/adapters/ffmpeg/ffprobe.builder'
+import { TmpStorageAdapter } from '@infra/adapters/tmp-storage/tmp-storage.adapter'
 import type {
+  GenerateManifestInput,
   GetInfoInput,
   GetMp4ProccessorsForResolutionsInput,
   GetMp4ProcessorOutput,
@@ -11,21 +20,13 @@ import type {
 } from '@infra/services/video/video.service'
 import { Readable } from 'node:stream'
 
-const RESOLUTIONS = [
-  { label: '1080p', height: 1080, bitrate: '5000k', extension: 'webm' },
-  { label: '720p', height: 720, bitrate: '3000k', extension: 'webm' },
-  // { label: '480p', height: 480, bitrate: '1500k', extension: 'webm' },
-  // { label: '360p', height: 360, bitrate: '800k', extension: 'webm' },
-  // { label: '240p', height: 240, bitrate: '500k', extension: 'webm' },
-  { label: '144p', height: 144, bitrate: '200k', extension: 'webm' },
-  { label: 'audio', height: 0, bitrate: '128k', extension: 'webm' },
-]
-
 @Injectable({
   token: 'IVideoService',
 })
 export class VideoService implements IVideoService {
   private readonly logger = new Logger('FFmpeg')
+
+  constructor(private readonly tmpStorage: TmpStorageAdapter) {}
 
   public getMp4Processors(input: GetMp4ProccessorsForResolutionsInput): GetMp4ProcessorOutput[] {
     return RESOLUTIONS.filter((resolution) => resolution.height <= input.maxResolution).map(
@@ -42,7 +43,8 @@ export class VideoService implements IVideoService {
                 .addFormat('webm')
                 .addDash(1)
                 .addAudioDisable()
-                .addVideoFilter(`"scale=-2:min(${resolution.height}\\,ih)"`)
+                // .addVideoFilter(`"scale=-2:min(${resolution.height}\\,ih)"`)
+                .addVideoFilter(`scale=${resolution.width}:${resolution.height}`)
                 .addBitrate(resolution.bitrate)
                 .addMaxRate(resolution.bitrate)
                 .addDash(1)
@@ -50,8 +52,10 @@ export class VideoService implements IVideoService {
                 .build()
             : FfmpegBuilder.init(this.logger)
                 .addInput('pipe:0')
+                .addVideoDisable()
                 .addAudioCodec('libvorbis')
                 .addAudioBitrate(resolution.bitrate)
+                .addFormat('webm')
                 .addDash(1)
                 .addOutput('pipe:1')
                 .build()
@@ -124,6 +128,45 @@ export class VideoService implements IVideoService {
         reject(new InternalServerError('Erro ao ler informações do vídeo'))
       })
       stream.pipe(ffprobe.stdin)
+    })
+  }
+
+  public async generateManifest(input: GenerateManifestInput): Promise<string> {
+    const streams = input.files.map((file) => {
+      if (Buffer.isBuffer(file)) return Readable.from(file)
+      if (Readable.isReadable(file)) return file
+      throw new BadRequestError('Vídeos devem ser Buffer ou Readable Stream')
+    })
+    const files = await Promise.all(
+      streams.map((stream) => this.tmpStorage.streamToTempFile(stream, 'webm')),
+    )
+    const builder = FfmpegBuilder.init(this.logger)
+    files.forEach((file) => {
+      builder.addFormat('webm_dash_manifest').addInput(file.path)
+    })
+    builder.addCodec('copy')
+    files.forEach((_, index) => {
+      builder.addMap(index)
+    })
+    const ffmpeg = builder
+      .addFormat('webm_dash_manifest')
+      .addAdaptationSets(`"id=0,streams=0,1 id=1,streams=2"`)
+      .addOutput('pipe:1')
+      .build()
+    return new Promise((resolve, reject) => {
+      const chunks: Buffer[] = []
+      ffmpeg.stdout.on('data', (chunk) => {
+        chunks.push(chunk)
+      })
+      ffmpeg.stdout.on('end', () => {
+        ffmpeg.stdout.destroy()
+        files.forEach((file) => file.dispose())
+        resolve(Buffer.concat(chunks).toString())
+      })
+      ffmpeg.on('error', () => {
+        files.forEach((file) => file.dispose())
+        reject(new ConflictError('Erro ao gerar o manifesto do vídeo'))
+      })
     })
   }
 }
