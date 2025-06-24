@@ -1,20 +1,9 @@
 import { REQUEST_METADATA_KEYS, Route } from '../decorators/controller'
 import { DocsConfig } from '../decorators/docs'
+import { Scope } from '../enums'
+import type { Constructor, InjectionToken, Provider } from '../interfaces'
 import { IValidation } from '../interfaces/controller'
 import { IMiddleware } from '../interfaces/middleware'
-
-export enum Scope {
-  Singleton,
-  Transient,
-}
-
-export type Constructor<T = any> = new (...args: any[]) => T
-
-type Provider<T = any> = {
-  useClass: Constructor<T>
-  scope: Scope
-  instance?: T
-}
 
 export class Container {
   private providers = new Map<string, Provider>()
@@ -46,20 +35,16 @@ export class Container {
 
   resolve<T>(token: Constructor<T> | string): T {
     const provider = this.providers.get(typeof token === 'string' ? token : token.name)
-
     if (!provider) {
       throw new Error(`No provider found for ${token}`)
     }
-
     if (provider.scope === Scope.Singleton && provider.instance) {
       return provider.instance
     }
-
     const paramTypes: Constructor[] =
       Reflect.getMetadata('design:paramtypes', provider.useClass) || []
-
     // prettier-ignore
-    const injectionTokens: { index: number; token: string | Constructor }[] = Reflect.getOwnMetadata('custom:inject', provider.useClass) || []
+    const injectionTokens: InjectionToken[] = Reflect.getOwnMetadata('custom:inject', provider.useClass) || []
     const dependencies = paramTypes.map((dep, paramIndex) => {
       const injection = injectionTokens.find((item) => item.index === paramIndex)
       if (injection) {
@@ -68,11 +53,9 @@ export class Container {
       return this.resolve(dep)
     })
     const instance = new provider.useClass(...dependencies)
-
     if (provider.scope === Scope.Singleton) {
       provider.instance = instance
     }
-
     return instance
   }
 

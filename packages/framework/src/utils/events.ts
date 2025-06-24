@@ -5,6 +5,7 @@ const EVENT_EMITTER = new EventEmitter()
 
 export class EventsService implements IEventsService {
   async emit<T>(event: string, payload: T): Promise<void> {
+    console.log(`Event emitted: ${event}`, payload)
     EVENT_EMITTER.emit(event, payload)
   }
 

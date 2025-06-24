@@ -1,4 +1,4 @@
-import { Constructor } from '../container'
+import type { Constructor } from '../interfaces'
 
 export function Inject(token: string | Constructor) {
   return function (target: any, _: any, parameterIndex: number) {

@@ -1,5 +1,6 @@
-import { Constructor, Container } from '../container'
+import { Container } from '../container'
 import { HttpStatusCode } from '../enums/http-statuscode.enum'
+import type { Constructor } from '../interfaces'
 import { IValidation } from '../interfaces/controller'
 
 export type Route = {

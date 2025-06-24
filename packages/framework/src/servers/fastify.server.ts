@@ -9,11 +9,18 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-import { Container, Scope, type Constructor } from '../container'
+import { Container } from '../container'
 import { Injectable } from '../decorators'
-import type { IErrorHandler, IFile, IServer, MultipartFormConfig } from '../interfaces'
-import { Logger } from '../utils'
-import { FormFile } from '../utils/form-file'
+import { Scope } from '../enums'
+import type {
+  Constructor,
+  IErrorHandler,
+  IFile,
+  IServer,
+  MultipartFormConfig,
+  RegisterProviderInput,
+} from '../interfaces'
+import { FormFile, Logger } from '../utils'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -129,7 +136,14 @@ export class FastifyServer implements IServer {
     })
   }
 
-  public registerProviders(_providers: Constructor[]): void {}
+  public registerProviders(providers: RegisterProviderInput): void {
+    providers.forEach((provider) => {
+      if (!('provide' in provider)) return
+      Container.instance.register(provider.provide, {
+        useClass: provider.useClass,
+      })
+    })
+  }
 
   public registerMultipartForm(config?: MultipartFormConfig): void {
     app.register(fastifyMultipart, {

@@ -1,5 +1,10 @@
-import { Container, type Constructor } from '../container'
-import type { IErrorHandler, MultipartFormConfig } from '../interfaces'
+import { Container } from '../container'
+import type {
+  Constructor,
+  IErrorHandler,
+  MultipartFormConfig,
+  RegisterProviderInput,
+} from '../interfaces'
 import { FastifyServer } from './fastify.server'
 
 export function createServer({
@@ -13,7 +18,7 @@ export function createServer({
   multipartForm,
 }: {
   implementation?: 'fastify'
-  providers?: Constructor[]
+  providers?: RegisterProviderInput
   controllers?: Constructor[]
   errorHandler?: IErrorHandler
   docs?: boolean

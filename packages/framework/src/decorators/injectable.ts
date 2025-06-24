@@ -1,4 +1,6 @@
-import { Constructor, Container, Scope } from '../container'
+import { Container } from '../container'
+import type { Scope } from '../enums'
+import type { Constructor } from '../interfaces'
 
 export function Injectable(options?: { scope?: Scope; token?: string }) {
   return function <T extends Constructor>(target: T) {

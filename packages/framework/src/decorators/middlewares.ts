@@ -1,4 +1,4 @@
-import { Constructor } from '../container'
+import type { Constructor } from '../interfaces'
 
 export function MiddleWares(...middlewares: Constructor[]) {
   return function (target: Constructor) {
