@@ -45,8 +45,8 @@ export type IFile = {
   filename: string
   encoding: string
   mimetype: string
-  getBuffer: () => Promise<Buffer>
-  getFileStream: () => IReadStream
+  toBuffer: () => Promise<Buffer>
+  toStream: () => IReadStream
 }
 
 export type IReadStream = Readable & { bytesRead?: number }
