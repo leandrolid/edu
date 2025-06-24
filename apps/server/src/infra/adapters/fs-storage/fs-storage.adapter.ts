@@ -42,11 +42,13 @@ export class FsStorageAdapter {
           pathName: string
           fileName: string
           toStream: () => IReadStream
+          fileSize: number
         }>((resolve, reject) => {
           outputStream.on('finish', () => {
             resolve({
               pathName: `file://${resolvePath(filePath)}`,
               fileName,
+              fileSize: statSync(filePath).size,
               toStream: () => createReadStream(filePath),
             })
           })

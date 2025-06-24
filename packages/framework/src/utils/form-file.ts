@@ -12,10 +12,11 @@ export class FormFile implements IFile {
     this.mimetype = field.mimetype
   }
 
-  getBuffer(): Promise<Buffer> {
+  toBuffer(): Promise<Buffer> {
     return this.field.toBuffer()
   }
-  getFileStream(): IReadStream {
+
+  toStream(): IReadStream {
     return this.field.file
   }
 }
