@@ -1,4 +1,4 @@
-import { Injectable } from '@edu/framework'
+import { Injectable, InternalServerError } from '@edu/framework'
 import { FsStorageAdapter } from '@infra/adapters/fs-storage/fs-storage.adapter'
 import type * as Storage from '@infra/services/storage/storage.service'
 import { resolve } from 'node:path'
@@ -15,15 +15,21 @@ export class StorageService implements Storage.IStorageService {
     key,
     stream,
   }: Storage.UploadStreamInput): Promise<Storage.UploadStreamOutput> {
-    const file = this.fsStorage.saveToFile({
-      fileName: key,
-      inputStream: stream,
-    })
-    const result = await file.toPromise()
-    return {
-      url: result.pathName,
-      key: result.fileName,
-      toStream: () => result.toStream(),
+    try {
+      const file = this.fsStorage.saveToFile({
+        fileName: key,
+        inputStream: stream,
+      })
+      const result = await file.toPromise()
+      return {
+        url: result.pathName,
+        key: result.fileName,
+        size: result.fileSize,
+        toStream: () => result.toStream(),
+      }
+    } catch (error) {
+      console.error(error)
+      throw new InternalServerError('Erro ao fazer upload do arquivo')
     }
   }
 
