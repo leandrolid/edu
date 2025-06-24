@@ -7,16 +7,15 @@ import { resolve } from 'node:path'
   token: 'IStorageService',
 })
 export class StorageService implements Storage.IStorageService {
-  private readonly storage: FsStorageAdapter
-  constructor() {
-    this.storage = new FsStorageAdapter(resolve(process.cwd(), './node_modules/.temp'))
+  constructor(private readonly fsStorage: FsStorageAdapter) {
+    this.fsStorage.init(resolve(process.cwd(), './node_modules/.temp'))
   }
 
   async uploadStream({
     key,
     stream,
   }: Storage.UploadStreamInput): Promise<Storage.UploadStreamOutput> {
-    const file = this.storage.saveToFile({
+    const file = this.fsStorage.saveToFile({
       fileName: key,
       inputStream: stream,
     })
@@ -24,11 +23,12 @@ export class StorageService implements Storage.IStorageService {
     return {
       url: result.pathName,
       key: result.fileName,
+      toStream: () => result.toStream(),
     }
   }
 
   async getOne(key: string): Promise<Storage.GetOneOutput> {
-    const file = this.storage.getFile(key)
+    const file = this.fsStorage.getFile(key)
     return {
       key: file.fileName,
       url: file.pathName,
@@ -44,6 +44,6 @@ export class StorageService implements Storage.IStorageService {
   }
 
   async clear(): Promise<void> {
-    await this.storage.clear()
+    await this.fsStorage.clear()
   }
 }

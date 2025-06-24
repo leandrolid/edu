@@ -14,6 +14,7 @@ export type UploadStreamInput = {
 export type UploadStreamOutput = {
   url: string
   key: string
+  toStream: () => IReadStream
 }
 
 export type GetOneOutput = {

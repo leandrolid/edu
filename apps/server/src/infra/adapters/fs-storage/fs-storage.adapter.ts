@@ -1,4 +1,4 @@
-import { NotFoundError, type IReadStream } from '@edu/framework'
+import { Injectable, NotFoundError, type IReadStream } from '@edu/framework'
 import {
   createReadStream,
   createWriteStream,
@@ -11,8 +11,13 @@ import {
 import { readFile } from 'node:fs/promises'
 import { join, resolve as resolvePath } from 'node:path'
 
+@Injectable()
 export class FsStorageAdapter {
-  constructor(private readonly baseDir: string) {
+  private readonly baseDir: string = '/tmp/fs-storage'
+
+  constructor() {}
+
+  public init(baseDir: string) {
     if (!existsSync(baseDir)) {
       mkdirSync(baseDir, { recursive: true })
     }
@@ -35,11 +40,13 @@ export class FsStorageAdapter {
         return new Promise<{
           pathName: string
           fileName: string
+          toStream: () => IReadStream
         }>((resolve, reject) => {
           outputStream.on('finish', () => {
             resolve({
               pathName: `file://${resolvePath(filePath)}`,
               fileName,
+              toStream: () => createReadStream(filePath),
             })
           })
           outputStream.on('error', (error) => reject(error))

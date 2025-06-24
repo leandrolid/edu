@@ -21,15 +21,15 @@ import { resolve } from 'path'
 @Stream()
 @MiddleWares(JwtMiddleware)
 export class SpeedController {
-  private readonly storageService: FsStorageAdapter
   private readonly logger = new Logger('SpeedController')
-  constructor() {
-    this.storageService = new FsStorageAdapter(resolve(__dirname, '../../../../public'))
+
+  constructor(private readonly fsStorage: FsStorageAdapter) {
+    this.fsStorage.init(resolve(__dirname, '../../../../public'))
   }
 
   @Get('/')
   async execute(@ResponseNode() response: IResponseNode) {
-    const file = this.storageService.getFile('music.mp3')
+    const file = this.fsStorage.getFile('music.mp3')
     response.writeHead(HttpStatusCode.OK, {
       'Content-Type': 'audio/mp3',
       'Content-Length': file.fileSize,
