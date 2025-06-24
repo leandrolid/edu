@@ -1,5 +1,5 @@
 import type { Logger } from '@edu/framework'
-import { spawn } from 'node:child_process'
+import { exec, spawn } from 'node:child_process'
 
 export class FfmpegBuilder {
   static init(logger: Logger) {
@@ -22,7 +22,7 @@ export class FfmpegBuilder {
   }
 
   addVideoCodec(codec: 'libx264' | 'h264' | 'vp9' | 'hevc' | 'libvpx-vp9') {
-    this.ffmpegArgs.push('-vcodec', codec)
+    this.ffmpegArgs.push('-c:v', codec)
     return this
   }
 
@@ -56,18 +56,13 @@ export class FfmpegBuilder {
     return this
   }
 
-  addFormat(format: 'mp4' | 'webm' | 'mkv') {
+  addFormat(format: 'mp4' | 'webm' | 'mkv' | 'webm_dash_manifest') {
     this.ffmpegArgs.push('-f', format)
     return this
   }
 
   addOutput(output: string) {
     this.ffmpegArgs.push(output)
-    return this
-  }
-
-  addVideoCodecStreamCopy(codec: 'libx264' | 'h264' | 'vp9' | 'hevc' | 'libvpx-vp9') {
-    this.ffmpegArgs.push('-c:v', codec)
     return this
   }
 
@@ -106,8 +101,28 @@ export class FfmpegBuilder {
     return this
   }
 
+  addVideoDisable() {
+    this.ffmpegArgs.push('-vn')
+    return this
+  }
+
+  addCodec(codec: 'copy' | 'libx264' | 'h264' | 'vp9' | 'hevc' | 'libvpx-vp9') {
+    this.ffmpegArgs.push('-c', codec)
+    return this
+  }
+
+  addMap(map: number) {
+    this.ffmpegArgs.push('-map', map.toString())
+    return this
+  }
+
+  addAdaptationSets(adaptationSets: string) {
+    this.ffmpegArgs.push('-adaptation_sets', adaptationSets)
+    return this
+  }
+
   build() {
-    this.logger.debug(`ffmpeg ${this.ffmpegArgs.join(' ')}`)
+    this.logger.warn(`ffmpeg ${this.ffmpegArgs.join(' ')}`)
     const process = spawn('ffmpeg', this.ffmpegArgs, {
       stdio: 'pipe',
       detached: true,
@@ -135,6 +150,20 @@ export class FfmpegBuilder {
       process.stdin.destroy()
       process.stdout.destroy()
       process.kill()
+    })
+    return process
+  }
+
+  exec() {
+    this.logger.warn(`ffmpeg ${this.ffmpegArgs.join(' ')}`)
+    const process = exec(`ffmpeg ${this.ffmpegArgs.join(' ')}`, (error, stdout, stderr) => {
+      if (error) {
+        return this.logger.error(error.message)
+      }
+      if (stderr) {
+        return this.logger.error(stderr)
+      }
+      this.logger.info(stdout)
     })
     return process
   }
