@@ -1,5 +1,5 @@
 import type { Logger } from '@edu/framework'
-import { exec, spawn } from 'node:child_process'
+import { spawn } from 'node:child_process'
 
 export class FfmpegBuilder {
   static init(logger: Logger) {
@@ -11,113 +11,66 @@ export class FfmpegBuilder {
     private readonly logger: Logger,
   ) {}
 
-  addInput(input: string) {
-    this.ffmpegArgs.push('-i', input)
+  input(input: string) {
+    this.ffmpegArgs.push(
+      `-i ${input} -c:v libvpx-vp9 -keyint_min 150 -g 150 -tile-columns 4 -frame-parallel 1 -f webm -dash 1`,
+    )
     return this
   }
 
-  addAccel(accel: 'cuda' | 'vaapi' | 'vdpau' | 'qsv') {
-    this.ffmpegArgs.push('-hwaccel', accel)
+  to144p(maxResolution: number, output: string) {
+    if (maxResolution < 144) return this
+    this.ffmpegArgs.push(`-an -vf scale=256:144 -b:v 250k -dash 1 ${output}`)
     return this
   }
 
-  addVideoCodec(codec: 'libx264' | 'h264' | 'vp9' | 'hevc' | 'libvpx-vp9') {
-    this.ffmpegArgs.push('-c:v', codec)
+  to240p(maxResolution: number, output: string) {
+    if (maxResolution < 240) return this
+    this.ffmpegArgs.push(`-an -vf scale=426:240 -b:v 500k -dash 1 ${output}`)
     return this
   }
 
-  addAudioCodec(codec: 'aac' | 'mp3' | 'opus' | 'libvorbis') {
-    this.ffmpegArgs.push('-acodec', codec)
+  to360p(maxResolution: number, output: string) {
+    if (maxResolution < 360) return this
+    this.ffmpegArgs.push(`-an -vf scale=640:360 -b:v 800k -dash 1 ${output}`)
     return this
   }
 
-  addMovFlags(flags: string) {
-    this.ffmpegArgs.push('-movflags', flags)
+  to480p(maxResolution: number, output: string) {
+    if (maxResolution < 480) return this
+    this.ffmpegArgs.push(`-an -vf scale=854:480 -b:v 1500k -dash 1 ${output}`)
     return this
   }
 
-  addBitrate(bitrate: string) {
-    this.ffmpegArgs.push('-b:v', bitrate)
+  to720p(maxResolution: number, output: string) {
+    if (maxResolution < 720) return this
+    this.ffmpegArgs.push(`-an -vf scale=1280:720 -b:v 3000k -dash 1 ${output}`)
     return this
   }
 
-  addMaxRate(maxRate: string) {
-    this.ffmpegArgs.push('-maxrate', maxRate)
+  to1080p(maxResolution: number, output: string) {
+    if (maxResolution < 1080) return this
+    this.ffmpegArgs.push(`-an -vf scale=1920:1080 -b:v 5000k -dash 1 ${output}`)
     return this
   }
 
-  addBufSize(bufSize: string) {
-    this.ffmpegArgs.push('-bufsize', bufSize)
+  toAudio(output: string) {
+    this.ffmpegArgs.push(`-vn -acodec libvorbis -ab 128k -dash 1 ${output}`)
     return this
   }
 
-  addVideoFilter(filter: string) {
-    this.ffmpegArgs.push('-vf', filter)
-    return this
-  }
-
-  addFormat(format: 'mp4' | 'webm' | 'mkv' | 'webm_dash_manifest') {
-    this.ffmpegArgs.push('-f', format)
-    return this
-  }
-
-  addOutput(output: string) {
-    this.ffmpegArgs.push(output)
-    return this
-  }
-
-  addMinKeyframe(minKeyframe: number) {
-    this.ffmpegArgs.push('-keyint_min', minKeyframe.toString())
-    return this
-  }
-
-  addGopSize(gopSize: number) {
-    this.ffmpegArgs.push('-g', gopSize.toString())
-    return this
-  }
-
-  addTileColumns(tileColumns: number) {
-    this.ffmpegArgs.push('-tile-columns', tileColumns.toString())
-    return this
-  }
-
-  addFrameParallel(frameParallel: number) {
-    this.ffmpegArgs.push('-frame-parallel', frameParallel.toString())
-    return this
-  }
-
-  addDash(dash: number) {
-    this.ffmpegArgs.push('-dash', dash.toString())
-    return this
-  }
-
-  addAudioDisable() {
-    this.ffmpegArgs.push('-an')
-    return this
-  }
-
-  addAudioBitrate(bitrate: string) {
-    this.ffmpegArgs.push('-ab', bitrate)
-    return this
-  }
-
-  addVideoDisable() {
-    this.ffmpegArgs.push('-vn')
-    return this
-  }
-
-  addCodec(codec: 'copy' | 'libx264' | 'h264' | 'vp9' | 'hevc' | 'libvpx-vp9') {
-    this.ffmpegArgs.push('-c', codec)
-    return this
-  }
-
-  addMap(map: number) {
-    this.ffmpegArgs.push('-map', map.toString())
-    return this
-  }
-
-  addAdaptationSets(adaptationSets: string) {
-    this.ffmpegArgs.push('-adaptation_sets', adaptationSets)
+  toManifest(resolutions: string[], audio: string, output: string) {
+    resolutions.forEach((res) => {
+      this.ffmpegArgs.push(`-y -f webm_dash_manifest -i ${res}`)
+    })
+    this.ffmpegArgs.push(`-f webm_dash_manifest -i ${audio}`)
+    this.ffmpegArgs.push(
+      '-c copy',
+      resolutions.map((_, index) => `-map ${index}`).join(' '),
+      '-f webm_dash_manifest',
+      `-adaptation_sets "id=0,streams=${resolutions.map((_, index) => index).join(',')} id=1,streams=${resolutions.length - 1}"`,
+      output,
+    )
     return this
   }
 
@@ -150,20 +103,6 @@ export class FfmpegBuilder {
       process.stdin.destroy()
       process.stdout.destroy()
       process.kill()
-    })
-    return process
-  }
-
-  exec() {
-    this.logger.warn(`ffmpeg ${this.ffmpegArgs.join(' ')}`)
-    const process = exec(`ffmpeg ${this.ffmpegArgs.join(' ')}`, (error, stdout, stderr) => {
-      if (error) {
-        return this.logger.error(error.message)
-      }
-      if (stderr) {
-        return this.logger.error(stderr)
-      }
-      this.logger.info(stdout)
     })
     return process
   }

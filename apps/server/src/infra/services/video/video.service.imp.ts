@@ -1,23 +1,20 @@
 import { RESOLUTIONS } from '@domain/constants/resolutions'
-import {
-  BadRequestError,
-  ConflictError,
-  Injectable,
-  InternalServerError,
-  Logger,
-} from '@edu/framework'
+import { BadRequestError, Injectable, InternalServerError, Logger } from '@edu/framework'
 import { FfmpegBuilder } from '@infra/adapters/ffmpeg/ffmpeg.builder'
 import { FfProbeBuilder } from '@infra/adapters/ffmpeg/ffprobe.builder'
 import { TmpStorageAdapter } from '@infra/adapters/tmp-storage/tmp-storage.adapter'
 import type {
-  GenerateManifestInput,
+  CreateManifestInput,
+  CreateManifestOutput,
   GetInfoInput,
-  GetMp4ProccessorsForResolutionsInput,
-  GetMp4ProcessorOutput,
   GetVideoInfoOutput,
   IVideoService,
-  Resolution,
+  ProcessFileInput,
+  ProcessFileOutput,
 } from '@infra/services/video/video.service'
+import { createReadStream } from 'node:fs'
+import { rm } from 'node:fs/promises'
+import { join } from 'node:path'
 import { Readable } from 'node:stream'
 
 @Injectable({
@@ -28,53 +25,59 @@ export class VideoService implements IVideoService {
 
   constructor(private readonly tmpStorage: TmpStorageAdapter) {}
 
-  public getMp4Processors(input: GetMp4ProccessorsForResolutionsInput): GetMp4ProcessorOutput[] {
-    return RESOLUTIONS.filter((resolution) => resolution.height <= input.maxResolution).map(
-      (resolution) => {
-        const ffmpeg =
-          resolution.height > 0
-            ? FfmpegBuilder.init(this.logger)
-                .addInput('pipe:0')
-                .addVideoCodec('libvpx-vp9')
-                .addMinKeyframe(150)
-                .addGopSize(150)
-                .addTileColumns(4)
-                .addFrameParallel(1)
-                .addFormat('webm')
-                .addDash(1)
-                .addAudioDisable()
-                // .addVideoFilter(`"scale=-2:min(${resolution.height}\\,ih)"`)
-                .addVideoFilter(`scale=${resolution.width}:${resolution.height}`)
-                .addBitrate(resolution.bitrate)
-                .addMaxRate(resolution.bitrate)
-                .addDash(1)
-                .addOutput('pipe:1')
-                .build()
-            : FfmpegBuilder.init(this.logger)
-                .addInput('pipe:0')
-                .addVideoDisable()
-                .addAudioCodec('libvorbis')
-                .addAudioBitrate(resolution.bitrate)
-                .addFormat('webm')
-                .addDash(1)
-                .addOutput('pipe:1')
-                .build()
-        return {
-          resolution: resolution.label as Resolution,
-          extension: resolution.extension,
-          process: (buffer: Buffer) => {
-            const stream = Readable.from(buffer)
-            stream.pipe(ffmpeg.stdin)
-          },
-          toStream: () => ffmpeg.stdout,
-          onError: (error?: unknown) => {
-            ffmpeg.stdout.destroy(error as Error)
-            ffmpeg.stdin.destroy(error as Error)
+  public async processFile(input: ProcessFileInput): Promise<ProcessFileOutput> {
+    const tempDir = crypto.randomUUID()
+    const ffmpeg = FfmpegBuilder.init(this.logger)
+      .input('pipe:0')
+      .to144p(input.maxResolution, join(process.cwd(), `node_modules/.temp/144p.webm`))
+      .to240p(input.maxResolution, join(process.cwd(), `node_modules/.temp/240p.webm`))
+      .to360p(input.maxResolution, join(process.cwd(), `node_modules/.temp/360p.webm`))
+      .to480p(input.maxResolution, join(process.cwd(), `node_modules/.temp/480p.webm`))
+      .to720p(input.maxResolution, join(process.cwd(), `node_modules/.temp/720p.webm`))
+      .to1080p(input.maxResolution, join(process.cwd(), `node_modules/.temp/1080p.webm`))
+      .toAudio(join(process.cwd(), `node_modules/.temp/audio.webm`))
+      .build()
+    return new Promise<ProcessFileOutput>((resolve, reject) => {
+      const stream = Readable.from(input.buffer)
+      stream.pipe(ffmpeg.stdin)
+      ffmpeg.on('close', () => {
+        const files = RESOLUTIONS.filter(
+          (resolution) => resolution.height <= input.maxResolution,
+        ).map((resolution) => {
+          const filePath = join(process.cwd(), `node_modules/.temp/${resolution.label}.webm`)
+          return {
+            name: `${resolution.label}.${resolution.extension}`,
+            toStream: () => createReadStream(filePath),
+          }
+        })
+        return resolve({
+          files,
+          close: async () => {
+            ffmpeg.stdin.destroy()
+            ffmpeg.stdout.destroy()
             ffmpeg.kill()
+            await Promise.all(
+              files.map(async (file) => {
+                const filePath = join(process.cwd(), `node_modules/.temp/${file.name}`)
+                try {
+                  await rm(filePath)
+                } catch (error) {
+                  this.logger.error(`Erro ao remover o arquivo temporário: ${filePath}`)
+                }
+              }),
+            )
           },
-        }
-      },
-    )
+        })
+      })
+      ffmpeg.on('error', (error) => {
+        this.logger.error(error.message)
+        reject(new InternalServerError('Erro ao processar o vídeo'))
+      })
+      ffmpeg.stdin.on('error', (error) => {
+        this.logger.error(error.message)
+        reject(new InternalServerError('Erro ao processar o vídeo'))
+      })
+    })
   }
 
   public async getInfo(input: GetInfoInput): Promise<GetVideoInfoOutput> {
@@ -131,41 +134,39 @@ export class VideoService implements IVideoService {
     })
   }
 
-  public async generateManifest(input: GenerateManifestInput): Promise<string> {
-    const streams = input.files.map((file) => {
-      if (Buffer.isBuffer(file)) return Readable.from(file)
-      if (Readable.isReadable(file)) return file
-      throw new BadRequestError('Vídeos devem ser Buffer ou Readable Stream')
-    })
-    const files = await Promise.all(
-      streams.map((stream) => this.tmpStorage.streamToTempFile(stream, 'webm')),
-    )
-    const builder = FfmpegBuilder.init(this.logger)
-    files.forEach((file) => {
-      builder.addFormat('webm_dash_manifest').addInput(file.path)
-    })
-    builder.addCodec('copy')
-    files.forEach((_, index) => {
-      builder.addMap(index)
-    })
-    const ffmpeg = builder
-      .addFormat('webm_dash_manifest')
-      .addAdaptationSets(`"id=0,streams=0,1 id=1,streams=2"`)
-      .addOutput('pipe:1')
+  public async createManifest({ files }: CreateManifestInput): Promise<CreateManifestOutput> {
+    const outputPath = join(process.cwd(), `node_modules/.temp/manifest.mpd`)
+    const ffmpeg = FfmpegBuilder.init(this.logger)
+      .toManifest(
+        files.map((file) => join(process.cwd(), `node_modules/.temp/${file.name}`)),
+        join(process.cwd(), `node_modules/.temp/audio.webm`),
+        outputPath,
+      )
       .build()
-    return new Promise((resolve, reject) => {
-      const chunks: Buffer[] = []
-      ffmpeg.stdout.on('data', (chunk) => {
-        chunks.push(chunk)
+    return new Promise<CreateManifestOutput>((resolve, reject) => {
+      ffmpeg.on('close', () => {
+        this.logger.info('Manifest generated successfully')
+        resolve({
+          file: {
+            name: 'manifest.mpd',
+            toStream: () => createReadStream(outputPath),
+          },
+          close: async () => {
+            try {
+              await rm(outputPath)
+            } catch (error) {
+              this.logger.error(`Erro ao remover o manifesto temporário: ${outputPath}`)
+            }
+          },
+        })
       })
-      ffmpeg.stdout.on('end', () => {
-        ffmpeg.stdout.destroy()
-        files.forEach((file) => file.dispose())
-        resolve(Buffer.concat(chunks).toString())
+      ffmpeg.on('error', (error) => {
+        this.logger.error(`FFmpeg error: ${error.message}`)
+        reject(new InternalServerError('Erro ao gerar o manifesto do vídeo'))
       })
-      ffmpeg.on('error', () => {
-        files.forEach((file) => file.dispose())
-        reject(new ConflictError('Erro ao gerar o manifesto do vídeo'))
+      ffmpeg.stdin.on('error', (error) => {
+        this.logger.error(`FFmpeg stdin error: ${error.message}`)
+        reject(new InternalServerError('Erro ao gerar o manifesto do vídeo'))
       })
     })
   }
