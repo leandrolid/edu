@@ -13,11 +13,12 @@ import { join, resolve as resolvePath } from 'node:path'
 
 @Injectable()
 export class FsStorageAdapter {
-  private readonly baseDir: string = '/tmp/fs-storage'
+  private baseDir: string = '/tmp/fs-storage'
 
   constructor() {}
 
   public init(baseDir: string) {
+    this.baseDir = baseDir
     if (!existsSync(baseDir)) {
       mkdirSync(baseDir, { recursive: true })
     }
