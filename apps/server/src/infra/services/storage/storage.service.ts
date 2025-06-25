@@ -3,6 +3,7 @@ import type { IReadStream } from '@edu/framework'
 export interface IStorageService {
   uploadStream(input: UploadStreamInput): Promise<UploadStreamOutput>
   getOne(key: string): Promise<GetOneOutput>
+  getMany(keys: string[]): Promise<GetOneOutput[]>
   clear(): Promise<void>
 }
 

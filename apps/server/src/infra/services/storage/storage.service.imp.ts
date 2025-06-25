@@ -49,6 +49,11 @@ export class StorageService implements Storage.IStorageService {
     }
   }
 
+  async getMany(keys: string[]): Promise<Storage.GetOneOutput[]> {
+    const files = await Promise.all(keys.map((key) => this.getOne(key)))
+    return files
+  }
+
   async clear(): Promise<void> {
     await this.fsStorage.clear()
   }
