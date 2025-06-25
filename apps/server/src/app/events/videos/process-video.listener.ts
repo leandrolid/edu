@@ -28,13 +28,13 @@ export class ProcessVideoListener {
       const buffer = await originalFile.toBuffer()
       const videoInfo = await this.videoService.getInfo({ buffer })
       if (!videoInfo.audio) throw new BadRequestError('Vídeo sem áudio não é suportado')
-      const processor = await this.videoService.processFile({
+      const variants = await this.videoService.createVariants({
         buffer,
         maxResolution: videoInfo.video.height,
       })
       const fileDirectory = key.split('/').slice(0, -1).join('/')
       const processedFiles = await Promise.all(
-        processor.files.map(async (file) => {
+        variants.files.map(async (file) => {
           const upload = await this.storageService.uploadStream({
             key: `${fileDirectory}/${file.name}`,
             stream: file.toStream(),
@@ -42,8 +42,8 @@ export class ProcessVideoListener {
           return upload.key
         }),
       )
-      await processor.close()
-      await this.eventsService.emit('video.processed', {
+      await variants.close()
+      await this.eventsService.emit('video.resized', {
         id,
         key,
         processedFiles,
@@ -54,7 +54,7 @@ export class ProcessVideoListener {
     }
   }
 
-  @OnEvent('video.processed')
+  @OnEvent('video.resized')
   async onVideoProcessed({
     id,
     key,
@@ -78,7 +78,7 @@ export class ProcessVideoListener {
         stream: manifest.file.toStream(),
       })
       await manifest.close()
-      await this.eventsService.emit('video.manifested', {
+      await this.eventsService.emit('video.processed', {
         id,
         key,
         manifest: manifestUpload.key,
@@ -90,7 +90,7 @@ export class ProcessVideoListener {
     }
   }
 
-  @OnEvent('video.manifested')
+  @OnEvent('video.processed')
   async onVideoManifested({
     id,
     key,

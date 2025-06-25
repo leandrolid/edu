@@ -66,17 +66,18 @@ export class FfmpegBuilder {
 
   toManifest(files: string[], output: string) {
     files.forEach((file) => {
-      this.ffmpegArgs.push(`-y -f webm_dash_manifest -i ${file}`)
+      this.ffmpegArgs.push(`-f webm_dash_manifest -i ${file}`)
     })
     this.ffmpegArgs.push(
       '-c copy',
       files.map((_, index) => `-map ${index}`).join(' '),
       '-f webm_dash_manifest',
       `-adaptation_sets "id=0,streams=${files
-        .slice(0, files.length - 1)
+        .slice(0, -1)
         .map((_, index) => index)
         .join(',')} id=1,streams=${files.length - 1}"`,
       output,
+      '-y',
     )
     return this
   }

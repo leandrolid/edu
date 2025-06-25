@@ -2,7 +2,7 @@ import type { IReadStream } from '@edu/framework'
 
 export interface IVideoService {
   getInfo(input: GetInfoInput): Promise<GetVideoInfoOutput>
-  processFile(input: ProcessFileInput): Promise<ProcessFileOutput>
+  createVariants(input: CreateVariantsInput): Promise<CreateVariantsOutput>
   createManifest(input: CreateManifestInput): Promise<CreateManifestOutput>
 }
 
@@ -33,12 +33,12 @@ export type GetVideoInfoOutput = {
   } | null
 }
 
-export type ProcessFileInput = {
+export type CreateVariantsInput = {
   buffer: Buffer
   maxResolution: number
 }
 
-export type ProcessFileOutput = {
+export type CreateVariantsOutput = {
   files: ProcessorFile[]
   close: () => Promise<void>
 }

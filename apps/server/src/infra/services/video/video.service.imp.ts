@@ -6,11 +6,11 @@ import { TmpStorageAdapter } from '@infra/adapters/tmp-storage/tmp-storage.adapt
 import type {
   CreateManifestInput,
   CreateManifestOutput,
+  CreateVariantsInput,
+  CreateVariantsOutput,
   GetInfoInput,
   GetVideoInfoOutput,
   IVideoService,
-  ProcessFileInput,
-  ProcessFileOutput,
 } from '@infra/services/video/video.service'
 import { createReadStream } from 'node:fs'
 import { join } from 'node:path'
@@ -22,61 +22,6 @@ import { Readable } from 'node:stream'
 export class VideoService implements IVideoService {
   private readonly logger = new Logger('FFmpeg')
   constructor(private readonly tmpStorage: TmpStorageAdapter) {}
-
-  public async processFile(input: ProcessFileInput): Promise<ProcessFileOutput> {
-    const tempDir = await this.tmpStorage.createTempDir()
-    const ffmpeg = FfmpegBuilder.init(this.logger)
-      .addAcceleration()
-      .input('pipe:0')
-      .to144p(input.maxResolution, join(tempDir.name, '144p.webm'))
-      .to240p(input.maxResolution, join(tempDir.name, '240p.webm'))
-      .to360p(input.maxResolution, join(tempDir.name, '360p.webm'))
-      .to480p(input.maxResolution, join(tempDir.name, '480p.webm'))
-      .to720p(input.maxResolution, join(tempDir.name, '720p.webm'))
-      .to1080p(input.maxResolution, join(tempDir.name, '1080p.webm'))
-      .toAudio(join(tempDir.name, 'audio.webm'))
-      .build()
-    return new Promise<ProcessFileOutput>((resolve, reject) => {
-      const stream = Readable.from(input.buffer)
-      stream.pipe(ffmpeg.stdin)
-      ffmpeg.on('close', () => {
-        return resolve({
-          files: RESOLUTIONS.filter((resolution) => resolution.height <= input.maxResolution).map(
-            (resolution) => {
-              return {
-                name: `${resolution.label}.${resolution.extension}`,
-                toStream: () => {
-                  return createReadStream(
-                    join(tempDir.name, `${resolution.label}.${resolution.extension}`),
-                  )
-                },
-              }
-            },
-          ),
-          close: async () => {
-            ffmpeg.stdin.destroy()
-            ffmpeg.stdout.destroy()
-            ffmpeg.kill()
-            tempDir.close()
-          },
-        })
-      })
-      ffmpeg.on('error', (error) => {
-        this.logger.error(error.message)
-        ffmpeg.stdin.destroy()
-        ffmpeg.stdout.destroy()
-        ffmpeg.kill()
-        reject(new InternalServerError('Erro ao processar vídeo'))
-      })
-      ffmpeg.stdin.on('error', (error) => {
-        this.logger.error(error.message)
-        ffmpeg.stdin.destroy()
-        ffmpeg.stdout.destroy()
-        ffmpeg.kill()
-        reject(new InternalServerError('Erro ao processar vídeo'))
-      })
-    })
-  }
 
   public async getInfo(input: GetInfoInput): Promise<GetVideoInfoOutput> {
     const stream = Readable.from(input.buffer)
@@ -131,6 +76,61 @@ export class VideoService implements IVideoService {
         reject(new InternalServerError('Erro ao ler informação do vídeo'))
       })
       stream.pipe(ffprobe.stdin)
+    })
+  }
+
+  public async createVariants(input: CreateVariantsInput): Promise<CreateVariantsOutput> {
+    const tempDir = await this.tmpStorage.createTempDir()
+    const ffmpeg = FfmpegBuilder.init(this.logger)
+      .addAcceleration()
+      .input('pipe:0')
+      .to144p(input.maxResolution, join(tempDir.name, '144p.webm'))
+      .to240p(input.maxResolution, join(tempDir.name, '240p.webm'))
+      .to360p(input.maxResolution, join(tempDir.name, '360p.webm'))
+      .to480p(input.maxResolution, join(tempDir.name, '480p.webm'))
+      .to720p(input.maxResolution, join(tempDir.name, '720p.webm'))
+      .to1080p(input.maxResolution, join(tempDir.name, '1080p.webm'))
+      .toAudio(join(tempDir.name, 'audio.webm'))
+      .build()
+    return new Promise<CreateVariantsOutput>((resolve, reject) => {
+      const stream = Readable.from(input.buffer)
+      stream.pipe(ffmpeg.stdin)
+      ffmpeg.on('close', () => {
+        return resolve({
+          files: RESOLUTIONS.filter((resolution) => resolution.height <= input.maxResolution).map(
+            (resolution) => {
+              return {
+                name: `${resolution.label}.${resolution.extension}`,
+                toStream: () => {
+                  return createReadStream(
+                    join(tempDir.name, `${resolution.label}.${resolution.extension}`),
+                  )
+                },
+              }
+            },
+          ),
+          close: async () => {
+            ffmpeg.stdin.destroy()
+            ffmpeg.stdout.destroy()
+            ffmpeg.kill()
+            tempDir.close()
+          },
+        })
+      })
+      ffmpeg.on('error', (error) => {
+        this.logger.error(error.message)
+        ffmpeg.stdin.destroy()
+        ffmpeg.stdout.destroy()
+        ffmpeg.kill()
+        reject(new InternalServerError('Erro ao processar vídeo'))
+      })
+      ffmpeg.stdin.on('error', (error) => {
+        this.logger.error(error.message)
+        ffmpeg.stdin.destroy()
+        ffmpeg.stdout.destroy()
+        ffmpeg.kill()
+        reject(new InternalServerError('Erro ao processar vídeo'))
+      })
     })
   }
 
