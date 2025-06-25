@@ -27,7 +27,7 @@ export default async function MaterialsLayout({
       </Flex>
       <Separator orientation="horizontal" size="4" />
       <Container size="4" p="4">
-        <Flex gap="4">
+        <Flex direction={{ initial: 'column', sm: 'row' }} gap="4">
           <AsideMenu.Root>
             <AsideMenu.Item href={`/${slug}/materials`}>Geral</AsideMenu.Item>
             <AsideMenu.Item href={`/${slug}/materials/videos`}>Vídeos</AsideMenu.Item>
