@@ -1,9 +1,16 @@
+export type Listener = {
+  event: string
+  execute: string
+}
+
 export function OnEvent(event: string) {
   return function (target: any, propertyKey: string) {
-    const listener = {
+    const listeners = Reflect.getMetadata('custom:listeners', target.constructor) || []
+    const listener: Listener = {
       event,
       execute: propertyKey,
     }
-    Reflect.defineMetadata('listener', listener, target.constructor)
+    listeners.push(listener)
+    Reflect.defineMetadata('custom:listeners', listeners, target.constructor)
   }
 }

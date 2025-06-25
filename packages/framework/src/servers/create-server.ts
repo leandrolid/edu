@@ -1,4 +1,6 @@
 import { Container } from '../container'
+import { registerListeners } from '../container/register-listeners'
+import { registerProviders } from '../container/register-providers'
 import type { Constructor, IErrorHandler, MultipartFormConfig, Provider } from '../interfaces'
 import { FastifyServer } from './fastify.server'
 
@@ -28,10 +30,10 @@ export function createServer({
   if (zodValidation) app.registerValidationProvider()
   if (multipartForm) app.registerMultipartForm(multipartForm)
   if (docs) app.registerDocs()
-  if (providers) app.registerProviders(providers)
+  if (providers) registerProviders(providers)
   if (controllers) app.registerControllers(controllers)
   if (errorHandler) app.registerErrorHandler(errorHandler)
-  app.registerListeners(providers)
+  registerListeners(providers)
   return app
 }
 

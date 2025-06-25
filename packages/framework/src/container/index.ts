@@ -1,10 +1,5 @@
-import { REQUEST_METADATA_KEYS, Route } from '../decorators/controller'
-import { DocsConfig } from '../decorators/docs'
 import { Scope } from '../enums'
 import type { Constructor, InjectionToken } from '../interfaces'
-import { IValidation } from '../interfaces/controller'
-import { IMiddleware } from '../interfaces/middleware'
-import { EVENT_SERVICE, type IEventsService } from '../utils'
 
 export class Container {
   private providers = new Map<
@@ -65,82 +60,5 @@ export class Container {
       provider.instance = instance
     }
     return instance
-  }
-
-  resolveController<T>(token: Constructor<T>) {
-    const instance = Container.instance.resolve(token)
-    const route: Route = Reflect.getMetadata('route', token) || {}
-    const prefix = Reflect.getMetadata('prefix', token) || ''
-    const docs: DocsConfig = Reflect.getMetadata('docs', token) || {}
-    const validation: IValidation = Reflect.getMetadata('validation', token) || {}
-    const middlewares = this.resolveMiddlewares(token)
-    const isStream = Reflect.getMetadata('stream', token) || false
-    return {
-      instance,
-      route,
-      prefix,
-      docs,
-      validation,
-      middlewares,
-      isStream,
-    }
-  }
-
-  resolveRouteHandler({
-    instance,
-    execute,
-    request,
-    requestNode,
-    response,
-    responseNode,
-  }: {
-    instance: any
-    execute: string
-    request: unknown
-    requestNode: unknown
-    response: unknown
-    responseNode: unknown
-  }) {
-    const method = instance[execute]
-    const paramCount = method.length
-    const args = Array.from({ length: paramCount })
-    this.getKeys(REQUEST_METADATA_KEYS).forEach((reqKey) => {
-      // @ts-ignore
-      this.resolveParams(REQUEST_METADATA_KEYS[reqKey], instance, execute, args, request[reqKey])
-    })
-    this.resolveParams('custom:request', instance, execute, args, request)
-    this.resolveParams('custom:requestNode', instance, execute, args, requestNode)
-    this.resolveParams('custom:response', instance, execute, args, response)
-    this.resolveParams('custom:responseNode', instance, execute, args, responseNode)
-    return method.apply(instance, args)
-  }
-
-  resolveListener(token: Constructor | string) {
-    const isListener = Reflect.hasMetadata('listener', token)
-    if (!isListener) return
-    const listener = Reflect.getMetadata('listener', token)
-    const eventsService = this.resolve<IEventsService>(EVENT_SERVICE)
-    if (!eventsService) throw new Error(`Events service not found`)
-    const instance = this.resolve(token)
-    eventsService.on(listener.event, async (...args: any[]) => {
-      instance[listener.execute].apply(instance, args)
-    })
-  }
-
-  private getKeys<T extends object>(obj: T): Array<keyof T> {
-    return Object.keys(obj) as Array<keyof T>
-  }
-
-  private resolveParams(key: string, instance: any, execute: string, args: any[], value: any) {
-    // prettier-ignore
-    const paramIndexes: number[] = Reflect.getOwnMetadata(key, Object.getPrototypeOf(instance), execute) || []
-    paramIndexes.forEach((index) => {
-      args[index] = value
-    })
-  }
-
-  private resolveMiddlewares(token: Constructor): IMiddleware[] {
-    const middlewares: Constructor[] = Reflect.getMetadata('middlewares', token) || []
-    return middlewares.map((middleware) => this.resolve(middleware))
   }
 }

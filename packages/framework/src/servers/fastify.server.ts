@@ -9,18 +9,14 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-import { Container } from '../container'
+import { resolveController } from '../container/resolve-controller'
+import { resolveRouteHandler } from '../container/resolve-controller-handler'
 import { Injectable } from '../decorators'
 import { Scope } from '../enums'
-import type {
-  Constructor,
-  IErrorHandler,
-  IFile,
-  IServer,
-  MultipartFormConfig,
-  Provider,
-} from '../interfaces'
+import type { Constructor, IErrorHandler, IFile, IServer, MultipartFormConfig } from '../interfaces'
 import { FormFile, Logger } from '../utils'
+import { makePath } from '../utils/make-path'
+import { removeUndefined } from '../utils/remove-undefined'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -51,9 +47,9 @@ export class FastifyServer implements IServer {
 
   public registerControllers(controllers: Constructor[]): void {
     controllers.forEach((controller) => {
-      // prettier-ignore
-      const { instance, prefix, route, docs, validation, middlewares, isStream } = Container.instance.resolveController(controller)
-      const url = this.makePath(prefix, route.path)
+      const { instance, prefix, route, docs, validation, middlewares, isStream } =
+        resolveController(controller)
+      const url = makePath(prefix, route.path)
       this.controllers.push({
         route: url,
         method: route.method.toUpperCase(),
@@ -70,7 +66,7 @@ export class FastifyServer implements IServer {
           .route({
             url,
             method: route.method,
-            schema: this.removeUndefined({
+            schema: removeUndefined({
               security: [{ bearerAuth: [] }],
               body: validation.body,
               query: validation.query,
@@ -82,7 +78,7 @@ export class FastifyServer implements IServer {
               response: docs.response,
             }),
             handler: async (requestInput, response) => {
-              const output = await Container.instance.resolveRouteHandler({
+              const output = await resolveRouteHandler({
                 instance,
                 execute: route.execute,
                 request: {
@@ -136,39 +132,10 @@ export class FastifyServer implements IServer {
     })
   }
 
-  public registerProviders(providers?: Provider[]): void {
-    providers?.forEach((provider) => {
-      if (!('provide' in provider)) return
-      Container.instance.register(provider.provide, {
-        useClass: provider.useClass,
-      })
-    })
-  }
-
-  public registerListeners(providers?: Provider[]): void {
-    providers?.forEach((provider) => {
-      Container.instance.resolveListener('provide' in provider ? provider.useClass : provider)
-    })
-  }
-
   public registerMultipartForm(config?: MultipartFormConfig): void {
     app.register(fastifyMultipart, {
       limits: config,
     })
-  }
-
-  private makePath(prefix: string, path: string): string {
-    return `/${[...prefix.split('/'), ...path.split('/')].filter(Boolean).join('/')}`
-  }
-
-  private removeUndefined(obj: Record<string, unknown>): Record<string, unknown> {
-    return Object.entries(obj).reduce(
-      (acc, [key, value]) => {
-        if (!value) return acc
-        return { ...acc, [key]: value }
-      },
-      {} as Record<string, unknown>,
-    )
   }
 
   private async getMultipartForm(request: FastifyRequest) {
