@@ -44,7 +44,6 @@ export type ProcessFileOutput = {
 }
 
 export type CreateManifestInput = {
-  maxResolution: number
   files: ProcessorFile[]
 }
 
@@ -57,5 +56,3 @@ type ProcessorFile = {
   name: string
   toStream: () => IReadStream
 }
-
-export type Resolution = '1080p' | '720p' | '480p' | '360p' | '240p' | '144p'

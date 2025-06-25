@@ -32,21 +32,21 @@ export class ProcessVideoListener {
         buffer,
         maxResolution: videoInfo.video.height,
       })
-      const fileDirectory = key.split('/').slice(0, -2).join('/')
-      const uploads = await Promise.all(
+      const fileDirectory = key.split('/').slice(0, -1).join('/')
+      const processedFiles = await Promise.all(
         processor.files.map(async (file) => {
-          return await this.storageService.uploadStream({
+          const upload = await this.storageService.uploadStream({
             key: `${fileDirectory}/${file.name}`,
             stream: file.toStream(),
           })
+          return upload.key
         }),
       )
       await processor.close()
       await this.eventsService.emit('video.processed', {
         id,
         key,
-        maxResolution: videoInfo.video.height,
-        uploads: uploads.map((upload) => upload.key),
+        processedFiles,
       })
     } catch (error) {
       console.error(error)
@@ -56,20 +56,18 @@ export class ProcessVideoListener {
 
   @OnEvent('video.processed')
   async onVideoProcessed({
+    id,
     key,
-    uploads,
-    maxResolution,
+    processedFiles,
   }: {
     id: string
     key: string
-    maxResolution: number
-    uploads: string[]
+    processedFiles: string[]
   }) {
     try {
-      const files = await this.storageService.getMany(uploads)
-      const fileDirectory = key.split('/').slice(0, -2).join('/')
+      const files = await this.storageService.getMany(processedFiles)
+      const fileDirectory = key.split('/').slice(0, -1).join('/')
       const manifest = await this.videoService.createManifest({
-        maxResolution,
         files: files.map((file) => ({
           name: file.key.split('/').pop() || '',
           toStream: () => file.toStream(),
@@ -80,9 +78,36 @@ export class ProcessVideoListener {
         stream: manifest.file.toStream(),
       })
       await manifest.close()
+      await this.eventsService.emit('video.manifested', {
+        id,
+        key,
+        manifest: manifestUpload.key,
+        files: processedFiles,
+      })
     } catch (error) {
       console.error('Error processing video:', error)
       throw new BadRequestError('Erro ao processar o vídeo')
     }
+  }
+
+  @OnEvent('video.manifested')
+  async onVideoManifested({
+    id,
+    key,
+    manifest,
+    files,
+  }: {
+    id: string
+    key: string
+    manifest: string
+    files: string[]
+  }) {
+    console.log({
+      message: 'Vídeo processado com sucesso',
+      id,
+      key,
+      manifest,
+      files,
+    })
   }
 }

@@ -16,7 +16,11 @@ export function registerListeners(providers?: Provider[]): void {
     const listeners: Listener[] = Reflect.getMetadata('custom:listeners', classDefinition)
     listeners.forEach((listeners: Listener) => {
       eventsService.on(listeners.event, async (...args: any[]) => {
-        instance[listeners.execute].apply(instance, args)
+        try {
+          await instance[listeners.execute].apply(instance, args)
+        } catch (error) {
+          console.error(error)
+        }
       })
     })
   })

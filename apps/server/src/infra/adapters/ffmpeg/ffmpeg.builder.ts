@@ -66,7 +66,7 @@ export class FfmpegBuilder {
 
   toManifest(files: string[], output: string) {
     files.forEach((file) => {
-      this.ffmpegArgs.push(`-f webm_dash_manifest -i ${file}`)
+      this.ffmpegArgs.push(`-y -f webm_dash_manifest -i ${file}`)
     })
     this.ffmpegArgs.push(
       '-c copy',

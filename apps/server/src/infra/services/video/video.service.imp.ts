@@ -13,7 +13,6 @@ import type {
   ProcessFileOutput,
 } from '@infra/services/video/video.service'
 import { createReadStream } from 'node:fs'
-import { rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 
@@ -22,61 +21,59 @@ import { Readable } from 'node:stream'
 })
 export class VideoService implements IVideoService {
   private readonly logger = new Logger('FFmpeg')
-
   constructor(private readonly tmpStorage: TmpStorageAdapter) {}
 
   public async processFile(input: ProcessFileInput): Promise<ProcessFileOutput> {
-    const tempDir = crypto.randomUUID()
+    const tempDir = await this.tmpStorage.createTempDir()
     const ffmpeg = FfmpegBuilder.init(this.logger)
       .addAcceleration()
       .input('pipe:0')
-      .to144p(input.maxResolution, join(process.cwd(), `node_modules/.temp/144p.webm`))
-      .to240p(input.maxResolution, join(process.cwd(), `node_modules/.temp/240p.webm`))
-      .to360p(input.maxResolution, join(process.cwd(), `node_modules/.temp/360p.webm`))
-      .to480p(input.maxResolution, join(process.cwd(), `node_modules/.temp/480p.webm`))
-      .to720p(input.maxResolution, join(process.cwd(), `node_modules/.temp/720p.webm`))
-      .to1080p(input.maxResolution, join(process.cwd(), `node_modules/.temp/1080p.webm`))
-      .toAudio(join(process.cwd(), `node_modules/.temp/audio.webm`))
+      .to144p(input.maxResolution, join(tempDir.name, '144p.webm'))
+      .to240p(input.maxResolution, join(tempDir.name, '240p.webm'))
+      .to360p(input.maxResolution, join(tempDir.name, '360p.webm'))
+      .to480p(input.maxResolution, join(tempDir.name, '480p.webm'))
+      .to720p(input.maxResolution, join(tempDir.name, '720p.webm'))
+      .to1080p(input.maxResolution, join(tempDir.name, '1080p.webm'))
+      .toAudio(join(tempDir.name, 'audio.webm'))
       .build()
     return new Promise<ProcessFileOutput>((resolve, reject) => {
       const stream = Readable.from(input.buffer)
       stream.pipe(ffmpeg.stdin)
       ffmpeg.on('close', () => {
-        const files = RESOLUTIONS.filter(
-          (resolution) => resolution.height <= input.maxResolution,
-        ).map((resolution) => {
-          const filePath = join(process.cwd(), `node_modules/.temp/${resolution.label}.webm`)
-          return {
-            name: `${resolution.label}.${resolution.extension}`,
-            toStream: () => createReadStream(filePath),
-          }
-        })
         return resolve({
-          files,
+          files: RESOLUTIONS.filter((resolution) => resolution.height <= input.maxResolution).map(
+            (resolution) => {
+              return {
+                name: `${resolution.label}.${resolution.extension}`,
+                toStream: () => {
+                  return createReadStream(
+                    join(tempDir.name, `${resolution.label}.${resolution.extension}`),
+                  )
+                },
+              }
+            },
+          ),
           close: async () => {
             ffmpeg.stdin.destroy()
             ffmpeg.stdout.destroy()
             ffmpeg.kill()
-            await Promise.all(
-              files.map(async (file) => {
-                const filePath = join(process.cwd(), `node_modules/.temp/${file.name}`)
-                try {
-                  await rm(filePath)
-                } catch (error) {
-                  this.logger.error(`Erro ao remover o arquivo temporário: ${filePath}`)
-                }
-              }),
-            )
+            tempDir.close()
           },
         })
       })
       ffmpeg.on('error', (error) => {
         this.logger.error(error.message)
-        reject(new InternalServerError('Erro ao processar o vídeo'))
+        ffmpeg.stdin.destroy()
+        ffmpeg.stdout.destroy()
+        ffmpeg.kill()
+        reject(new InternalServerError('Erro ao processar vídeo'))
       })
       ffmpeg.stdin.on('error', (error) => {
         this.logger.error(error.message)
-        reject(new InternalServerError('Erro ao processar o vídeo'))
+        ffmpeg.stdin.destroy()
+        ffmpeg.stdout.destroy()
+        ffmpeg.kill()
+        reject(new InternalServerError('Erro ao processar vídeo'))
       })
     })
   }
@@ -97,11 +94,11 @@ export class VideoService implements IVideoService {
       })
       ffprobe.stdout.on('end', () => {
         const data = JSON.parse(Buffer.concat(chunks).toString())
-        const videoStream = data.streams.find((s: any) => s.codec_type === 'video')
+        const videoStream = data.streams.find((stream: any) => stream.codec_type === 'video')
         if (!videoStream) {
           return reject(new BadRequestError('Arquivo de vídeo inválido ou corrompido'))
         }
-        const audioStream = data.streams.find((s: any) => s.codec_type === 'audio')
+        const audioStream = data.streams.find((stream: any) => stream.codec_type === 'audio')
         resolve({
           format: {
             filename: data.format.filename,
@@ -127,46 +124,63 @@ export class VideoService implements IVideoService {
             : null,
         })
       })
-      ffprobe.stderr.on('data', (error) => {
-        this.logger.error(`FFprobe error: ${error.toString()}`)
-        reject(new InternalServerError('Erro ao ler informações do vídeo'))
+      ffprobe.stdio.forEach((std) => {
+        std?.on('error', () => reject(new InternalServerError('Erro ao ler informação do vídeo')))
+      })
+      ffprobe.stderr.on('data', () => {
+        reject(new InternalServerError('Erro ao ler informação do vídeo'))
       })
       stream.pipe(ffprobe.stdin)
     })
   }
 
   public async createManifest({ files }: CreateManifestInput): Promise<CreateManifestOutput> {
-    const outputPath = join(process.cwd(), `node_modules/.temp/manifest.mpd`)
+    const tempDir = await this.tmpStorage.createTempDir()
+    const tempFiles = await Promise.all(
+      files.map((file) =>
+        this.tmpStorage.streamToTempFile({
+          name: file.name,
+          dir: tempDir.name.split('/').pop(),
+          stream: file.toStream(),
+          extension: 'webm',
+        }),
+      ),
+    )
     const ffmpeg = FfmpegBuilder.init(this.logger)
       .toManifest(
-        files.map((file) => join(process.cwd(), `node_modules/.temp/${file.name}`)),
-        outputPath,
+        tempFiles.map((file) => file.name),
+        join(tempDir.name, 'manifest.mpd'),
       )
       .build()
     return new Promise<CreateManifestOutput>((resolve, reject) => {
-      ffmpeg.on('close', () => {
-        this.logger.info('Manifest generated successfully')
+      ffmpeg.on('close', (code) => {
+        if (code !== 0) {
+          this.logger.error(`FFmpeg exited with code ${code}`)
+          return reject(new InternalServerError('Erro ao gerar o manifesto do vídeo'))
+        }
         resolve({
           file: {
             name: 'manifest.mpd',
-            toStream: () => createReadStream(outputPath),
+            toStream: () => createReadStream(join(tempDir.name, 'manifest.mpd')),
           },
           close: async () => {
-            try {
-              await rm(outputPath)
-            } catch (error) {
-              this.logger.error(`Erro ao remover o manifesto temporário: ${outputPath}`)
-            }
+            tempFiles.forEach((file) => file.close())
+            tempDir.close()
+            ffmpeg.kill()
           },
         })
       })
       ffmpeg.on('error', (error) => {
-        this.logger.error(`FFmpeg error: ${error.message}`)
-        reject(new InternalServerError('Erro ao gerar o manifesto do vídeo'))
+        tempFiles.forEach((file) => file.close())
+        tempDir.close()
+        reject(error)
       })
-      ffmpeg.stdin.on('error', (error) => {
-        this.logger.error(`FFmpeg stdin error: ${error.message}`)
-        reject(new InternalServerError('Erro ao gerar o manifesto do vídeo'))
+      ffmpeg.stdio.forEach((std) => {
+        std?.on('error', (error) => {
+          tempFiles.forEach((file) => file.close())
+          tempDir.close()
+          reject(error)
+        })
       })
     })
   }
