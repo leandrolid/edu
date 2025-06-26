@@ -26,17 +26,17 @@ export class FastifyServer implements IServer {
   private readonly logger = new Logger('Server')
 
   public async start(port: number): Promise<void> {
-    await app.listen({ port })
+    const host = await app.listen({ port, host: '0.0.0.0' })
     this.controllers.forEach((controller) => {
       this.logger.warn(`[HTTP] ${controller.tag} { ${controller.route}, ${controller.method} }`)
     })
-    this.logger.success(`Server running on port ${port}`)
+    this.logger.success(`Server running on ${host}`)
   }
 
   public cors(origins: string[]): void {
     app.register(fastifyCors, {
       origin: origins,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      methods: ['*'],
     })
   }
 
