@@ -1,4 +1,4 @@
-import type { UpdateTeamInput } from '@app/teams/update-team/update-team.input'
+import type { UpdateTeamInput } from '@app/usecases/teams/update-team/update-team.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import { rbacRoleSchema, type RbacRole } from '@edu/rbac'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'

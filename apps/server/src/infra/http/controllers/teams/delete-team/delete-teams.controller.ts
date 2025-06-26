@@ -1,5 +1,5 @@
-import type { DeleteTeamInput } from '@app/teams/delete-team/delete-team.input'
-import { DeleteTeamUseCase } from '@app/teams/delete-team/delete-team.usecase'
+import type { DeleteTeamInput } from '@app/usecases/teams/delete-team/delete-team.input'
+import { DeleteTeamUseCase } from '@app/usecases/teams/delete-team/delete-team.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Controller,

@@ -1,4 +1,4 @@
-import { CreateVideoUseCase } from '@app/materials/create-video/create-video.usecase'
+import { CreateVideoUseCase } from '@app/usecases/materials/create-video/create-video.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Controller,

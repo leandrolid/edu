@@ -1,4 +1,4 @@
-import { GetOrganizationInput } from '@app/organizations/get-organization/get-organization.input'
+import { GetOrganizationInput } from '@app/usecases/organizations/get-organization/get-organization.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import z from 'zod'
 

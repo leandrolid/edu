@@ -1,4 +1,4 @@
-import type { GetTeamsInput } from '@app/teams/get-teams/get-teams.input'
+import type { GetTeamsInput } from '@app/usecases/teams/get-teams/get-teams.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import z from 'zod'
 

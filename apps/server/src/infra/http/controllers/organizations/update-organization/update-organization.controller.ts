@@ -1,5 +1,5 @@
-import { UpdateOrganizationInput } from '@app/organizations/update-organization/update-organization.input'
-import { UpdateOrganizationUseCase } from '@app/organizations/update-organization/update-organization.usecase'
+import { UpdateOrganizationInput } from '@app/usecases/organizations/update-organization/update-organization.input'
+import { UpdateOrganizationUseCase } from '@app/usecases/organizations/update-organization/update-organization.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Body,

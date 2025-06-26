@@ -1,4 +1,4 @@
-import { GetMembersInput } from '@app/members/get-members/get-members.input'
+import { GetMembersInput } from '@app/usecases/members/get-members/get-members.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
 import z from 'zod'

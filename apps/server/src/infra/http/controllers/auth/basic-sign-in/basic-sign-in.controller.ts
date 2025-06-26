@@ -1,5 +1,5 @@
-import type { BasicSignInInput } from '@app/auth/basic-sign-in/basic-sign-in.input'
-import { BasicSignInUseCase } from '@app/auth/basic-sign-in/basic-sign-in.usecase'
+import type { BasicSignInInput } from '@app/usecases/auth/basic-sign-in/basic-sign-in.input'
+import { BasicSignInUseCase } from '@app/usecases/auth/basic-sign-in/basic-sign-in.usecase'
 import { Body, Controller, Docs, Post, Validate, type IController } from '@edu/framework'
 import { BasicSignInValidation } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.validation'
 

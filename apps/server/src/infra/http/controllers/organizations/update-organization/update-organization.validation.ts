@@ -1,4 +1,4 @@
-import { UpdateOrganizationInput } from '@app/organizations/update-organization/update-organization.input'
+import { UpdateOrganizationInput } from '@app/usecases/organizations/update-organization/update-organization.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
 import z from 'zod'

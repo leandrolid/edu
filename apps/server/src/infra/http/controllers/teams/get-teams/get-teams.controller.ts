@@ -1,5 +1,5 @@
-import type { GetTeamsInput } from '@app/teams/get-teams/get-teams.input'
-import { GetTeamsUseCase } from '@app/teams/get-teams/get-teams.usecase'
+import type { GetTeamsInput } from '@app/usecases/teams/get-teams/get-teams.input'
+import { GetTeamsUseCase } from '@app/usecases/teams/get-teams/get-teams.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Controller,

@@ -1,4 +1,4 @@
-import { StreamVideoUseCase } from '@app/materials/stream-video/stream-video.usecase'
+import { StreamVideoUseCase } from '@app/usecases/materials/stream-video/stream-video.usecase'
 import {
   Controller,
   Docs,

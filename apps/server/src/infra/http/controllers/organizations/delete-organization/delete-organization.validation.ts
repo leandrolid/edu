@@ -1,4 +1,4 @@
-import type { DeleteOrganizationInput } from '@app/organizations/delete-organization/delete-organization.input'
+import type { DeleteOrganizationInput } from '@app/usecases/organizations/delete-organization/delete-organization.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
 import z from 'zod'

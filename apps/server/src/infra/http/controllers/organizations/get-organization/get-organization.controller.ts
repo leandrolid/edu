@@ -1,5 +1,5 @@
-import type { GetOrganizationInput } from '@app/organizations/get-organization/get-organization.input'
-import { GetOrganizationUseCase } from '@app/organizations/get-organization/get-organization.usecase'
+import type { GetOrganizationInput } from '@app/usecases/organizations/get-organization/get-organization.input'
+import { GetOrganizationUseCase } from '@app/usecases/organizations/get-organization/get-organization.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Controller,

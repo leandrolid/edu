@@ -1,4 +1,4 @@
-import type { GetTeamInput } from '@app/teams/get-team/get-team.input'
+import type { GetTeamInput } from '@app/usecases/teams/get-team/get-team.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
 import z from 'zod'

@@ -1,5 +1,5 @@
-import type { DeleteOrganizationInput } from '@app/organizations/delete-organization/delete-organization.input'
-import { DeleteOrganizationUseCase } from '@app/organizations/delete-organization/delete-organization.usecase'
+import type { DeleteOrganizationInput } from '@app/usecases/organizations/delete-organization/delete-organization.input'
+import { DeleteOrganizationUseCase } from '@app/usecases/organizations/delete-organization/delete-organization.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Controller,

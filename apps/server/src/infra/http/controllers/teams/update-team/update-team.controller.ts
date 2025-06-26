@@ -1,5 +1,5 @@
-import type { UpdateTeamInput } from '@app/teams/update-team/update-team.input'
-import { UpdateTeamUseCase } from '@app/teams/update-team/update-team.usecase'
+import type { UpdateTeamInput } from '@app/usecases/teams/update-team/update-team.input'
+import { UpdateTeamUseCase } from '@app/usecases/teams/update-team/update-team.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Body,

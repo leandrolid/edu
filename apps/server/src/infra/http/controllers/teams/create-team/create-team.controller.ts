@@ -1,5 +1,5 @@
-import type { CreateTeamInput } from '@app/teams/create-team/create-team.input'
-import { CreateTeamUseCase } from '@app/teams/create-team/create-team.usecase'
+import type { CreateTeamInput } from '@app/usecases/teams/create-team/create-team.input'
+import { CreateTeamUseCase } from '@app/usecases/teams/create-team/create-team.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Body,

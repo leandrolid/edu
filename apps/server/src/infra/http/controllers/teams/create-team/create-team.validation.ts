@@ -1,4 +1,4 @@
-import type { CreateTeamInput } from '@app/teams/create-team/create-team.input'
+import type { CreateTeamInput } from '@app/usecases/teams/create-team/create-team.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import { rbacRoleSchema } from '@edu/rbac'
 import z from 'zod'

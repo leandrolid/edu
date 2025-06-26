@@ -1,4 +1,4 @@
-import type { CreateVideoInput } from '@app/materials/create-video/create-video.input'
+import type { CreateVideoInput } from '@app/usecases/materials/create-video/create-video.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
 import z from 'zod'

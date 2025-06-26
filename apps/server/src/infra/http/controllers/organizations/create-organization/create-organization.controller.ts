@@ -1,5 +1,5 @@
-import type { CreateOrganizationInput } from '@app/organizations/create-organization/create-organization.input'
-import { CreateOrganizationUseCase } from '@app/organizations/create-organization/create-organization.usecase'
+import type { CreateOrganizationInput } from '@app/usecases/organizations/create-organization/create-organization.input'
+import { CreateOrganizationUseCase } from '@app/usecases/organizations/create-organization/create-organization.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Body,

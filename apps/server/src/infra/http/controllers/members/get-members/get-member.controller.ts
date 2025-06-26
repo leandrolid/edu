@@ -1,5 +1,5 @@
-import type { GetMembersInput } from '@app/members/get-members/get-members.input'
-import { GetMembersUseCase } from '@app/members/get-members/get-members.usecase'
+import type { GetMembersInput } from '@app/usecases/members/get-members/get-members.input'
+import { GetMembersUseCase } from '@app/usecases/members/get-members/get-members.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Controller,

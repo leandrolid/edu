@@ -1,4 +1,4 @@
-import type { StreamVideoInput } from '@app/materials/stream-video/stream-video.input'
+import type { StreamVideoInput } from '@app/usecases/materials/stream-video/stream-video.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import { slugSchema } from '@infra/http/controllers/organizations/get-organization/get-organization.validation'
 import z from 'zod'
