@@ -9,6 +9,7 @@
     "dev": "yarn env:dev nodemon --watch src --ext ts --exec 'ts-node -r tsconfig-paths/register src/index.ts'",
     "seed:dev": "yarn env:dev prisma db seed",
     "migrate:dev": "yarn env:dev prisma migrate dev",
+    "generate:dev": "yarn env:dev prisma generate",
     "env:dev": "dotenv -e ../../.env --"
   },
   "dependencies": {

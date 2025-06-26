@@ -6,9 +6,9 @@
     "dev": "turbo run dev --log-prefix=none --log-order=stream",
     "migrate:dev": "turbo run migrate:dev",
     "seed:dev": "turbo run seed:dev",
+    "generate:dev": "turbo run generate:dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "turbo": "^2.4.4",
