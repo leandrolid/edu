@@ -21,6 +21,7 @@
     "bcrypt": "^5.1.1",
     "radash": "^12.1.0",
     "tmp": "^0.2.3",
+    "uuid": "^11.1.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
