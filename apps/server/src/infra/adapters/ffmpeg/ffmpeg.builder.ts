@@ -18,7 +18,7 @@ export class FfmpegBuilder {
 
   input(input: string) {
     this.ffmpegArgs.push(
-      `-i ${input} -c:v libvpx-vp9 -keyint_min 150 -g 150 -tile-columns 4 -frame-parallel 1 -f webm -dash 1`,
+      `-i ${input} -c:v libvpx-vp9 -movflags frag_keyframe+empty_moov+default_base_moof -keyint_min 150 -g 150 -tile-columns 4 -frame-parallel 1 -f webm -dash 1`,
     )
     return this
   }
