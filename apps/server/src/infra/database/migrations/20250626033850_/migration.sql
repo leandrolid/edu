@@ -97,6 +97,25 @@ CREATE TABLE "organizations" (
 );
 
 -- CreateTable
+CREATE TABLE "videos" (
+    "id" UUID NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "asset_id" TEXT NOT NULL,
+    "base_url" TEXT NOT NULL,
+    "thumbnail" TEXT NOT NULL,
+    "duration" INTEGER NOT NULL,
+    "views" INTEGER NOT NULL DEFAULT 0,
+    "tags" TEXT[],
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "organization_id" UUID NOT NULL,
+    "owner_id" UUID NOT NULL,
+
+    CONSTRAINT "videos_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "projects" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
@@ -136,6 +155,9 @@ CREATE UNIQUE INDEX "organizations_slug_key" ON "organizations"("slug");
 -- CreateIndex
 CREATE UNIQUE INDEX "organizations_domain_key" ON "organizations"("domain");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "videos_asset_id_organization_id_key" ON "videos"("asset_id", "organization_id");
+
 -- AddForeignKey
 ALTER TABLE "tokens" ADD CONSTRAINT "tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -165,6 +187,12 @@ ALTER TABLE "invites" ADD CONSTRAINT "invites_organization_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "organizations" ADD CONSTRAINT "organizations_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "videos" ADD CONSTRAINT "videos_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "videos" ADD CONSTRAINT "videos_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "projects" ADD CONSTRAINT "projects_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

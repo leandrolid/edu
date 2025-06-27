@@ -30,6 +30,7 @@ model User {
   organizations Organization[]
   projects      Project[]
   teams         Team[]
+  videos        Video[]
 
   @@map("users")
 }
@@ -154,8 +155,32 @@ model Organization {
   members  Member[]
   projects Project[]
   teams    Team[]
+  videos   Video[]
 
   @@map("organizations")
+}
+
+model Video {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  title       String
+  description String?
+  assetId     String   @map("asset_id")
+  baseUrl     String   @map("base_url")
+  thumbnail   String
+  duration    Int
+  views       Int      @default(0)
+  tags        String[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id") @db.Uuid
+
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId String @map("owner_id") @db.Uuid
+
+  @@unique([assetId, organizationId])
+  @@map("videos")
 }
 
 model Project {
