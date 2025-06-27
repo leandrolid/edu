@@ -1,8 +1,10 @@
 import { Injectable } from '@edu/framework'
-import type { UUIDAdapter } from '@infra/adapters/uuid/uuid.adapter'
+import { UUIDAdapter } from '@infra/adapters/uuid/uuid.adapter'
 import type { IUIDService, UuidInput } from '@infra/services/uid/uid.service'
 
-@Injectable()
+@Injectable({
+  token: 'IUIDService',
+})
 export class UIDService implements IUIDService {
   constructor(private readonly uuidAdapter: UUIDAdapter) {}
 

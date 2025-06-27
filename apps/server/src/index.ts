@@ -21,6 +21,7 @@ import { MemberRepository } from '@infra/repositories/member/member.repository.i
 import { OrganizationRepository } from '@infra/repositories/organization/organization.repository.imp'
 import { TeamRepository } from '@infra/repositories/team/team.repository.imp'
 import { UserRepository } from '@infra/repositories/user/user.repository.imp'
+import { VideoRepository } from '@infra/repositories/video/video.repository.imp'
 import { PermissionService } from '@infra/services/permission/permission.service.imp'
 import { StorageService } from '@infra/services/storage/storage.service.imp'
 import { TokenService } from '@infra/services/token/token.service.imp'
@@ -47,12 +48,13 @@ async function main() {
       OrganizationRepository,
       TeamRepository,
       MemberRepository,
+      VideoRepository,
       PermissionService,
       TokenService,
       StorageService,
       VideoService,
-      ProcessVideoListener,
       UIDService,
+      ProcessVideoListener,
     ],
     controllers: [
       SpeedController,
