@@ -17,6 +17,7 @@ export function ShakaPlayer({
   const videoContainerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
+    console.log(manifestUrl)
     const shaka = require('shaka-player/dist/shaka-player.ui.js')
     let video = videoRef.current
     let videoContainer = videoContainerRef.current
@@ -38,7 +39,6 @@ export function ShakaPlayer({
       customContextMenu: true,
       addSeekBar: true,
     })
-    console.log(ui)
     const controls = ui.getControls()
     controls.getLocalization().changeLocale(['pt-BR'])
     player.configure({

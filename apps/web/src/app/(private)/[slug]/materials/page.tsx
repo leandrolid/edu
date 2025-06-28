@@ -1,8 +1,7 @@
 import { auth } from '@/auth'
-import { VideoPlayer } from '@/components/materials/video-player'
 import { getOrganization } from '@/http/services/organizations/get-organization'
 import { requestFallback } from '@edu/utils'
-import { Card, Flex, Heading, Inset } from '@radix-ui/themes'
+import { Card, Flex, Heading, Inset, Skeleton } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
 
 export default async function MaterialsPage() {
@@ -23,7 +22,7 @@ export default async function MaterialsPage() {
               Materiais
             </Heading>
 
-            <VideoPlayer />
+            <Skeleton width="100%" height="30rem" />
           </Flex>
         </Inset>
       </Card>

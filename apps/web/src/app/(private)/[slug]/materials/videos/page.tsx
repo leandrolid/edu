@@ -1,8 +1,22 @@
+import { auth } from '@/auth'
+import { MemberListSkeleton } from '@/components/teams/member-list-skeleton'
+import { VideosFilter } from '@/components/teams/videos-filter'
+import { VideosList } from '@/components/teams/videos-list'
 import { Link as LinkIcon, Upload } from '@phosphor-icons/react/dist/ssr'
-import { Button, Card, DropdownMenu, Flex, Inset, Skeleton, TextField } from '@radix-ui/themes'
+import { Button, Card, DropdownMenu, Flex, Inset } from '@radix-ui/themes'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
-export default async function VideosPage() {
+export default async function VideosPage(props: {
+  searchParams?: Promise<{
+    search?: string
+    page?: string
+  }>
+}) {
+  const slug = await auth.getCurrentOrganization()
+  const searchParams = await props.searchParams
+  const page = Number(searchParams?.page) || 1
+  const search = searchParams?.search || ''
   return (
     <Flex direction="column" gap="4">
       <Card variant="surface" style={{ width: '100%' }}>
@@ -30,12 +44,12 @@ export default async function VideosPage() {
               </DropdownMenu.Content>
             </DropdownMenu.Root>
 
-            <TextField.Root placeholder="Busque por vídeos" size="2" style={{ width: '250px' }} />
+            <VideosFilter />
           </Flex>
 
-          <Flex direction="column" gap="4" p="4">
-            <Skeleton width="100%" height="30rem" />
-          </Flex>
+          <Suspense key={search + page} fallback={<MemberListSkeleton />}>
+            <VideosList page={page} search={search} />
+          </Suspense>
         </Inset>
       </Card>
     </Flex>

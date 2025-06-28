@@ -7,7 +7,7 @@ import { Button, Card, DropdownMenu, Flex, Inset } from '@radix-ui/themes'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
-export default async function AdminPage(props: {
+export default async function TeamsPage(props: {
   searchParams?: Promise<{
     search?: string
     page?: string
