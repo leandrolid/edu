@@ -1,4 +1,4 @@
-import { updateTeamAction } from '@/app/(private)/[slug]/teams/[team]/actions'
+import { updateTeamAction } from '@/app/(private)/[slug]/teams/[teamId]/actions'
 import { TeamForm } from '@/components/teams/team-form'
 import { getTeam } from '@/http/services/teams/get-team'
 import { requestFallback } from '@edu/utils'
@@ -8,9 +8,9 @@ import { redirect } from 'next/navigation'
 export default async function EditTeamPage({
   params,
 }: {
-  params: Promise<{ slug: string; team: string }>
+  params: Promise<{ slug: string; teamId: string }>
 }) {
-  const { slug, team: teamId } = await params
+  const { slug, teamId } = await params
   const { data: team } = await requestFallback({
     request: () => getTeam({ teamId, slug }),
     onError: () => redirect(`/${slug}/teams`),
