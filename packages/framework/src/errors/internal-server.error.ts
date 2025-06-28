@@ -1,7 +1,7 @@
 import { HttpStatusCode } from '../enums'
-import { HttpError } from './http.error'
+import { ServerError } from './server.error'
 
-export class InternalServerError extends HttpError {
+export class InternalServerError extends ServerError {
   constructor(message: string) {
     super(HttpStatusCode.INTERNAL_SERVER_ERROR, message)
     this.name = this.constructor.name
