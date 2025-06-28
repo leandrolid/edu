@@ -57,4 +57,13 @@ export class StorageService implements Storage.IStorageService {
   async clear(): Promise<void> {
     await this.fsStorage.clear()
   }
+
+  async deleteDirectory(directory: string): Promise<void> {
+    try {
+      await this.fsStorage.deleteDirectory(directory)
+    } catch (error) {
+      console.error(error)
+      throw new InternalServerError('Erro ao deletar o diretório')
+    }
+  }
 }

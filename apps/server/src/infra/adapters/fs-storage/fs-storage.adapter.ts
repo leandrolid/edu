@@ -84,6 +84,14 @@ export class FsStorageAdapter {
     mkdirSync(this.baseDir, { recursive: true })
   }
 
+  async deleteDirectory(directory: string) {
+    const dirPath = join(this.baseDir, directory)
+    if (!existsSync(dirPath)) {
+      throw new NotFoundError(`Diretório não encontrado: ${directory}`)
+    }
+    rmSync(dirPath, { recursive: true, force: true })
+  }
+
   private getMimeType(fileName: string): string {
     const ext = fileName.split('.').pop()?.toLowerCase()
     switch (ext) {

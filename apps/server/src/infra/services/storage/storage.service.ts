@@ -5,6 +5,7 @@ export interface IStorageService {
   getOne(key: string): Promise<GetOneOutput>
   getMany(keys: string[]): Promise<GetOneOutput[]>
   clear(): Promise<void>
+  deleteDirectory(directory: string): Promise<void>
 }
 
 export type UploadStreamInput = {

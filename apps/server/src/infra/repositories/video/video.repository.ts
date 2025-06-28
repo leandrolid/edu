@@ -5,6 +5,7 @@ export interface IVideoRepository {
   findManyAndCount(input: FindManyVideosAndCountInput): Promise<FindManyVideosAndCountOutput>
   findById(id: string): Promise<Video | null>
   updateDurationAndThumbnail(input: UpdateDurationAndThumbnailInput): Promise<Video>
+  deleteById(id: string): Promise<void>
 }
 
 export type CreateVideoInput = {

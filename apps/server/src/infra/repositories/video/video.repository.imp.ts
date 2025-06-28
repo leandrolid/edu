@@ -65,4 +65,8 @@ export class VideoRepository implements IVideoRepository {
       },
     })
   }
+
+  async deleteById(id: string): Promise<void> {
+    await this.repository.deleteById(id)
+  }
 }
