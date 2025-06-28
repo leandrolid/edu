@@ -50,4 +50,8 @@ export class VideoRepository implements IVideoRepository {
     ])
     return { count, videos }
   }
+
+  async findById(id: string): Promise<Video | null> {
+    return this.repository.findById(id)
+  }
 }

@@ -1,0 +1,26 @@
+import type { GetVideoInput } from '@app/usecases/materials/get-video/get-video.input'
+import type { Auth } from '@domain/dtos/auth.dto'
+import { Inject, Injectable, NotFoundError } from '@edu/framework'
+import type { IVideoRepository } from '@infra/repositories/video/video.repository'
+
+@Injectable()
+export class GetVideoUseCase {
+  constructor(
+    @Inject('IVideoRepository')
+    private readonly videoRepository: IVideoRepository,
+  ) {}
+
+  async execute({ videoId, user }: Auth<GetVideoInput>) {
+    const video = await this.videoRepository.findById(videoId)
+    if (!video) throw new NotFoundError('Video não encontrado')
+    return {
+      video: {
+        ...video,
+        url: new URL(
+          `/organizations/${user.slug}/videos/${video.id}/manifest.mpd`,
+          video.baseUrl || 'http://192.168.0.20:3333',
+        ).toString(),
+      },
+    }
+  }
+}

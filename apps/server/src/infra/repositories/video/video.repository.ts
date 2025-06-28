@@ -3,6 +3,7 @@ import type { Video } from '@prisma/client'
 export interface IVideoRepository {
   createOne(input: CreateVideoInput): Promise<Video>
   findManyAndCount(input: FindManyVideosAndCountInput): Promise<FindManyVideosAndCountOutput>
+  findById(id: string): Promise<Video | null>
 }
 
 export type CreateVideoInput = {

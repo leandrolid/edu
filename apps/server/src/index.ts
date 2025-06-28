@@ -2,6 +2,7 @@ import { ProcessVideoListener } from '@app/events/videos/process-video.listener'
 import { createServer, EVENT_SERVICE, EventsService } from '@edu/framework'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
 import { CreateVideoController } from '@infra/http/controllers/materials/create-video/create-video.controller'
+import { GetVideoController } from '@infra/http/controllers/materials/get-video/get-video.controller'
 import { GetVideosController } from '@infra/http/controllers/materials/get-videos/get-videos.controller'
 import { StreamVideoController } from '@infra/http/controllers/materials/stream-video/stream-video.controller'
 import { GetMembersController } from '@infra/http/controllers/members/get-members/get-member.controller'
@@ -74,6 +75,7 @@ async function main() {
       DeleteTeamController,
       CreateVideoController,
       GetVideosController,
+      GetVideoController,
       StreamVideoController,
     ],
     errorHandler: new HttpErrorHandler(),
