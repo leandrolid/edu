@@ -2,10 +2,10 @@ import { Organization } from '@prisma/client'
 
 export interface IOrganizationRepository {
   createOne(input: CreateOrganizationInput): Promise<Organization>
-  updateOneBySlug(input: UpdateBySlugInput): Promise<Organization>
+  updateOne(input: UpdateBySlugInput): Promise<Organization>
   findOneBySlugOrFail(slug: string): Promise<Organization>
   findManyByUserId(userId: string): Promise<Organization[]>
-  deleteBySlug(slug: string): Promise<void>
+  deleteById(id: string): Promise<void>
 }
 
 export type CreateOrganizationInput = {
@@ -18,7 +18,7 @@ export type CreateOrganizationInput = {
 }
 
 export type UpdateBySlugInput = {
-  slug: string
+  id: string
   name?: string
   avatarUrl?: string | null
   shouldAttachUserByDomain?: boolean

@@ -13,7 +13,7 @@ export class VideoRepository implements IVideoRepository {
     private readonly repository: IRepository<Video>,
   ) {}
 
-  async create(input: CreateVideoInput): Promise<Video> {
+  async createOne(input: CreateVideoInput): Promise<Video> {
     return this.repository.createOne({
       id: input.id,
       title: input.title,

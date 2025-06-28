@@ -25,7 +25,7 @@ export class CreateVideoUseCase {
       key: `${slug}/videos/${videoId}/${file.filename}`,
       stream,
     })
-    const material = await this.videoRepository.create({
+    const material = await this.videoRepository.createOne({
       id: videoId,
       title: file.filename,
       ownerId: user.id,

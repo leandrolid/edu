@@ -1,3 +1,4 @@
+import type { Filter } from '@domain/persistence/filter'
 import type { IRepository } from '@domain/persistence/repository'
 import { Injectable, NotFoundError } from '@edu/framework'
 import { InjectRepository } from '@infra/database/decorators/inject-repository'
@@ -40,13 +41,10 @@ export class TeamRepository implements ITeamRepository {
     organizationId,
     search,
   }: FindManyTeamsAndCountInput): Promise<FindManyTeamsAndCountOutput> {
-    const where = {
+    const where: Filter<Team> = {
       organizationId: organizationId,
       ...(search && {
-        OR: [
-          { name: { contains: search, mode: 'insensitive' } },
-          { slug: { equals: search, mode: 'insensitive' } },
-        ],
+        or: [{ name: { ilike: search } }, { slug: { ilike: search } }],
       }),
     }
     const [count, teams] = await Promise.all([

@@ -13,7 +13,6 @@ export class UpdateOrganizationUseCase {
   ) {}
 
   async execute({
-    slug,
     name,
     avatarUrl,
     shouldAttachUserByDomain,
@@ -24,8 +23,8 @@ export class UpdateOrganizationUseCase {
     if (cannot('update', rbacOrganization)) {
       throw new ForbiddenError('Usuário não autorizado a atualizar a organização')
     }
-    const organization = await this.organizationRepository.updateOneBySlug({
-      slug,
+    const organization = await this.organizationRepository.updateOne({
+      id: user.organizationId!,
       name,
       avatarUrl,
       shouldAttachUserByDomain,

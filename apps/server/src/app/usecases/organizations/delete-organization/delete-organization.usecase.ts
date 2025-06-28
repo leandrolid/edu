@@ -18,7 +18,7 @@ export class DeleteOrganizationUseCase {
     if (cannot('delete', rbacOrganization)) {
       throw new ForbiddenError('Você não tem permissão para excluir esta organização')
     }
-    await this.organizationRepository.deleteBySlug(slug)
+    await this.organizationRepository.deleteById(user.organizationId!)
     return {
       message: 'Organização excluída com sucesso',
     }

@@ -1,7 +1,7 @@
 import type { Video } from '@prisma/client'
 
 export interface IVideoRepository {
-  create(input: CreateVideoInput): Promise<Video>
+  createOne(input: CreateVideoInput): Promise<Video>
 }
 
 export type CreateVideoInput = {
