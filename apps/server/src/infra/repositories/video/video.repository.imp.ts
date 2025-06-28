@@ -1,7 +1,13 @@
+import type { Filter } from '@domain/persistence/filter'
 import type { IRepository } from '@domain/persistence/repository'
 import { Injectable } from '@edu/framework'
 import { InjectRepository } from '@infra/database/decorators/inject-repository'
-import type { CreateVideoInput, IVideoRepository } from '@infra/repositories/video/video.repository'
+import type {
+  CreateVideoInput,
+  FindManyVideosAndCountInput,
+  FindManyVideosAndCountOutput,
+  IVideoRepository,
+} from '@infra/repositories/video/video.repository'
 import type { Video } from '@prisma/client'
 
 @Injectable({
@@ -24,5 +30,24 @@ export class VideoRepository implements IVideoRepository {
       duration: input.duration,
       thumbnail: input.thumbnail,
     })
+  }
+
+  async findManyAndCount(
+    input: FindManyVideosAndCountInput,
+  ): Promise<FindManyVideosAndCountOutput> {
+    const where: Filter<Video> = {
+      organizationId: input.organizationId,
+      or: [{ title: { ilike: input.search } }, { description: { ilike: input.search } }],
+    }
+    const [videos, count] = await Promise.all([
+      this.repository.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: input.pageSize,
+        skip: (input.page - 1) * input.pageSize,
+      }),
+      this.repository.count({ where }),
+    ])
+    return { count, videos }
   }
 }

@@ -23,7 +23,7 @@ export type FindManyOptions<Entity> = {
   where: Filter<Entity>
   take?: number
   skip?: number
-  orderBy?: Record<keyof Entity, 'asc' | 'desc'>
+  orderBy?: Partial<Record<keyof Entity, 'asc' | 'desc'>>
   select?: Select<Entity>
   relations?: Relations<Entity>
 }
