@@ -22,7 +22,6 @@ export default async function VideoPage({
             <Heading as="h5" size="4">
               Editar vídeo
             </Heading>
-
             <StreamPlayer thumbnail={video.thumbnail} manifestUrl={video.url} />
           </Flex>
         </Inset>

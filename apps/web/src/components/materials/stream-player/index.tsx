@@ -1,6 +1,7 @@
 'use client'
 
 import { ShakaPlayer } from '@/components/materials/stream-player/shaka'
+import { NoSSRWrapper } from '@/components/nossr-wrapper'
 
 export function StreamPlayer({
   thumbnail,
@@ -9,5 +10,9 @@ export function StreamPlayer({
   thumbnail: string
   manifestUrl: string
 }) {
-  return <ShakaPlayer thumbnail={thumbnail} manifestUrl={manifestUrl} />
+  return (
+    <NoSSRWrapper>
+      <ShakaPlayer thumbnail={thumbnail} manifestUrl={manifestUrl} />
+    </NoSSRWrapper>
+  )
 }
