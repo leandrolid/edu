@@ -4,6 +4,7 @@ export interface IVideoService {
   getInfo(input: GetInfoInput): Promise<GetVideoInfoOutput>
   createVariants(input: CreateVariantsInput): Promise<CreateVariantsOutput>
   createManifest(input: CreateManifestInput): Promise<CreateManifestOutput>
+  createThumbnail(input: CreateThumbnailInput): Promise<CreateThumbnailOutput>
 }
 
 export type GetInfoInput = {
@@ -55,4 +56,13 @@ export type CreateManifestOutput = {
 type ProcessorFile = {
   name: string
   toStream: () => IReadStream
+}
+
+export type CreateThumbnailInput = {
+  buffer: Buffer
+}
+
+export type CreateThumbnailOutput = {
+  file: ProcessorFile
+  close: () => Promise<void>
 }

@@ -82,6 +82,11 @@ export class FfmpegBuilder {
     return this
   }
 
+  toThumbnail(input: string, output: string) {
+    this.ffmpegArgs.push(`-i ${input} -ss 00:00:01.000 -vframes 1 ${output}`)
+    return this
+  }
+
   build() {
     this.logger.warn(`ffmpeg ${this.ffmpegArgs.join(' ')}`)
     const process = spawn('ffmpeg', this.ffmpegArgs, {

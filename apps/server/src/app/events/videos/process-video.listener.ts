@@ -7,6 +7,7 @@ import {
   OnEvent,
   type IEventsService,
 } from '@edu/framework'
+import type { IVideoRepository } from '@infra/repositories/video/video.repository'
 import type { IStorageService } from '@infra/services/storage/storage.service'
 import type { IVideoService } from '@infra/services/video/video.service'
 
@@ -15,6 +16,8 @@ export class ProcessVideoListener {
   constructor(
     @Inject('IVideoService')
     private readonly videoService: IVideoService,
+    @Inject('IVideoRepository')
+    private readonly videoRepository: IVideoRepository,
     @Inject('IStorageService')
     private readonly storageService: IStorageService,
     @Inject(EVENT_SERVICE)
@@ -28,11 +31,24 @@ export class ProcessVideoListener {
       const buffer = await originalFile.toBuffer()
       const videoInfo = await this.videoService.getInfo({ buffer })
       if (!videoInfo.audio) throw new BadRequestError('Vídeo sem áudio não é suportado')
+      const thumbnail = await this.videoService.createThumbnail({
+        buffer,
+      })
+      const fileDirectory = key.split('/').slice(0, -1).join('/')
+      const thumbnailUpload = await this.storageService.uploadStream({
+        key: `${fileDirectory}/thumbnail.jpg`,
+        stream: thumbnail.file.toStream(),
+      })
+      await thumbnail.close()
+      await this.videoRepository.updateDurationAndThumbnail({
+        id,
+        duration: videoInfo.video.duration,
+        thumbnail: thumbnailUpload.key,
+      })
       const variants = await this.videoService.createVariants({
         buffer,
         maxResolution: videoInfo.video.height,
       })
-      const fileDirectory = key.split('/').slice(0, -1).join('/')
       const processedFiles = await Promise.all(
         variants.files.map(async (file) => {
           const upload = await this.storageService.uploadStream({

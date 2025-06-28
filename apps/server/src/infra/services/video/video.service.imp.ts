@@ -6,6 +6,8 @@ import { TmpStorageAdapter } from '@infra/adapters/tmp-storage/tmp-storage.adapt
 import type {
   CreateManifestInput,
   CreateManifestOutput,
+  CreateThumbnailInput,
+  CreateThumbnailOutput,
   CreateVariantsInput,
   CreateVariantsOutput,
   GetInfoInput,
@@ -181,6 +183,38 @@ export class VideoService implements IVideoService {
           tempDir.close()
           reject(error)
         })
+      })
+    })
+  }
+
+  async createThumbnail(input: CreateThumbnailInput): Promise<CreateThumbnailOutput> {
+    const tempDir = await this.tmpStorage.createTempDir()
+    const ffmpeg = FfmpegBuilder.init(this.logger)
+      .toThumbnail('pipe:0', join(tempDir.name, 'thumbnail.jpg'))
+      .build()
+    return new Promise<CreateThumbnailOutput>((resolve, reject) => {
+      const stream = Readable.from(input.buffer)
+      stream.pipe(ffmpeg.stdin)
+      ffmpeg.on('close', () => {
+        resolve({
+          file: {
+            name: 'thumbnail.jpg',
+            toStream: () => createReadStream(join(tempDir.name, 'thumbnail.jpg')),
+          },
+          close: async () => {
+            ffmpeg.stdin.destroy()
+            ffmpeg.stdout.destroy()
+            ffmpeg.kill()
+            tempDir.close()
+          },
+        })
+      })
+      ffmpeg.on('error', (error) => {
+        this.logger.error(error.message)
+        ffmpeg.stdin.destroy()
+        ffmpeg.stdout.destroy()
+        ffmpeg.kill()
+        reject(new InternalServerError('Erro ao processar vídeo'))
       })
     })
   }

@@ -7,6 +7,7 @@ import type {
   FindManyVideosAndCountInput,
   FindManyVideosAndCountOutput,
   IVideoRepository,
+  UpdateDurationAndThumbnailInput,
 } from '@infra/repositories/video/video.repository'
 import type { Video } from '@prisma/client'
 
@@ -53,5 +54,15 @@ export class VideoRepository implements IVideoRepository {
 
   async findById(id: string): Promise<Video | null> {
     return this.repository.findById(id)
+  }
+
+  async updateDurationAndThumbnail(input: UpdateDurationAndThumbnailInput): Promise<Video> {
+    return this.repository.updateOne({
+      id: input.id,
+      data: {
+        duration: input.duration,
+        thumbnail: input.thumbnail,
+      },
+    })
   }
 }
