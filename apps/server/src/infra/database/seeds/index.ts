@@ -1,6 +1,6 @@
 import { createSlug } from '@edu/utils'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { prisma } from '@infra/database/connections/prisma.connection'
+import { prisma } from '@infra/database/connections/connection.imp'
 import { hash } from 'bcrypt'
 
 const main = async () => {

@@ -1,5 +1,5 @@
 import { ConflictError, Injectable, NotFoundError } from '@edu/framework'
-import { prisma } from '@infra/database/connections/prisma.connection'
+import { prisma } from '@infra/database/connections/connection.imp'
 import {
   IOrganizationRepository,
   type CreateOrganizationInput,

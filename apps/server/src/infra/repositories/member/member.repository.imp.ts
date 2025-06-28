@@ -1,5 +1,5 @@
 import { Injectable } from '@edu/framework'
-import { prisma } from '@infra/database/connections/prisma.connection'
+import { prisma } from '@infra/database/connections/connection.imp'
 import {
   type CreateMemberInput,
   type FindManyMembersAndCountInput,
