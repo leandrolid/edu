@@ -22,7 +22,7 @@ export class CreateVideoUseCase {
     const stream = file.toStream()
     const videoId = this.uidService.uuid()
     const upload = await this.storageService.uploadStream({
-      key: `${slug}/videos/${videoId}/${file.filename}`,
+      key: `${slug}/videos/${videoId}/original.${file.filename.split('.').pop() || 'mp4'}`,
       stream,
     })
     const material = await this.videoRepository.createOne({
@@ -31,7 +31,7 @@ export class CreateVideoUseCase {
       ownerId: user.id,
       organizationId: user.organizationId!,
       assetId: upload.key,
-      baseUrl: new URL(upload.url).origin,
+      baseUrl: 'http://192.168.0.20:3333',
       duration: 0,
       thumbnail: '',
     })

@@ -24,7 +24,10 @@ export class GetVideosUseCase {
         total: count,
         totalPages: Math.ceil(count / pageSize),
       },
-      videos,
+      videos: videos.map((video) => ({
+        ...video,
+        thumbnail: new URL(`/organizations/${video.thumbnail}`, video.baseUrl).toString(),
+      })),
     }
   }
 }

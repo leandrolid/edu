@@ -16,9 +16,10 @@ export class GetVideoUseCase {
     return {
       video: {
         ...video,
+        thumbnail: new URL(video.thumbnail, video.baseUrl).toString(),
         url: new URL(
-          `/organizations/${user.slug}/videos/${video.id}/manifest.mpd`,
-          video.baseUrl || 'http://192.168.0.20:3333',
+          `/organizations/${video.assetId.split('/').slice(0, -1).join('/')}/manifest.mpd`,
+          video.baseUrl,
         ).toString(),
       },
     }
