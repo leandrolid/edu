@@ -4,6 +4,7 @@ import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
 import fastify, { type FastifyRequest } from 'fastify'
 import {
+  hasZodFastifySchemaValidationErrors,
   jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
@@ -13,6 +14,7 @@ import { resolveController } from '../container/resolve-controller'
 import { resolveRouteHandler } from '../container/resolve-controller-handler'
 import { Injectable } from '../decorators'
 import { Scope } from '../enums'
+import { UnprocessableEntityError } from '../errors'
 import type { Constructor, IErrorHandler, IFile, IServer, MultipartFormConfig } from '../interfaces'
 import { FormFile, Logger } from '../utils'
 import { makePath } from '../utils/make-path'
@@ -101,7 +103,22 @@ export class FastifyServer implements IServer {
   }
 
   public registerErrorHandler(handler: IErrorHandler): void {
-    app.setErrorHandler((error, _request, reply) => handler.execute(error, reply))
+    app.setErrorHandler((error: Error, _request, res) => {
+      let newError = error
+      if (hasZodFastifySchemaValidationErrors(error)) {
+        newError = new UnprocessableEntityError(
+          'Erro de validação',
+          error.validation.reduce(
+            (acc, validation) => ({
+              ...acc,
+              [validation.instancePath.replace('/', '')]: [validation.message],
+            }),
+            {},
+          ),
+        )
+      }
+      return handler.execute(error, res)
+    })
   }
 
   public registerDocs(): void {
