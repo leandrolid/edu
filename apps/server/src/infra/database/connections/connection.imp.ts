@@ -3,10 +3,6 @@ import { InternalServerError, Logger } from '@edu/framework'
 import { Prisma, PrismaClient } from '@prisma/client'
 import { camel, get } from 'radash'
 
-export const prisma = new PrismaClient({
-  log: [{ level: 'query', emit: 'event' }, 'error', 'info', 'warn'],
-})
-
 export class PrismaDatabaseConnection implements IDatabaseConnection {
   private readonly logger: Logger = new Logger('Query')
   private readonly prisma: PrismaClient
