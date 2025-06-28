@@ -1,17 +1,9 @@
 import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
+import { VideosActions } from '@/components/teams/videos-actions'
 import { getVideos } from '@/http/services/materials/get-videos'
 import { createFallbackName, requestFallback } from '@edu/utils'
-import { ChartLine, DotsThree, Trash } from '@phosphor-icons/react/dist/ssr'
-import {
-  Avatar,
-  DropdownMenu,
-  Flex,
-  IconButton,
-  Link as StyledLink,
-  Table,
-  Text,
-} from '@radix-ui/themes'
+import { Avatar, Flex, Link as StyledLink, Table, Text } from '@radix-ui/themes'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import styles from './styles.module.css'
@@ -75,26 +67,7 @@ export async function VideosList({ page, search }: { search: string; page: numbe
               <Table.Cell>{new Date(video.createdAt).toLocaleDateString('pt-BR')}</Table.Cell>
               <Table.Cell align="center">{video.views}</Table.Cell>
               <Table.Cell>
-                <Flex align="center" justify="end" gap="2">
-                  <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
-                      <IconButton variant="outline" color="gray" size="2" radius="full">
-                        <DotsThree weight="bold" />
-                      </IconButton>
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Content align="end" side="bottom">
-                      <DropdownMenu.Item>
-                        <ChartLine weight="bold" />
-                        Métricas
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Separator />
-                      <DropdownMenu.Item color="red">
-                        <Trash weight="bold" />
-                        Excluir
-                      </DropdownMenu.Item>
-                    </DropdownMenu.Content>
-                  </DropdownMenu.Root>
-                </Flex>
+                <VideosActions videoId={video.id} />
               </Table.Cell>
             </Table.Row>
           ))}
