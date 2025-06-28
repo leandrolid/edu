@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { VideosActions } from '@/components/teams/videos-actions'
 import { getVideos } from '@/http/services/materials/get-videos'
-import { createFallbackName, requestFallback } from '@edu/utils'
+import { createFallbackName, requestFallback, secondsToMinutes } from '@edu/utils'
 import { Avatar, Flex, Link as StyledLink, Table, Text } from '@radix-ui/themes'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -34,7 +34,7 @@ export async function VideosList({ page, search }: { search: string; page: numbe
               <Table.Cell>
                 <Link
                   href={`/${slug}/materials/videos/${video.id}`}
-                  style={{ textDecoration: 'none' }}
+                  className={styles.thumbnailWrapper}
                 >
                   <Avatar
                     src={video.thumbnail}
@@ -42,6 +42,7 @@ export async function VideosList({ page, search }: { search: string; page: numbe
                     alt={video.title}
                     style={{ width: 160, height: 90 }}
                   />
+                  <span className={styles.duration}>{secondsToMinutes(video.duration)}</span>
                 </Link>
               </Table.Cell>
               <Table.Cell>

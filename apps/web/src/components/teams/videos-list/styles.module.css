@@ -1,3 +1,20 @@
+.thumbnailWrapper {
+  text-decoration: none;
+  position: relative;
+  display: block;
+}
+
+.duration {
+  position: absolute;
+  bottom: 0.15rem;
+  right: 0.25rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 2px 4px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+}
+
 .lineClamp {
   display: -webkit-box;
   line-clamp: 3;
