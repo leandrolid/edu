@@ -22,6 +22,6 @@ export class UserRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.repository.findUnique({ email })
+    return this.repository.findUnique({ where: { email } })
   }
 }

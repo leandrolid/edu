@@ -1,4 +1,9 @@
-import type { IRepository } from '@domain/persistence/repository'
+import type {
+  FindManyOptions,
+  FindOneOptions,
+  IRepository,
+  UpdateOneOptions,
+} from '@domain/persistence/repository'
 import { PrismaDatabaseConnection } from '@infra/database/connections/connection.imp'
 import type { Prisma } from '@prisma/client'
 
@@ -22,21 +27,42 @@ export class Repository<T> implements IRepository<T> {
     return result as T | null
   }
 
-  async findUnique(where: Partial<T>): Promise<T | null> {
+  async findUnique(filters: FindOneOptions<T>): Promise<T | null> {
     const result = await this.connection.query(this.modelName, 'findUnique', {
-      where: where as any,
+      where: filters.where as any,
+      select: filters.select,
     })
     return result as T | null
   }
 
-  async findMany(
-    where: Partial<T>,
-    options?: {
-      take?: number
-      skip?: number
-      orderBy?: Record<keyof T, 'asc' | 'desc'> | undefined
-    },
-  ): Promise<T[]> {
-    throw new Error('Method not implemented.')
+  async findMany(where: FindManyOptions<T>): Promise<T[]> {
+    const result = await this.connection.query(this.modelName, 'findMany', {
+      where: where.where as any,
+      take: where.take,
+      skip: where.skip,
+      orderBy: where.orderBy,
+    })
+    return result as T[]
+  }
+
+  async count(where: FindManyOptions<T>): Promise<number> {
+    const result = await this.connection.query(this.modelName, 'count', {
+      where: where.where as any,
+    })
+    return result as number
+  }
+
+  async updateOne(filters: UpdateOneOptions<T>): Promise<T> {
+    const result = await this.connection.query(this.modelName, 'update', {
+      where: { id: filters.id },
+      data: filters.data,
+    })
+    return result as T
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await this.connection.query(this.modelName, 'delete', {
+      where: { id },
+    })
   }
 }

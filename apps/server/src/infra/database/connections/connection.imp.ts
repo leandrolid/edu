@@ -58,7 +58,7 @@ export class PrismaDatabaseConnection implements IDatabaseConnection {
     data: Operations[Action]['args'],
     // @ts-expect-error -- Prisma does not support generics for args and result types
   ): Promise<Operations[Action]['result']> {
-    const command = get<Function>(prisma, `${camel(model)}.${action}`)
+    const command = get<Function>(this.prisma, `${camel(model)}.${action}`)
     if (!command) {
       throw new InternalServerError(`Command ${action} not found for model ${model}.`)
     }

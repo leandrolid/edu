@@ -1,5 +1,6 @@
+import type { IRepository } from '@domain/persistence/repository'
 import { Injectable, NotFoundError } from '@edu/framework'
-import { prisma } from '@infra/database/connections/prisma.connection'
+import { InjectRepository } from '@infra/database/decorators/inject-repository'
 import type {
   CreateTeamInput,
   FindManyTeamsAndCountInput,
@@ -8,24 +9,27 @@ import type {
   ITeamRepository,
   UpdateTeamByIdInput,
 } from '@infra/repositories/team/team.repository'
-import type { Prisma, Team } from '@prisma/client'
+import type { Team } from '@prisma/client'
 
 @Injectable({
   token: 'ITeamRepository',
 })
 export class TeamRepository implements ITeamRepository {
+  constructor(
+    @InjectRepository('Team')
+    private readonly repository: IRepository<Team>,
+  ) {}
+
   async createOne(input: CreateTeamInput): Promise<Team> {
-    return prisma.team.create({ data: input })
+    return this.repository.createOne(input)
   }
 
   async findById(teamId: string): Promise<Team | null> {
-    return prisma.team.findUnique({ where: { id: teamId } })
+    return this.repository.findById(teamId)
   }
 
   async findOneBySlugOrFail(input: GetBySlugInput): Promise<Team> {
-    const team = await prisma.team.findUnique({
-      where: { slug_organizationId: input },
-    })
+    const team = await this.repository.findUnique({ where: input })
     if (!team) throw new NotFoundError('Time não encontrado')
     return team
   }
@@ -36,7 +40,7 @@ export class TeamRepository implements ITeamRepository {
     organizationId,
     search,
   }: FindManyTeamsAndCountInput): Promise<FindManyTeamsAndCountOutput> {
-    const where: Prisma.TeamFindManyArgs['where'] = {
+    const where = {
       organizationId: organizationId,
       ...(search && {
         OR: [
@@ -45,9 +49,9 @@ export class TeamRepository implements ITeamRepository {
         ],
       }),
     }
-    const [count, teams] = await prisma.$transaction([
-      prisma.team.count({ where }),
-      prisma.team.findMany({
+    const [count, teams] = await Promise.all([
+      this.repository.count({ where }),
+      this.repository.findMany({
         where,
         take: pageSize,
         skip: (page - 1) * pageSize,
@@ -57,13 +61,10 @@ export class TeamRepository implements ITeamRepository {
   }
 
   async updateById({ teamId, ...input }: UpdateTeamByIdInput): Promise<Team> {
-    return prisma.team.update({
-      where: { id: teamId },
-      data: input,
-    })
+    return this.repository.updateOne({ id: teamId, data: input })
   }
 
   async deleteById(teamId: string): Promise<void> {
-    await prisma.team.delete({ where: { id: teamId } })
+    await this.repository.deleteById(teamId)
   }
 }
