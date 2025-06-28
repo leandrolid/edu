@@ -12,7 +12,7 @@ export class CreateAccountUseCase {
     if (userExists) {
       throw new BadRequestError('Usuário já existe')
     }
-    const newUser = await this.userRepository.create({
+    const newUser = await this.userRepository.createOne({
       name,
       email,
       passwordHash: await hash(password, 10),

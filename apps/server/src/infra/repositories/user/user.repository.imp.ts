@@ -1,5 +1,6 @@
+import type { IRepository } from '@domain/persistence/repository'
 import { Injectable } from '@edu/framework'
-import { prisma } from '@infra/database/connections/prisma.connection'
+import { InjectRepository } from '@infra/database/decorators/inject-repository'
 import type { CreateUserInput, IUserRepository } from '@infra/repositories/user/user.repository'
 import type { User } from '@prisma/client'
 
@@ -7,15 +8,20 @@ import type { User } from '@prisma/client'
   token: 'IUserRepository',
 })
 export class UserRepository implements IUserRepository {
-  async create(input: CreateUserInput): Promise<User> {
-    return prisma.user.create({ data: input })
+  constructor(
+    @InjectRepository('User')
+    private readonly repository: IRepository<User>,
+  ) {}
+
+  async createOne(input: CreateUserInput): Promise<User> {
+    return this.repository.createOne(input)
   }
 
   async findById(id: string): Promise<User | null> {
-    return prisma.user.findUnique({ where: { id } })
+    return this.repository.findById(id)
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return prisma.user.findUnique({ where: { email } })
+    return this.repository.findUnique({ email })
   }
 }
