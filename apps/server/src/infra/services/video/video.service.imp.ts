@@ -86,6 +86,7 @@ export class VideoService implements IVideoService {
     const ffmpeg = FfmpegBuilder.init(this.logger)
       .addAcceleration()
       .input('pipe:0')
+      .toDash()
       .to144p(input.maxResolution, join(tempDir.name, '144p.webm'))
       .to240p(input.maxResolution, join(tempDir.name, '240p.webm'))
       .to360p(input.maxResolution, join(tempDir.name, '360p.webm'))
@@ -190,7 +191,8 @@ export class VideoService implements IVideoService {
   async createThumbnail(input: CreateThumbnailInput): Promise<CreateThumbnailOutput> {
     const tempDir = await this.tmpStorage.createTempDir()
     const ffmpeg = FfmpegBuilder.init(this.logger)
-      .toThumbnail('pipe:0', join(tempDir.name, 'thumbnail.jpg'))
+      .input('pipe:0')
+      .toThumbnail(join(tempDir.name, 'thumbnail.jpg'))
       .build()
     return new Promise<CreateThumbnailOutput>((resolve, reject) => {
       const stream = Readable.from(input.buffer)

@@ -17,8 +17,13 @@ export class FfmpegBuilder {
   }
 
   input(input: string) {
+    this.ffmpegArgs.push(`-i ${input}`)
+    return this
+  }
+
+  toDash() {
     this.ffmpegArgs.push(
-      `-i ${input} -c:v libvpx-vp9 -movflags frag_keyframe+empty_moov+default_base_moof -keyint_min 150 -g 150 -tile-columns 4 -frame-parallel 1 -f webm -dash 1`,
+      '-c:v libvpx-vp9 -movflags frag_keyframe+empty_moov+default_base_moof -keyint_min 150 -g 150 -tile-columns 4 -frame-parallel 1 -f webm -dash 1',
     )
     return this
   }
@@ -82,8 +87,8 @@ export class FfmpegBuilder {
     return this
   }
 
-  toThumbnail(input: string, output: string) {
-    this.ffmpegArgs.push(`-i ${input} -ss 00:00:01.000 -vframes 1 ${output}`)
+  toThumbnail(output: string) {
+    this.ffmpegArgs.push(`-ss 00:00:01.000 -vframes 1 ${output}`)
     return this
   }
 
