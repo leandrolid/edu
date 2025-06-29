@@ -21,7 +21,7 @@ export default async function MaterialsLayout({
         }}
       >
         <Heading as="h1" size="3">
-          Materiais
+          Conteúdos
         </Heading>
         <LineVertical weight="bold" style={{ rotate: '20deg' }} />
       </Flex>
@@ -29,8 +29,8 @@ export default async function MaterialsLayout({
       <Container size="4" p="4">
         <Flex direction={{ initial: 'column', sm: 'row' }} gap="4">
           <AsideMenu.Root>
-            <AsideMenu.Item href={`/${slug}/materials`}>Geral</AsideMenu.Item>
-            <AsideMenu.Item href={`/${slug}/materials/videos`}>Vídeos</AsideMenu.Item>
+            <AsideMenu.Item href={`/${slug}/contents`}>Geral</AsideMenu.Item>
+            <AsideMenu.Item href={`/${slug}/contents/videos`}>Vídeos</AsideMenu.Item>
           </AsideMenu.Root>
 
           <Flex direction="column" gap="6" flexGrow="1">

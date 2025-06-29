@@ -1,7 +1,7 @@
 'use server'
 import { auth } from '@/auth'
 import { HttpError } from '@/http/errors/http.error'
-import { deleteVideo } from '@/http/services/materials/delete-video'
+import { deleteVideo } from '@/http/services/videos/delete-video'
 
 export async function deleteVideoAction(videoId: string) {
   try {

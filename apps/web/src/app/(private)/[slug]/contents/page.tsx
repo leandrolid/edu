@@ -19,7 +19,7 @@ export default async function MaterialsPage() {
         <Inset side="all" p="0">
           <Flex direction="column" gap="2" p="6">
             <Heading as="h6" size="4">
-              Materiais
+              Conteúdos
             </Heading>
 
             <Skeleton width="100%" height="30rem" />

@@ -1,4 +1,4 @@
-import { VideoForm } from '@/components/materials/videos/video-form'
+import { VideoForm } from '@/components/contents/videos/video-form'
 import { Card, Flex, Heading, Inset } from '@radix-ui/themes'
 
 export default async function NewVideoPage() {

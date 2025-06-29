@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { Pagination } from '@/components/pagination'
 import { VideosActions } from '@/components/teams/videos-actions'
-import { getVideos } from '@/http/services/materials/get-videos'
+import { getVideos } from '@/http/services/videos/get-videos'
 import { createFallbackName, requestFallback, secondsToMinutes } from '@edu/utils'
 import { Avatar, Flex, Link as StyledLink, Table, Text } from '@radix-ui/themes'
 import Link from 'next/link'
@@ -34,7 +34,7 @@ export async function VideosList({ page, search }: { search: string; page: numbe
             <Table.Row key={video.id} align="center">
               <Table.Cell width="160px">
                 <Link
-                  href={`/${slug}/materials/videos/${video.id}`}
+                  href={`/${slug}/contents/videos/${video.id}`}
                   className={styles.thumbnailWrapper}
                 >
                   <Avatar
@@ -49,7 +49,7 @@ export async function VideosList({ page, search }: { search: string; page: numbe
               <Table.Cell className={styles.borderRight} width={{ initial: '100%', sm: '10rem' }}>
                 <Flex direction="column">
                   <StyledLink asChild>
-                    <Link href={`/${slug}/materials/videos/${video.id}`}>
+                    <Link href={`/${slug}/contents/videos/${video.id}`}>
                       <Text as="p" size="2" weight="medium" truncate>
                         {video.title}
                       </Text>

@@ -1,7 +1,7 @@
 'use client'
 
+import { StreamPlayer } from '@/components/contents/stream-player'
 import { SelectMultiple } from '@/components/form/select-multiple'
-import { StreamPlayer } from '@/components/materials/stream-player'
 import { createFallbackName } from '@edu/utils'
 import {
   Avatar,
@@ -34,7 +34,7 @@ export function EditVideoForm({
   courses: string[]
 }) {
   return (
-    <Flex direction="column" gap="3" p="4">
+    <Flex direction="column" gap="3" p="6" pt="0">
       <Flex
         direction={{ initial: 'column', sm: 'row-reverse' }}
         align={{ initial: 'stretch', sm: 'center' }}
@@ -69,7 +69,7 @@ export function EditVideoForm({
         <Text as="label" size="2" htmlFor="thumbnail">
           Miniatura
         </Text>
-        <Flex gap="2">
+        <Flex direction={{ initial: 'column', xs: 'row' }} gap="2">
           <Skeleton width="160px" height="90px" />
           <Avatar
             src={thumbnail}
@@ -77,6 +77,7 @@ export function EditVideoForm({
             alt="Thumbnail do vídeo"
             style={{ width: '160px', height: '90px' }}
           />
+          <Skeleton width="160px" height="90px" />
         </Flex>
       </Flex>
 
@@ -155,7 +156,7 @@ export function EditVideoForm({
         </Flex>
       </Flex>
 
-      <Inset side="x" p="0" mt="4" mx="-2">
+      <Inset side="x" p="current" mt="4" mx="-6">
         <Separator orientation="horizontal" size="4" />
       </Inset>
 

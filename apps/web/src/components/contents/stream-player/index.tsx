@@ -1,6 +1,6 @@
 'use client'
 
-import { ShakaPlayer } from '@/components/materials/stream-player/shaka'
+import { ShakaPlayer } from '@/components/contents/stream-player/shaka'
 import { NoSSRWrapper } from '@/components/nossr-wrapper'
 
 export function StreamPlayer({

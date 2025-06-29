@@ -1,7 +1,7 @@
 'use client'
 
 import { auth } from '@/auth'
-import { createVideo } from '@/http/services/materials/create-video'
+import { createVideo } from '@/http/services/videos/create-video'
 import { Flex, Progress } from '@radix-ui/themes'
 import { useState } from 'react'
 
