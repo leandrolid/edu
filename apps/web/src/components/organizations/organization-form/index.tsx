@@ -19,8 +19,8 @@ export function OrganizationForm({ organization, isUpdating, action }: Props) {
   const [state, formAction, isPending] = useFormState(action)
 
   return (
-    <form onSubmit={formAction}>
-      <Flex direction="column" gap="4" p="6">
+    <Flex asChild direction="column" gap="4">
+      <form onSubmit={formAction}>
         <Flex direction="column" gap="2">
           <Text as="label" size="2" htmlFor="name">
             Nome da organização
@@ -111,15 +111,15 @@ export function OrganizationForm({ organization, isUpdating, action }: Props) {
             </Text>
           )}
         </Flex>
-      </Flex>
 
-      <Separator orientation="horizontal" size="4" />
+        <Separator orientation="horizontal" size="4" />
 
-      <Flex p="5">
-        <Button variant="solid" size="2" ml="auto" loading={isPending} disabled={isPending}>
-          Salvar
-        </Button>
-      </Flex>
-    </form>
+        <Flex>
+          <Button variant="solid" size="2" ml="auto" loading={isPending} disabled={isPending}>
+            Salvar
+          </Button>
+        </Flex>
+      </form>
+    </Flex>
   )
 }

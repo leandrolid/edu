@@ -4,7 +4,7 @@ import { useQueryState } from '@/react/hooks/use-query-state'
 import { MagnifyingGlass } from '@phosphor-icons/react'
 import { TextField } from '@radix-ui/themes'
 
-export const AdminFilter = () => {
+export const TeamsFilter = () => {
   const { getQueryState, setQueryState } = useQueryState()
   return (
     <TextField.Root
@@ -12,7 +12,7 @@ export const AdminFilter = () => {
       onChange={({ target }) => {
         setQueryState({ search: target.value, page: '1' })
       }}
-      placeholder="Busque por administradores"
+      placeholder="Busque por times"
       size="2"
       style={{ width: '250px' }}
     >

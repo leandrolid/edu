@@ -7,7 +7,7 @@ import { DeleteOrganization } from '@/components/organizations/delete-organizati
 import { OrganizationForm } from '@/components/organizations/organization-form'
 import { getOrganization } from '@/http/services/organizations/get-organization'
 import { requestFallback } from '@edu/utils'
-import { Button, Card, Flex, Heading, Inset, Separator, Text } from '@radix-ui/themes'
+import { Button, Card, Flex, Heading, Separator, Text } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
 
 export default async function SettingsPage() {
@@ -21,19 +21,17 @@ export default async function SettingsPage() {
 
   return (
     <>
-      <Card style={{ width: '100%' }}>
-        <Inset side="all" p="0">
-          <Flex px="6" pt="6">
-            <Heading as="h6" size="4">
-              Configurações básicas
-            </Heading>
-          </Flex>
+      <Card style={{ padding: 0 }}>
+        <Flex direction="column" p="6" gap="4">
+          <Heading as="h6" size="4">
+            Configurações básicas
+          </Heading>
           <OrganizationForm
             isUpdating
             organization={organization}
             action={updateOrganizationAction}
           />
-        </Inset>
+        </Flex>
       </Card>
 
       <Flex direction="column" gap="4">

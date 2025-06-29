@@ -7,7 +7,7 @@ function Root({
   children: React.ReactNode
 }>) {
   return (
-    <Flex direction="column" gap="2" width="200px" py="6" asChild>
+    <Flex asChild direction="column" gap="2" width="200px" py="6" flexShrink="0">
       <nav>{children}</nav>
     </Flex>
   )
