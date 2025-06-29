@@ -1,5 +1,5 @@
-import { Header } from '@/components/header'
-import { Navbar } from '@/components/navbar'
+import { Header } from '@/components/navigation/header'
+import { Navbar } from '@/components/navigation/navbar'
 
 export default async function OrganizationLayout({
   children,

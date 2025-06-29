@@ -1,4 +1,4 @@
-import { Header } from '@/components/header'
+import { Header } from '@/components/navigation/header'
 import { Box, Flex, Text } from '@radix-ui/themes'
 
 export default function PrivatePage() {

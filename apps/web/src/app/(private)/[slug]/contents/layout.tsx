@@ -1,5 +1,5 @@
 import { auth } from '@/auth'
-import { AsideMenu } from '@/components/aside-menu'
+import { AsideMenu } from '@/components/navigation/aside-menu'
 import { LineVertical } from '@phosphor-icons/react/dist/ssr'
 import { Box, Container, Flex, Heading, Separator } from '@radix-ui/themes'
 

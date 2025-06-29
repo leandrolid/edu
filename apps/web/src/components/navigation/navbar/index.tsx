@@ -1,5 +1,5 @@
 import { auth } from '@/auth'
-import { Navlink } from '@/components/navlink'
+import { Navlink } from '@/components/navigation/navlink'
 import { TabNav } from '@radix-ui/themes'
 
 export const Navbar = async () => {
