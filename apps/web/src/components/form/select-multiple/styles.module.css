@@ -1,0 +1,25 @@
+.trigger {
+  --text-field-height: var(--space-6);
+  flex: 1;
+  width: 100%;
+  padding: calc(var(--space-2) * 0.75);
+  background-color: var(--color-surface);
+  color: var(--gray-a10);
+  font-size: var(--font-size-2);
+  height: var(--text-field-height);
+}
+
+.selectItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  user-select: none;
+  background: transparent;
+  line-height: 1.25rem;
+  width: 100%;
+
+  &[data-selected="true"] {
+    background: var(--color-gray-2);
+  }
+}

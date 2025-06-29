@@ -20,9 +20,10 @@ export async function VideosList({ page, search }: { search: string; page: numbe
       <Table.Root variant="surface" style={{ borderRadius: 0 }}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell colSpan={2}>Video</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Tags</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell colSpan={2} className={styles.borderRight}>
+              Video
+            </Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Visibilidade</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Data</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell align="center">Visualizações</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell />
@@ -31,7 +32,7 @@ export async function VideosList({ page, search }: { search: string; page: numbe
         <Table.Body>
           {videos.map((video) => (
             <Table.Row key={video.id} align="center">
-              <Table.Cell>
+              <Table.Cell width="160px">
                 <Link
                   href={`/${slug}/materials/videos/${video.id}`}
                   className={styles.thumbnailWrapper}
@@ -45,8 +46,8 @@ export async function VideosList({ page, search }: { search: string; page: numbe
                   <span className={styles.duration}>{secondsToMinutes(video.duration)}</span>
                 </Link>
               </Table.Cell>
-              <Table.Cell>
-                <Flex direction="column" width="100%" maxWidth="20rem">
+              <Table.Cell className={styles.borderRight} width={{ initial: '100%', sm: '10rem' }}>
+                <Flex direction="column">
                   <StyledLink asChild>
                     <Link href={`/${slug}/materials/videos/${video.id}`}>
                       <Text as="p" size="2" weight="medium" truncate>
@@ -59,12 +60,7 @@ export async function VideosList({ page, search }: { search: string; page: numbe
                   </Text>
                 </Flex>
               </Table.Cell>
-              <Table.Cell>Ativo</Table.Cell>
-              <Table.Cell>
-                <Text size="1" color="gray" truncate>
-                  {video.tags.join(', ')}
-                </Text>
-              </Table.Cell>
+              <Table.Cell>Público</Table.Cell>
               <Table.Cell>{new Date(video.createdAt).toLocaleDateString('pt-BR')}</Table.Cell>
               <Table.Cell align="center">{video.views}</Table.Cell>
               <Table.Cell>
