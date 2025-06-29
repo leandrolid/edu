@@ -1,4 +1,4 @@
-import type { StreamVideoInput } from '@app/usecases/materials/stream-video/stream-video.input'
+import type { StreamVideoInput } from '@app/usecases/videos/stream-video/stream-video.input'
 import { Inject, Injectable } from '@edu/framework'
 import type { IStorageService } from '@infra/services/storage/storage.service'
 

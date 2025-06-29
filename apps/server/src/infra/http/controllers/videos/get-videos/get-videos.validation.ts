@@ -1,4 +1,4 @@
-import type { GetVideosInput } from '@app/usecases/materials/get-videos/get-videos.input'
+import type { GetVideosInput } from '@app/usecases/videos/get-videos/get-videos.input'
 import type { IValidation, IValidator } from '@edu/framework'
 import z from 'zod'
 

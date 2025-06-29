@@ -1,5 +1,5 @@
-import type { DeleteVideoInput } from '@app/usecases/materials/delete-video/delete-video.input'
-import { DeleteVideoUseCase } from '@app/usecases/materials/delete-video/delete-video.usecase'
+import type { DeleteVideoInput } from '@app/usecases/videos/delete-video/delete-video.input'
+import { DeleteVideoUseCase } from '@app/usecases/videos/delete-video/delete-video.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Body,

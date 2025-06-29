@@ -1,5 +1,5 @@
-import type { GetVideosInput } from '@app/usecases/materials/get-videos/get-videos.input'
-import { GetVideosUseCase } from '@app/usecases/materials/get-videos/get-videos.usecase'
+import type { GetVideosInput } from '@app/usecases/videos/get-videos/get-videos.input'
+import { GetVideosUseCase } from '@app/usecases/videos/get-videos/get-videos.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Controller,
@@ -11,7 +11,7 @@ import {
   Validate,
   type IController,
 } from '@edu/framework'
-import { GetVideosValidation } from '@infra/http/controllers/materials/get-videos/get-videos.validation'
+import { GetVideosValidation } from '@infra/http/controllers/videos/get-videos/get-videos.validation'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Controller('/organizations/:slug/videos')

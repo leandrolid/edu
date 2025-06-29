@@ -1,4 +1,4 @@
-import { StreamVideoUseCase } from '@app/usecases/materials/stream-video/stream-video.usecase'
+import { StreamVideoUseCase } from '@app/usecases/videos/stream-video/stream-video.usecase'
 import {
   Controller,
   Docs,
@@ -15,7 +15,7 @@ import {
   StreamVideoValidation,
   type StreamVideoHeaders,
   type StreamVideoParams,
-} from '@infra/http/controllers/materials/stream-video/stream-video.validation'
+} from '@infra/http/controllers/videos/stream-video/stream-video.validation'
 
 @Docs({
   title: 'Stream a video',

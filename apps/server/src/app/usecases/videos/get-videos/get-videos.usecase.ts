@@ -1,4 +1,4 @@
-import type { GetVideosInput } from '@app/usecases/materials/get-videos/get-videos.input'
+import type { GetVideosInput } from '@app/usecases/videos/get-videos/get-videos.input'
 import type { Auth } from '@domain/dtos/auth.dto'
 import { Inject, Injectable } from '@edu/framework'
 import type { IVideoRepository } from '@infra/repositories/video/video.repository'

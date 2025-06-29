@@ -1,4 +1,4 @@
-import type { DeleteVideoInput } from '@app/usecases/materials/delete-video/delete-video.input'
+import type { DeleteVideoInput } from '@app/usecases/videos/delete-video/delete-video.input'
 import type { Auth } from '@domain/dtos/auth.dto'
 import { Inject, Injectable, NotFoundError } from '@edu/framework'
 import type { IVideoRepository } from '@infra/repositories/video/video.repository'

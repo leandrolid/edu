@@ -1,4 +1,4 @@
-import type { CreateVideoInput } from '@app/usecases/materials/create-video/create-video.input'
+import type { CreateVideoInput } from '@app/usecases/videos/create-video/create-video.input'
 import type { Auth } from '@domain/dtos/auth.dto'
 import { EVENT_SERVICE, Inject, Injectable, type IEventsService } from '@edu/framework'
 import type { IVideoRepository } from '@infra/repositories/video/video.repository'

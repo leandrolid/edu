@@ -1,5 +1,5 @@
-import type { GetVideoInput } from '@app/usecases/materials/get-video/get-video.input'
-import { GetVideoUseCase } from '@app/usecases/materials/get-video/get-video.usecase'
+import type { GetVideoInput } from '@app/usecases/videos/get-video/get-video.input'
+import { GetVideoUseCase } from '@app/usecases/videos/get-video/get-video.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import { Controller, Docs, Get, MiddleWares, Params, User, type IController } from '@edu/framework'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'

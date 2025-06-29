@@ -1,4 +1,4 @@
-import { CreateVideoUseCase } from '@app/usecases/materials/create-video/create-video.usecase'
+import { CreateVideoUseCase } from '@app/usecases/videos/create-video/create-video.usecase'
 import type { IUser } from '@domain/dtos/user.dto'
 import {
   Controller,
@@ -13,7 +13,7 @@ import {
 import type {
   CreateVideoForm,
   CreateVideoParams,
-} from '@infra/http/controllers/materials/create-video/create-video.validation'
+} from '@infra/http/controllers/videos/create-video/create-video.validation'
 import { JwtMiddleware } from '@infra/http/middlewares/jwt.middleware'
 
 @Docs({
