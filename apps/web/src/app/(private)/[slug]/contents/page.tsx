@@ -1,18 +1,7 @@
-import { auth } from '@/auth'
-import { getOrganization } from '@/http/services/organizations/get-organization'
-import { requestFallback } from '@edu/utils'
-import { Card, Flex, Heading, Inset, Skeleton } from '@radix-ui/themes'
-import { redirect } from 'next/navigation'
+import { ContentsMetrics } from '@/components/contents/contents-metrics'
+import { Card, Flex, Heading, Inset } from '@radix-ui/themes'
 
-export default async function MaterialsPage() {
-  const { data: organization } = await requestFallback({
-    request: async () => {
-      const slug = await auth.getCurrentOrganization()
-      return await getOrganization({ slug: slug! })
-    },
-    onError: () => redirect('/'),
-  })
-
+export default async function ContentsPage() {
   return (
     <>
       <Card style={{ width: '100%' }}>
@@ -22,7 +11,7 @@ export default async function MaterialsPage() {
               Conteúdos
             </Heading>
 
-            <Skeleton width="100%" height="30rem" />
+            <ContentsMetrics />
           </Flex>
         </Inset>
       </Card>

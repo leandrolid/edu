@@ -16,10 +16,12 @@
     "@radix-ui/themes": "^3.2.1",
     "@tanstack/react-query": "^5.71.5",
     "axios": "^1.8.4",
+    "chart.js": "^4.5.0",
     "cookies-next": "^5.1.0",
     "next": "15.2.4",
     "radix-ui": "^1.4.2",
     "react": "^19.0.0",
+    "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.0.0",
     "shaka-player": "^4.15.4",
     "zod": "^3.24.2"
@@ -28,6 +30,7 @@
     "@edu/eslint": "*",
     "@edu/prettier": "*",
     "@edu/tsconfig": "*",
+    "@faker-js/faker": "^9.8.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19"
