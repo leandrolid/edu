@@ -2,10 +2,11 @@
 
 import { auth } from '@/auth'
 import { FileInput } from '@/components/form/file-input'
-import { createVideo } from '@/http/services/videos/create-video'
+import { createVideos } from '@/http/services/videos/create-videos'
 import { bytesToMegaBytes, secondsToMinutes, toast } from '@edu/utils'
 import { Play, Trash } from '@phosphor-icons/react/dist/ssr'
 import {
+  Badge,
   Button,
   Flex,
   Heading,
@@ -19,6 +20,7 @@ import {
 import { useCallback, useEffect, useState, useTransition } from 'react'
 
 export function VideoForm() {
+  const [progress, setProgress] = useState(0)
   const [isUploading, startUploading] = useTransition()
   const [videos, setVideos] = useState<
     {
@@ -28,7 +30,6 @@ export function VideoForm() {
       duration: number
       file: File
       tags: string[]
-      progress: number
     }[]
   >([])
 
@@ -59,12 +60,11 @@ export function VideoForm() {
       ...prev,
       ...Array.from(files).map((file) => ({
         title: file.name,
-        description: '',
+        description: 'Uma descrição qualquer',
         url: URL.createObjectURL(file),
         duration: 0,
         file: file,
-        tags: [],
-        progress: 0,
+        tags: ['masterclass', 'javascript'],
       })),
     ])
   }
@@ -79,24 +79,19 @@ export function VideoForm() {
           })
         }
         const slug = await auth.getCurrentOrganization()
-        await Promise.all(
-          Array.from(videos).map(async (file, index) => {
-            return createVideo({
-              slug: slug!,
-              file: file.file,
-              onProgress: ({ progress }) => {
-                setVideos((prev) => {
-                  return prev.map((prevFile, prevIndex) => {
-                    if (prevIndex === index) {
-                      return { ...prevFile, progress }
-                    }
-                    return prevFile
-                  })
-                })
-              },
-            })
-          }),
-        )
+        await createVideos({
+          slug: slug!,
+          videos: videos.map((video) => ({
+            title: video.title,
+            description: video.description,
+            duration: video.duration,
+            tags: video.tags,
+            file: video.file,
+          })),
+          onUploadProgress: (progress) => {
+            setProgress(progress)
+          },
+        })
         toast.notify({
           status: 'success',
           message: 'Upload dos vídeos concluído com sucesso!',
@@ -123,7 +118,10 @@ export function VideoForm() {
             variant="soft"
             color="gray"
             size="2"
-            onClick={() => setVideos([])}
+            onClick={() => {
+              setVideos([])
+              setProgress(0)
+            }}
             disabled={isUploading}
           >
             Limpar lista
@@ -134,7 +132,7 @@ export function VideoForm() {
             color="green"
             size="2"
             onClick={startUpload}
-            disabled={isUploading}
+            disabled={isUploading || progress > 0}
           >
             <Play weight="fill" />
             Iniciar envio
@@ -149,20 +147,14 @@ export function VideoForm() {
         label="Selecione os vídeos para upload"
         onChange={handleFileChange}
       />
-      <Progress
-        color="green"
-        value={videos.reduce((acc, file) => acc + file.progress, 0)}
-        max={videos.length || 1}
-        size="3"
-      />
+      <Progress color="green" value={progress} max={1} size="3" />
       <Table.Root>
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeaderCell />
             <Table.ColumnHeaderCell>Informações</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Metadados</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Tags</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Progresso</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Metadados</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell />
           </Table.Row>
         </Table.Header>
@@ -192,7 +184,7 @@ export function VideoForm() {
                 <Table.Cell width="20rem">
                   <Flex direction="column" gap="1">
                     <TextField.Root
-                      disabled={isUploading || file.progress > 0}
+                      disabled={isUploading}
                       value={file.title}
                       onChange={(e) => {
                         setVideos((prev) =>
@@ -206,7 +198,7 @@ export function VideoForm() {
                       }}
                     />
                     <TextArea
-                      disabled={isUploading || file.progress > 0}
+                      disabled={isUploading}
                       value={file.description}
                       onChange={(e) => {
                         setVideos((prev) =>
@@ -224,6 +216,13 @@ export function VideoForm() {
                   </Flex>
                 </Table.Cell>
                 <Table.Cell>
+                  {file.tags.map((tag, index) => (
+                    <Badge key={index} variant="soft" size="1" mx="1">
+                      {tag}
+                    </Badge>
+                  ))}
+                </Table.Cell>
+                <Table.Cell>
                   <Flex direction="column" gap="1">
                     <Text weight="medium" color="gray">
                       {file.file.name}
@@ -233,15 +232,11 @@ export function VideoForm() {
                     </Text>
                   </Flex>
                 </Table.Cell>
-                <Table.Cell>{file.tags.join(', ')}</Table.Cell>
-                <Table.Cell align="center" justify="center">
-                  <Progress color="green" value={file.progress} max={1} my="3" />
-                </Table.Cell>
                 <Table.Cell align="center">
                   <IconButton
                     variant="outline"
                     color="red"
-                    disabled={isUploading || file.progress > 0}
+                    disabled={isUploading || progress > 0}
                     onClick={() => {
                       setVideos((prev) => prev.filter((_, i) => i !== index))
                     }}
