@@ -9,7 +9,7 @@ import {
   writeFileSync,
 } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { join, resolve as resolvePath } from 'node:path'
+import { join } from 'node:path'
 
 @Injectable()
 export class FsStorageAdapter {
@@ -46,7 +46,7 @@ export class FsStorageAdapter {
         }>((resolve, reject) => {
           outputStream.on('finish', () => {
             resolve({
-              pathName: `file://${resolvePath(filePath)}`,
+              pathName: `file://${filePath}`,
               fileName,
               fileSize: statSync(filePath).size,
               toStream: () => createReadStream(filePath),
@@ -66,7 +66,7 @@ export class FsStorageAdapter {
     const stats = statSync(filePath)
     return {
       fileName,
-      pathName: `file://${resolvePath(filePath)}`,
+      pathName: `file://${filePath}`,
       fileSize: stats.size,
       mimeType: this.getMimeType(fileName),
       toStream: (options?: { start: number; end: number }) => {
