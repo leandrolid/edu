@@ -1,9 +1,9 @@
 import { auth } from '@/auth'
 import { AsideMenu } from '@/components/navigation/aside-menu'
 import { LineVertical } from '@phosphor-icons/react/dist/ssr'
-import { Box, Container, Flex, Heading, Separator } from '@radix-ui/themes'
+import { Box, Flex, Heading, Separator } from '@radix-ui/themes'
 
-export default async function MaterialsLayout({
+export default async function ContentsLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -26,7 +26,7 @@ export default async function MaterialsLayout({
         <LineVertical weight="bold" style={{ rotate: '20deg' }} />
       </Flex>
       <Separator orientation="horizontal" size="4" />
-      <Container size="4" p="4">
+      <Box p="4" style={{ maxWidth: '1440px', margin: '0 auto' }}>
         <Flex direction={{ initial: 'column', sm: 'row' }} gap="4">
           <AsideMenu.Root>
             <AsideMenu.Item href={`/${slug}/contents`}>Geral</AsideMenu.Item>
@@ -37,7 +37,7 @@ export default async function MaterialsLayout({
             {children}
           </Flex>
         </Flex>
-      </Container>
+      </Box>
     </Box>
   )
 }
