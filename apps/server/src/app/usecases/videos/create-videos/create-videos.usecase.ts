@@ -36,11 +36,11 @@ export class CreateVideosUseCase {
           duration: video.duration || 0,
           thumbnail: '',
         })
-        // await this.eventsService.emit('video.uploaded', {
-        //   id: material.id,
-        //   slug,
-        //   key: upload.key,
-        // })
+        await this.eventsService.emit('video.uploaded', {
+          id: material.id,
+          slug: user.slug,
+          key: upload.key,
+        })
         return {
           id: material.id,
           url: upload.url,
