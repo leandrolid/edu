@@ -1,0 +1,19 @@
+/* fbg-zinc-50 p-4 text-sm text-zinc-600 hover:bg-zinc-100 data-[drag-active=true]:border-primary data-[drag-active=true]:bg-primary dark:bg-zinc-900 dark:text-zinc-400 */
+.wrapper {
+  cursor: pointer;
+  border: 1px dashed var(--gray-7);
+  border-radius: 0.375rem;
+  background-color: var(--gray-a3);
+  color: var(--gray-12);
+  text-align: center;
+  transition: background-color 0.2s, border-color 0.2s;
+
+  &:hover {
+    background-color: var(--gray-a4);
+  }
+
+  &[data-drag-active="true"] {
+    border-color: var(--primary-color);
+    background-color: var(--indigo-7);
+  }
+}
