@@ -26,7 +26,7 @@ export class GetVideosUseCase {
       },
       videos: videos.map((video) => ({
         ...video,
-        thumbnail: new URL(`/organizations/${video.thumbnail}`, video.baseUrl).toString(),
+        thumbnail: new URL(video.thumbnail, video.baseUrl).toString(),
       })),
     }
   }

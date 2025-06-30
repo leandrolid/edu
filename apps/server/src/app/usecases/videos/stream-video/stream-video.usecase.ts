@@ -20,7 +20,9 @@ export class StreamVideoUseCase {
   ) {}
 
   async execute({ range, videoId, slug, fileName }: StreamVideoInput) {
-    const video = await this.storageService.getOne(`${slug}/videos/${videoId}/${fileName}`)
+    const video = await this.storageService.getOne(
+      `organizations/${slug}/videos/${videoId}/${fileName}`,
+    )
     if (!range || !range.match(/bytes=(\d+)-(\d+)?/)) {
       return {
         videoStream: video.toStream(),

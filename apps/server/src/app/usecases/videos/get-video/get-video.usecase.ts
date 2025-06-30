@@ -16,9 +16,9 @@ export class GetVideoUseCase {
     return {
       video: {
         ...video,
-        thumbnail: new URL(`/organizations/${video.thumbnail}`, video.baseUrl).toString(),
+        thumbnail: new URL(video.thumbnail, video.baseUrl).toString(),
         url: new URL(
-          `/organizations/${video.assetId.split('/').slice(0, -1).join('/')}/manifest.mpd`,
+          `${video.assetId.split('/').slice(0, -1).join('/')}/manifest.mpd`,
           video.baseUrl,
         ).toString(),
       },
