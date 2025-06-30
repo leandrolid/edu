@@ -15,6 +15,7 @@ import { GetTeamsController } from '@infra/http/controllers/teams/get-teams/get-
 import { UpdateTeamController } from '@infra/http/controllers/teams/update-team/update-team.controller'
 import { CreateAccountController } from '@infra/http/controllers/users/create-account/create-account.controller'
 import { CreateVideoController } from '@infra/http/controllers/videos/create-video/create-video.controller'
+import { CreateVideosController } from '@infra/http/controllers/videos/create-videos/create-videos.controller'
 import { DeleteVideoController } from '@infra/http/controllers/videos/delete-video/delete-video.controller'
 import { GetVideoController } from '@infra/http/controllers/videos/get-video/get-video.controller'
 import { GetVideosController } from '@infra/http/controllers/videos/get-videos/get-videos.controller'
@@ -39,7 +40,7 @@ async function main() {
     zodValidation: true,
     multipartForm: {
       fileSize: 100 * 1024 * 1024,
-      files: 1,
+      files: 100,
     },
     cors: ['*'],
     providers: [
@@ -75,6 +76,7 @@ async function main() {
       UpdateTeamController,
       DeleteTeamController,
       CreateVideoController,
+      CreateVideosController,
       GetVideosController,
       GetVideoController,
       StreamVideoController,
