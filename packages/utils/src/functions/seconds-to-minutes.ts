@@ -1,5 +1,5 @@
 export function secondsToMinutes(seconds: number): string {
   const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  const remainingSeconds = Math.ceil(seconds % 60).toString()
+  return `${minutes}:${remainingSeconds.padStart(2, '0')}`
 }
