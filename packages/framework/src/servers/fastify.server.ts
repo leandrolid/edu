@@ -2,7 +2,7 @@ import fastifyCors from '@fastify/cors'
 import fastifyMultipart, { type Multipart } from '@fastify/multipart'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
-import fastify, { type FastifyRequest } from 'fastify'
+import fastify from 'fastify'
 import {
   hasZodFastifySchemaValidationErrors,
   jsonSchemaTransform,
@@ -10,6 +10,7 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
+import { construct } from 'radash'
 import { resolveController } from '../container/resolve-controller'
 import { resolveRouteHandler } from '../container/resolve-controller-handler'
 import { Injectable } from '../decorators'
@@ -65,6 +66,11 @@ export class FastifyServer implements IServer {
               await middleware.execute(request, response)
             }
           })
+          .addHook('preValidation', async (request) => {
+            if (request.isMultipart()) {
+              request.body = this.formatFormData(request.body as Record<string, unknown>)
+            }
+          })
           .route({
             url,
             method: route.method,
@@ -89,7 +95,6 @@ export class FastifyServer implements IServer {
                   query: requestInput.query,
                   params: requestInput.params,
                   body: requestInput.body,
-                  form: await this.getMultipartForm(requestInput),
                 },
                 requestNode: requestInput.raw,
                 response,
@@ -152,19 +157,24 @@ export class FastifyServer implements IServer {
   public registerMultipartForm(config?: MultipartFormConfig): void {
     app.register(fastifyMultipart, {
       limits: config,
+      attachFieldsToBody: true,
+      preservePath: true,
     })
   }
 
-  private async getMultipartForm(request: FastifyRequest) {
-    if (!request.isMultipart()) return {}
-    const multipart = await request.file()
-    if (!multipart || !multipart.fields) return {}
-    return Object.entries(multipart.fields).reduce(
-      (acc, [fieldName, fileValue]) => ({
-        ...acc,
-        [fieldName]: this.getMultipartFormHelper(fileValue),
-      }),
-      {},
+  private formatFormData(body: Record<string, unknown>) {
+    return construct(
+      Object.entries(body).reduce(
+        (acc, [key, value]) => {
+          if (Array.isArray(value)) {
+            acc[key] = value.map((item) => this.getMultipartFormHelper(item))
+          } else {
+            acc[key] = this.getMultipartFormHelper(value as Multipart)
+          }
+          return acc
+        },
+        {} as Record<string, unknown>,
+      ),
     )
   }
 
