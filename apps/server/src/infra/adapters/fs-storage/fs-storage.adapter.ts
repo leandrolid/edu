@@ -26,7 +26,38 @@ export class FsStorageAdapter {
     writeFileSync(tempFilePath, 'Temporary file created for testing.')
   }
 
-  public saveToFile({ fileName, inputStream }: { fileName: string; inputStream: IReadStream }) {
+  public saveBuffer({ fileName, buffer }: { fileName: string; buffer: Buffer }): {
+    pathName: string
+    fileName: string
+    fileSize: number
+    toStream: () => IReadStream
+    toBuffer: () => Promise<Buffer>
+  } {
+    const filePath = join(this.baseDir, fileName)
+    rmSync(filePath, { force: true })
+    const fileDir = filePath.split('/').slice(0, -1).join('/')
+    if (!existsSync(fileDir)) {
+      mkdirSync(fileDir, { recursive: true })
+    }
+    writeFileSync(filePath, buffer)
+    return {
+      pathName: `file://${filePath}`,
+      fileName,
+      fileSize: statSync(filePath).size,
+      toStream: () => createReadStream(filePath),
+      toBuffer: async () => readFile(filePath),
+    }
+  }
+
+  public saveStream({ fileName, inputStream }: { fileName: string; inputStream: IReadStream }): {
+    outputStream: NodeJS.WritableStream
+    toPromise: () => Promise<{
+      pathName: string
+      fileName: string
+      toStream: () => IReadStream
+      fileSize: number
+    }>
+  } {
     const filePath = join(this.baseDir, fileName)
     rmSync(filePath, { force: true })
     const fileDir = filePath.split('/').slice(0, -1).join('/')
@@ -38,12 +69,7 @@ export class FsStorageAdapter {
     return {
       outputStream,
       toPromise: () => {
-        return new Promise<{
-          pathName: string
-          fileName: string
-          toStream: () => IReadStream
-          fileSize: number
-        }>((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           outputStream.on('finish', () => {
             resolve({
               pathName: `file://${filePath}`,

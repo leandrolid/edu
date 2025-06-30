@@ -11,12 +11,31 @@ export class StorageService implements Storage.IStorageService {
     this.fsStorage.init(resolve(process.cwd(), './node_modules/.temp'))
   }
 
+  async uploadOne({ key, buffer }: Storage.UploadOneInput): Promise<Storage.UploadOneOutput> {
+    try {
+      const file = this.fsStorage.saveBuffer({
+        fileName: key,
+        buffer,
+      })
+      return {
+        url: file.pathName,
+        key: file.fileName,
+        size: file.fileSize,
+        toStream: () => file.toStream(),
+        toBuffer: () => file.toBuffer(),
+      }
+    } catch (error) {
+      console.error(error)
+      throw new InternalServerError('Erro ao fazer upload do arquivo')
+    }
+  }
+
   async uploadStream({
     key,
     stream,
   }: Storage.UploadStreamInput): Promise<Storage.UploadStreamOutput> {
     try {
-      const file = this.fsStorage.saveToFile({
+      const file = this.fsStorage.saveStream({
         fileName: key,
         inputStream: stream,
       })

@@ -1,11 +1,25 @@
 import type { IReadStream } from '@edu/framework'
 
 export interface IStorageService {
+  uploadOne(input: UploadOneInput): Promise<UploadOneOutput>
   uploadStream(input: UploadStreamInput): Promise<UploadStreamOutput>
   getOne(key: string): Promise<GetOneOutput>
   getMany(keys: string[]): Promise<GetOneOutput[]>
   clear(): Promise<void>
   deleteDirectory(directory: string): Promise<void>
+}
+
+export type UploadOneInput = {
+  key: string
+  buffer: Buffer
+}
+
+export type UploadOneOutput = {
+  url: string
+  key: string
+  size: number
+  toStream: () => IReadStream
+  toBuffer: () => Promise<Buffer>
 }
 
 export type UploadStreamInput = {
