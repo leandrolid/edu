@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
+import { VideosActions } from '@/components/contents/videos-actions'
 import { Pagination } from '@/components/pagination'
-import { VideosActions } from '@/components/teams/videos-actions'
 import { getVideos } from '@/http/services/videos/get-videos'
 import { createFallbackName, requestFallback, secondsToMinutes } from '@edu/utils'
 import { Avatar, Flex, Link as StyledLink, Table, Text } from '@radix-ui/themes'

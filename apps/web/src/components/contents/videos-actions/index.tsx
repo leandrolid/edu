@@ -1,6 +1,6 @@
 'use client'
 
-import { deleteVideoAction } from '@/components/teams/videos-actions/actions'
+import { deleteVideoAction } from '@/components/contents/videos-actions/actions'
 import { toast } from '@edu/utils'
 import { ChartLine, DotsThree, Trash } from '@phosphor-icons/react/dist/ssr'
 import { DropdownMenu, Flex, IconButton } from '@radix-ui/themes'
