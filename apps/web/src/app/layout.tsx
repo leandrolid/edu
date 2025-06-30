@@ -1,8 +1,8 @@
 import '@radix-ui/themes/styles.css'
 import './globals.css'
 
-import type { Metadata } from 'next'
 import { Providers } from '@/app/providers'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Edu',

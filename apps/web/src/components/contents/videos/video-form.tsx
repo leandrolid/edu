@@ -34,17 +34,17 @@ export function VideoForm() {
   >([])
 
   useEffect(() => {
-    const preventClosing = () => {
+    const preventClosing = (e: BeforeUnloadEvent) => {
       const message = 'Você tem um upload em andamento. Tem certeza que deseja sair?'
-      toast.notify({
-        status: 'warning',
-        message,
-      })
+      e.returnValue = message
       return message
     }
     if (isUploading) {
       window.addEventListener('beforeunload', preventClosing)
     } else {
+      window.removeEventListener('beforeunload', preventClosing)
+    }
+    return () => {
       window.removeEventListener('beforeunload', preventClosing)
     }
   }, [isUploading])
