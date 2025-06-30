@@ -122,7 +122,7 @@ export class FastifyServer implements IServer {
           ),
         )
       }
-      return handler.execute(error, res)
+      return handler.execute(newError, res)
     })
   }
 

@@ -1,12 +1,10 @@
-import { HttpStatusCode } from '../enums/http-statuscode.enum'
-
 export class ServerError extends Error {
   constructor(
-    public readonly statusCode: HttpStatusCode,
-    message: string,
+    public readonly code: number,
+    public readonly message: string,
     public readonly cause?: Record<string, any>,
   ) {
-    super(message)
+    super(message, { cause })
     this.name = this.constructor.name
   }
 }
