@@ -28,38 +28,32 @@ export class FfmpegBuilder {
     return this
   }
 
-  to144p(maxResolution: number, output: string) {
-    if (maxResolution < 144) return this
+  to144p(output: string) {
     this.ffmpegArgs.push(`-an -vf scale=256:144 -b:v 250k -dash 1 ${output}`)
     return this
   }
 
-  to240p(maxResolution: number, output: string) {
-    if (maxResolution < 240) return this
+  to240p(output: string) {
     this.ffmpegArgs.push(`-an -vf scale=426:240 -b:v 500k -dash 1 ${output}`)
     return this
   }
 
-  to360p(maxResolution: number, output: string) {
-    if (maxResolution < 360) return this
+  to360p(output: string) {
     this.ffmpegArgs.push(`-an -vf scale=640:360 -b:v 800k -dash 1 ${output}`)
     return this
   }
 
-  to480p(maxResolution: number, output: string) {
-    if (maxResolution < 480) return this
+  to480p(output: string) {
     this.ffmpegArgs.push(`-an -vf scale=854:480 -b:v 1500k -dash 1 ${output}`)
     return this
   }
 
-  to720p(maxResolution: number, output: string) {
-    if (maxResolution < 720) return this
+  to720p(output: string) {
     this.ffmpegArgs.push(`-an -vf scale=1280:720 -b:v 3000k -dash 1 ${output}`)
     return this
   }
 
-  to1080p(maxResolution: number, output: string) {
-    if (maxResolution < 1080) return this
+  to1080p(output: string) {
     this.ffmpegArgs.push(`-an -vf scale=1920:1080 -b:v 5000k -dash 1 ${output}`)
     return this
   }
@@ -111,7 +105,6 @@ export class FfmpegBuilder {
       }
     })
     process.stderr.on('data', (error) => this.logger.info(error.toString()))
-    process.stdout.on('data', (data) => this.logger.debug(data.toString()))
     process.stdout.on('error', (error) => {
       process.stdin.destroy(error)
       process.stdout.destroy(error)
@@ -122,6 +115,24 @@ export class FfmpegBuilder {
       process.stdout.destroy()
       process.kill()
     })
-    return process
+    return {
+      input: process.stdin,
+      output: process.stdout,
+      toPromise: () => {
+        return new Promise<void>((resolve, reject) => {
+          process.on('close', (code) => {
+            if (code !== 0) {
+              this.logger.error(`FFmpeg exited with code ${code}`)
+              return reject(new Error(`FFmpeg exited with code ${code}`))
+            }
+            resolve()
+          })
+          process.on('error', (error) => {
+            this.logger.error(`FFmpeg error: ${error.message}`)
+            reject(error)
+          })
+        })
+      },
+    }
   }
 }

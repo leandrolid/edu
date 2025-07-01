@@ -30,7 +30,6 @@ import { PermissionService } from '@infra/services/permission/permission.service
 import { StorageService } from '@infra/services/storage/storage.service.imp'
 import { TokenService } from '@infra/services/token/token.service.imp'
 import { UIDService } from '@infra/services/uid/uid.service.imp'
-import { VideoService } from '@infra/services/video/video.service.imp'
 
 const PORT = Number(process.env.PORT || 3333)
 
@@ -56,7 +55,6 @@ async function main() {
       PermissionService,
       TokenService,
       StorageService,
-      VideoService,
       UIDService,
       ProcessVideoListener,
     ],
