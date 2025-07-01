@@ -1,3 +1,4 @@
+import { VideoEvent } from '@app/events/videos/video.event'
 import type { CreateVideosInput } from '@app/usecases/videos/create-videos/create-videos.input'
 import type { Auth } from '@domain/dtos/auth.dto'
 import { EVENT_SERVICE, Inject, Injectable, type IEventsService } from '@edu/framework'
@@ -36,11 +37,14 @@ export class CreateVideosUseCase {
           duration: video.duration || 0,
           thumbnail: '',
         })
-        await this.eventsService.emit('video.uploaded', {
-          id: material.id,
-          slug: user.slug,
-          key: upload.key,
-        })
+        await this.eventsService.emit(
+          VideoEvent.UPLOADED,
+          VideoEvent.create({
+            assetId: upload.key,
+            videoId: material.id,
+            slug: user.slug!,
+          }),
+        )
         return {
           id: material.id,
           url: upload.url,
