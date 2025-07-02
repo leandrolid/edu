@@ -1,7 +1,8 @@
 import { VideoEvent } from '@app/events/videos/video.event'
 import { RESOLUTIONS } from '@domain/constants/resolutions'
 import type { IQueueService } from '@domain/services/queue.service'
-import { Injectable, OnEvent } from '@edu/framework'
+import type { IVideoAssetService } from '@domain/services/video-asset.service'
+import { Inject, Injectable, OnEvent } from '@edu/framework'
 import { InjectQueue } from '@infra/decorators/inject-queue.decorator'
 import {
   PROCESS_VIDEO_QUEUE,
@@ -15,6 +16,8 @@ export class ProcessVideoListener {
     @InjectQueue(PROCESS_VIDEO_QUEUE)
     private readonly videoProcessorQueue: IQueueService<VideoProcessorInput>,
     private readonly videoProcessorJob: VideoProcessorJob,
+    @Inject('IVideoResolutionService')
+    private readonly videoResolutionService: IVideoAssetService,
   ) {}
 
   @OnEvent(VideoEvent.UPLOADED)
@@ -32,6 +35,10 @@ export class ProcessVideoListener {
 
   @OnEvent(VideoEvent.PROCESSED)
   async onVideoProcessed(videoEvent: VideoEvent) {
+    const assetsId = this.videoResolutionService.getAllResolutionsId({
+      videoId: videoEvent.videoId,
+      slug: videoEvent.slug,
+    })
     console.log({
       message: 'Video processed successfully',
       videoId: videoEvent.videoId,
