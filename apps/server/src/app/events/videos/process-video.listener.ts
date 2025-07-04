@@ -1,7 +1,6 @@
 import { VideoEvent } from '@app/events/videos/video.event'
 import { RESOLUTIONS } from '@domain/constants/resolutions'
 import type { IQueueService } from '@domain/services/queue.service'
-import type { IVideoAssetService } from '@domain/services/video-asset.service'
 import { Inject, Injectable, OnEvent } from '@edu/framework'
 import { InjectQueue } from '@infra/decorators/inject-queue.decorator'
 import {
@@ -15,6 +14,7 @@ import {
   VideoProcessorJob,
 } from '@infra/services/jobs/process-video.job'
 import type { IStorageService } from '@infra/services/storage/storage.service'
+import type { IVideoAssetService } from '@infra/services/video-resolution/video-asset.service'
 
 @Injectable()
 export class ProcessVideoListener {

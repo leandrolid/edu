@@ -1,11 +1,11 @@
 import { RESOLUTIONS } from '@domain/constants/resolutions'
+import { Injectable } from '@edu/framework'
 import type {
   CreateAssetInput,
   GetAllAssetsIdInput,
   GetAssetIdInput,
   IVideoAssetService,
-} from '@domain/services/video-asset.service'
-import { Injectable } from '@edu/framework'
+} from '@infra/services/video-resolution/video-asset.service'
 
 @Injectable({
   token: 'IVideoAssetService',

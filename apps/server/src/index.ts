@@ -1,5 +1,6 @@
 import { ProcessVideoListener } from '@app/events/videos/process-video.listener'
 import { createServer, EVENT_SERVICE, EventsService } from '@edu/framework'
+import { TmpStorageAdapter } from '@infra/adapters/tmp-storage/tmp-storage.adapter'
 import { BasicSignInController } from '@infra/http/controllers/auth/basic-sign-in/basic-sign-in.controller'
 import { GetMembersController } from '@infra/http/controllers/members/get-members/get-member.controller'
 import { CreateOrganizationController } from '@infra/http/controllers/organizations/create-organization/create-organization.controller'
@@ -30,6 +31,7 @@ import { PermissionService } from '@infra/services/permission/permission.service
 import { StorageService } from '@infra/services/storage/storage.service.imp'
 import { TokenService } from '@infra/services/token/token.service.imp'
 import { UIDService } from '@infra/services/uid/uid.service.imp'
+import { VideoAssetService } from '@infra/services/video-resolution/video-asset.service.imp'
 
 const PORT = Number(process.env.PORT || 3333)
 
@@ -56,6 +58,8 @@ async function main() {
       TokenService,
       StorageService,
       UIDService,
+      VideoAssetService,
+      TmpStorageAdapter,
       ProcessVideoListener,
     ],
     controllers: [

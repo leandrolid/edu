@@ -1,11 +1,11 @@
 import { VideoEvent } from '@app/events/videos/video.event'
 import type { IJobService, ProcessInput } from '@domain/services/queue.service'
-import type { IVideoAssetService } from '@domain/services/video-asset.service'
 import { EVENT_SERVICE, Inject, Injectable, Logger, type IEventsService } from '@edu/framework'
 import { BullJobAdapter } from '@infra/adapters/bull/job.adapter'
 import { FfmpegBuilder } from '@infra/adapters/ffmpeg/ffmpeg.builder'
 import type { TmpStorageAdapter } from '@infra/adapters/tmp-storage/tmp-storage.adapter'
 import type { IStorageService } from '@infra/services/storage/storage.service'
+import type { IVideoAssetService } from '@infra/services/video-resolution/video-asset.service'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
