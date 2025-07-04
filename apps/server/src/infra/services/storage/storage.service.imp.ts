@@ -74,15 +74,24 @@ export class StorageService implements Storage.IStorageService {
   }
 
   async clear(): Promise<void> {
-    await this.fsStorage.clear()
+    this.fsStorage.clear()
   }
 
   async deleteDirectory(directory: string): Promise<void> {
     try {
-      await this.fsStorage.deleteDirectory(directory)
+      this.fsStorage.deleteDirectory(directory)
     } catch (error) {
       console.error(error)
       throw new InternalServerError('Erro ao deletar o diretório')
+    }
+  }
+
+  async existMany(fileNames: string[]): Promise<boolean> {
+    try {
+      return this.fsStorage.filesExist(fileNames)
+    } catch (error) {
+      console.error(error)
+      throw new InternalServerError('Erro ao verificar a existência dos arquivos')
     }
   }
 }

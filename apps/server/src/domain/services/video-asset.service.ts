@@ -1,8 +1,15 @@
 import type { Prettify } from '@edu/utils'
 
 export interface IVideoAssetService {
-  getResolutionId(input: GetAssetIdInput): string
-  getAllResolutionsId(input: GetAllAssetsIdInput): string[]
+  createPath(input: CreateAssetInput): string
+  getResolutionPath(input: GetAssetIdInput): string
+  getAllResolutionsPath(input: GetAllAssetsIdInput): string[]
+}
+
+export type CreateAssetInput = {
+  videoId: string
+  slug: string
+  name: string
 }
 
 export type GetAssetIdInput = {

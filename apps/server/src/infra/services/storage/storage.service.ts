@@ -7,6 +7,7 @@ export interface IStorageService {
   getMany(keys: string[]): Promise<GetOneOutput[]>
   clear(): Promise<void>
   deleteDirectory(directory: string): Promise<void>
+  existMany(fileNames: string[]): Promise<boolean>
 }
 
 export type UploadOneInput = {
