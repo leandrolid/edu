@@ -1,5 +1,6 @@
 import { RESOLUTIONS } from '@domain/constants/resolutions'
 import type {
+  CreateAssetInput,
   GetAllAssetsIdInput,
   GetAssetIdInput,
   IVideoAssetService,
@@ -10,13 +11,17 @@ import { Injectable } from '@edu/framework'
   token: 'IVideoAssetService',
 })
 export class VideoAssetService implements IVideoAssetService {
-  public getResolutionId({ slug, videoId, resolution }: GetAssetIdInput) {
+  public createPath({ slug, videoId, name }: CreateAssetInput): string {
+    return `organizations/${slug}/videos/${videoId}/${name}`
+  }
+
+  public getResolutionPath({ slug, videoId, resolution }: GetAssetIdInput) {
     return `organizations/${slug}/videos/${videoId}/${resolution}.webm`
   }
 
-  public getAllResolutionsId({ slug, videoId }: GetAllAssetsIdInput) {
+  public getAllResolutionsPath({ slug, videoId }: GetAllAssetsIdInput) {
     return RESOLUTIONS.map((resolution) => {
-      return this.getResolutionId({
+      return this.getResolutionPath({
         slug,
         videoId,
         resolution: resolution.label,

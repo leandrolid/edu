@@ -5,19 +5,30 @@ import type { IVideoAssetService } from '@domain/services/video-asset.service'
 import { Inject, Injectable, OnEvent } from '@edu/framework'
 import { InjectQueue } from '@infra/decorators/inject-queue.decorator'
 import {
+  CREATE_MANIFEST_QUEUE,
+  type CreateManifestInput,
+  CreateManifestJob,
+} from '@infra/services/jobs/create-manifest.job'
+import {
   PROCESS_VIDEO_QUEUE,
   type VideoProcessorInput,
   VideoProcessorJob,
 } from '@infra/services/jobs/process-video.job'
+import type { IStorageService } from '@infra/services/storage/storage.service'
 
 @Injectable()
 export class ProcessVideoListener {
   constructor(
     @InjectQueue(PROCESS_VIDEO_QUEUE)
     private readonly videoProcessorQueue: IQueueService<VideoProcessorInput>,
+    @InjectQueue(CREATE_MANIFEST_QUEUE)
+    private readonly createManifestQueue: IQueueService<CreateManifestInput>,
+    @Inject('IVideoAssetService')
+    private readonly videoAssetService: IVideoAssetService,
+    @Inject('IStorageService')
+    private readonly storageService: IStorageService,
     private readonly videoProcessorJob: VideoProcessorJob,
-    @Inject('IVideoResolutionService')
-    private readonly videoResolutionService: IVideoAssetService,
+    private readonly createManifestJob: CreateManifestJob,
   ) {}
 
   @OnEvent(VideoEvent.UPLOADED)
@@ -35,72 +46,19 @@ export class ProcessVideoListener {
 
   @OnEvent(VideoEvent.PROCESSED)
   async onVideoProcessed(videoEvent: VideoEvent) {
-    const assetsId = this.videoResolutionService.getAllResolutionsId({
+    const assetsId = this.videoAssetService.getAllResolutionsPath({
       videoId: videoEvent.videoId,
       slug: videoEvent.slug,
     })
-    console.log({
-      message: 'Video processed successfully',
+    const allAssetsExist = await this.storageService.existMany(assetsId)
+    if (!allAssetsExist) return
+    await this.createManifestQueue.add(`create-manifest-video-${videoEvent.videoId}`, {
       videoId: videoEvent.videoId,
-      assetId: videoEvent.assetId,
+      assetsId,
       slug: videoEvent.slug,
     })
   }
 
-  // @OnEvent('video.resized')
-  // async onVideoProcessed({
-  //   id,
-  //   key,
-  //   processedFiles,
-  // }: {
-  //   id: string
-  //   key: string
-  //   processedFiles: string[]
-  // }) {
-  //   try {
-  //     const files = await this.storageService.getMany(processedFiles)
-  //     const fileDirectory = key.split('/').slice(0, -1).join('/')
-  //     const manifest = await this.videoService.createManifest({
-  //       files: files.map((file) => ({
-  //         name: file.key.split('/').pop() || '',
-  //         toStream: () => file.toStream(),
-  //       })),
-  //     })
-  //     const manifestUpload = await this.storageService.uploadStream({
-  //       key: `${fileDirectory}/manifest.mpd`,
-  //       stream: manifest.file.toStream(),
-  //     })
-  //     await manifest.close()
-  //     await this.eventsService.emit('video.processed', {
-  //       id,
-  //       key,
-  //       manifest: manifestUpload.key,
-  //       files: processedFiles,
-  //     })
-  //   } catch (error) {
-  //     console.error('Error processing video:', error)
-  //     throw new BadRequestError('Erro ao processar o vídeo')
-  //   }
-  // }
-
-  // @OnEvent('video.processed')
-  // async onVideoManifested({
-  //   id,
-  //   key,
-  //   manifest,
-  //   files,
-  // }: {
-  //   id: string
-  //   key: string
-  //   manifest: string
-  //   files: string[]
-  // }) {
-  //   console.log({
-  //     message: 'Vídeo processado com sucesso',
-  //     id,
-  //     key,
-  //     manifest,
-  //     files,
-  //   })
-  // }
+  @OnEvent(VideoEvent.MANIFEST_CREATED)
+  async onVideoManifestCreated(videoEvent: VideoEvent) {}
 }
