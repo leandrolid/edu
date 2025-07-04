@@ -2,7 +2,9 @@ import { Injectable, InternalServerError, type IReadStream } from '@edu/framewor
 import { createWriteStream } from 'node:fs'
 import { dirSync, fileSync } from 'tmp'
 
-@Injectable()
+@Injectable({
+  token: 'ITmpStorage',
+})
 export class TmpStorageAdapter {
   async streamToTempFile({
     name,

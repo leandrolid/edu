@@ -104,18 +104,25 @@ export class FsStorageAdapter {
     }
   }
 
-  async clear() {
+  public clear() {
     if (!existsSync(this.baseDir)) return
     rmSync(this.baseDir, { recursive: true, force: true })
     mkdirSync(this.baseDir, { recursive: true })
   }
 
-  async deleteDirectory(directory: string) {
+  public deleteDirectory(directory: string) {
     const dirPath = join(this.baseDir, directory)
     if (!existsSync(dirPath)) {
       throw new NotFoundError(`Diretório não encontrado: ${directory}`)
     }
     rmSync(dirPath, { recursive: true, force: true })
+  }
+
+  public filesExist(fileNames: string[]): boolean {
+    return fileNames.every((fileName) => {
+      const filePath = join(this.baseDir, fileName)
+      return existsSync(filePath)
+    })
   }
 
   private getMimeType(fileName: string): string {
