@@ -1,7 +1,7 @@
 import type { Filter } from '@domain/persistence/filter'
 import type { IRepository } from '@domain/persistence/repository'
 import { Injectable } from '@edu/framework'
-import { InjectRepository } from '@infra/database/decorators/inject-repository'
+import { InjectRepository } from '@infra/decorators/inject-repository.decorator'
 import type {
   CreateVideoInput,
   FindManyVideosAndCountInput,

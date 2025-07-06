@@ -2,7 +2,7 @@ import type { Organization } from '@domain/entities/organization.entity'
 import { ErrorCode } from '@domain/enums/error-code.enum'
 import type { IRepository } from '@domain/persistence/repository'
 import { ConflictError, Injectable, NotFoundError, ServerError } from '@edu/framework'
-import { InjectRepository } from '@infra/database/decorators/inject-repository'
+import { InjectRepository } from '@infra/decorators/inject-repository.decorator'
 import {
   IOrganizationRepository,
   type CreateOrganizationInput,
