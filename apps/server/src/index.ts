@@ -31,7 +31,7 @@ import { PermissionService } from '@infra/services/permission/permission.service
 import { StorageService } from '@infra/services/storage/storage.service.imp'
 import { TokenService } from '@infra/services/token/token.service.imp'
 import { UIDService } from '@infra/services/uid/uid.service.imp'
-import { VideoAssetService } from '@infra/services/video-resolution/video-asset.service.imp'
+import { VideoAssetService } from '@infra/services/video-assets/video-asset.service.imp'
 
 const PORT = Number(process.env.PORT || 3333)
 

@@ -1,4 +1,4 @@
-import type { Logger } from '@edu/framework'
+import { type Logger } from '@edu/framework'
 import { spawn } from 'node:child_process'
 
 export class FfProbeBuilder {
@@ -76,6 +76,27 @@ export class FfProbeBuilder {
       process.stdout.destroy()
       process.kill()
     })
-    return process
+    return {
+      input: process.stdin,
+      output: process.stdout,
+      toPromise: () => {
+        return new Promise<any>((resolve, reject) => {
+          const chunks: Buffer[] = []
+          process.stdout.on('data', (chunk) => {
+            chunks.push(chunk)
+          })
+          process.stdout.on('end', () => {
+            const data = JSON.parse(Buffer.concat(chunks).toString())
+            resolve(data)
+          })
+          process.stdio.forEach((std) => {
+            std?.on('error', (error) => reject(error))
+          })
+          process.stderr.on('data', (error) => {
+            reject(error)
+          })
+        })
+      },
+    }
   }
 }
