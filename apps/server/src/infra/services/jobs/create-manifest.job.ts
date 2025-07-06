@@ -5,7 +5,7 @@ import { BullJobAdapter } from '@infra/adapters/bull/job.adapter'
 import { FfmpegBuilder } from '@infra/adapters/ffmpeg/ffmpeg.builder'
 import type { TmpStorageAdapter } from '@infra/adapters/tmp-storage/tmp-storage.adapter'
 import type { IStorageService } from '@infra/services/storage/storage.service'
-import type { IVideoAssetService } from '@infra/services/video-resolution/video-asset.service'
+import type { IVideoAssetService } from '@infra/services/video-assets/video-asset.service'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 

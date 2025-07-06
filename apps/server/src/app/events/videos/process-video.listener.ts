@@ -14,7 +14,7 @@ import {
   VideoProcessorJob,
 } from '@infra/services/jobs/process-video.job'
 import type { IStorageService } from '@infra/services/storage/storage.service'
-import type { IVideoAssetService } from '@infra/services/video-resolution/video-asset.service'
+import type { IVideoAssetService } from '@infra/services/video-assets/video-asset.service'
 
 @Injectable()
 export class ProcessVideoListener {
@@ -35,7 +35,7 @@ export class ProcessVideoListener {
   async onVideoUploaded(videoEvent: VideoEvent) {
     await this.videoProcessorQueue.addMany(
       RESOLUTIONS.map((resolution) => ({
-        name: resolution.label,
+        name: `${videoEvent.videoId}-${resolution.label}`,
         data: {
           ...videoEvent,
           resolution: resolution.label,
@@ -52,7 +52,7 @@ export class ProcessVideoListener {
     })
     const allAssetsExist = await this.storageService.existMany(assetsId)
     if (!allAssetsExist) return
-    await this.createManifestQueue.add(`create-manifest-video-${videoEvent.videoId}`, {
+    await this.createManifestQueue.add(`${videoEvent.videoId}-manifest`, {
       videoId: videoEvent.videoId,
       assetsId,
       slug: videoEvent.slug,

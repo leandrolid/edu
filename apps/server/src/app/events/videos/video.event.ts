@@ -2,10 +2,6 @@ export class VideoEvent {
   static readonly UPLOADED = 'video.uploaded'
   static readonly PROCESSED = 'video.processed'
   static readonly MANIFEST_CREATED = 'video.manifest.created'
-  static readonly ERROR = 'video.error'
-  static readonly DELETED = 'video.deleted'
-  static readonly UPDATED = 'video.updated'
-  static readonly THUMBNAIL_UPDATED = 'video.thumbnail.updated'
   static readonly METADATA_UPDATED = 'video.metadata.updated'
 
   private constructor(
