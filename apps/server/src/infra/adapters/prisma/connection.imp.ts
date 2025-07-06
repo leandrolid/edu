@@ -1,7 +1,7 @@
 import { ErrorCode } from '@domain/enums/error-code.enum'
 import type { IDatabaseConnection } from '@domain/persistence/connection'
 import { ConflictError, InternalServerError, Logger, NotFoundError } from '@edu/framework'
-import { PrismaErrorCode } from '@infra/database/connections/error-code'
+import { PrismaErrorCode } from '@infra/adapters/prisma/error-code'
 import { Prisma, PrismaClient } from '@prisma/client'
 import { camel, get } from 'radash'
 

@@ -40,7 +40,7 @@
     "tsconfig-paths": "^4.2.0"
   },
   "prisma": {
-    "seed": "yarn env:dev ts-node -r tsconfig-paths/register src/infra/database/seeds/index.ts"
+    "seed": "yarn env:dev ts-node -r tsconfig-paths/register src/infra/adapters/prisma/seed.ts"
   },
   "prettier": "@edu/prettier",
   "eslintConfig": {

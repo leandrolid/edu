@@ -1,6 +1,6 @@
 import { createDecorator, Scope } from '@edu/framework'
-import { PrismaDatabaseConnection } from '@infra/database/connections/connection.imp'
-import { Repository } from '@infra/database/connections/repository.imp'
+import { PrismaDatabaseConnection } from '@infra/adapters/prisma/connection.imp'
+import { PrismaRepository } from '@infra/adapters/prisma/repository.imp'
 import type { Prisma } from '@prisma/client'
 
 export function InjectRepository(modelName: Prisma.ModelName) {
@@ -8,7 +8,7 @@ export function InjectRepository(modelName: Prisma.ModelName) {
     scope: Scope.Singleton,
     useFactory: () => {
       const connection = PrismaDatabaseConnection.getInstance()
-      return new Repository(connection, modelName)
+      return new PrismaRepository(connection, modelName)
     },
   })
 }

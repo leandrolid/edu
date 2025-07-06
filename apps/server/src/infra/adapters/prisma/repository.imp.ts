@@ -6,11 +6,11 @@ import type {
   UpdateManyOptions,
   UpdateOneOptions,
 } from '@domain/persistence/repository'
-import { PrismaDatabaseConnection } from '@infra/database/connections/connection.imp'
+import { PrismaDatabaseConnection } from '@infra/adapters/prisma/connection.imp'
 import { type Prisma } from '@prisma/client'
 import { crush, isEmpty, isPrimitive } from 'radash'
 
-export class Repository<T> implements IRepository<T> {
+export class PrismaRepository<T> implements IRepository<T> {
   constructor(
     private readonly connection: PrismaDatabaseConnection,
     private readonly modelName: Prisma.ModelName,

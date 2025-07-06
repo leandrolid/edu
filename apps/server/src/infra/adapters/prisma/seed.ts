@@ -1,7 +1,11 @@
 import { createSlug } from '@edu/utils'
 import { faker } from '@faker-js/faker/locale/pt_BR'
-import { prisma } from '@infra/database/connections/connection.imp'
+import { PrismaClient } from '@prisma/client'
 import { hash } from 'bcrypt'
+
+const prisma = new PrismaClient({
+  log: ['query', 'error', 'info', 'warn'],
+})
 
 const main = async () => {
   await prisma.member.deleteMany()

@@ -4,6 +4,6 @@ export default defineConfig({
   earlyAccess: true,
   schema: {
     kind: 'single',
-    filePath: './src/infra/database/schema.prisma',
+    filePath: './src/infra/adapters/prisma/schema.prisma',
   },
 })
