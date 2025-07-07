@@ -15,7 +15,6 @@ import { GetTeamController } from '@infra/http/controllers/teams/get-team/get-te
 import { GetTeamsController } from '@infra/http/controllers/teams/get-teams/get-teams.controller'
 import { UpdateTeamController } from '@infra/http/controllers/teams/update-team/update-team.controller'
 import { CreateAccountController } from '@infra/http/controllers/users/create-account/create-account.controller'
-import { CreateVideoController } from '@infra/http/controllers/videos/create-video/create-video.controller'
 import { CreateVideosController } from '@infra/http/controllers/videos/create-videos/create-videos.controller'
 import { DeleteVideoController } from '@infra/http/controllers/videos/delete-video/delete-video.controller'
 import { GetVideoController } from '@infra/http/controllers/videos/get-video/get-video.controller'
@@ -77,7 +76,6 @@ async function main() {
       GetTeamController,
       UpdateTeamController,
       DeleteTeamController,
-      CreateVideoController,
       CreateVideosController,
       GetVideosController,
       GetVideoController,
