@@ -14,17 +14,15 @@ import {
   VideoProcessorJob,
 } from '@infra/services/jobs/process-video.job'
 import type { IStorageService } from '@infra/services/storage/storage.service'
-import type { IVideoAssetService } from '@infra/services/video-assets/video-asset.service'
 
 @Injectable()
 export class ProcessVideoListener {
+  private readonly videosProcessing = new Map<string, string[]>()
   constructor(
     @InjectQueue(PROCESS_VIDEO_QUEUE)
     private readonly videoProcessorQueue: IQueueService<VideoProcessorInput>,
     @InjectQueue(CREATE_MANIFEST_QUEUE)
     private readonly createManifestQueue: IQueueService<CreateManifestInput>,
-    @Inject('IVideoAssetService')
-    private readonly videoAssetService: IVideoAssetService,
     @Inject('IStorageService')
     private readonly storageService: IStorageService,
     private readonly videoProcessorJob: VideoProcessorJob,
@@ -33,6 +31,7 @@ export class ProcessVideoListener {
 
   @OnEvent(VideoEvent.UPLOADED)
   async onVideoUploaded(videoEvent: VideoEvent) {
+    this.videosProcessing.set(videoEvent.videoId, [])
     await this.videoProcessorQueue.addMany(
       RESOLUTIONS.map((resolution) => ({
         name: `${videoEvent.videoId}-${resolution.label}`,
@@ -46,17 +45,18 @@ export class ProcessVideoListener {
 
   @OnEvent(VideoEvent.PROCESSED)
   async onVideoProcessed(videoEvent: VideoEvent) {
-    const assetsId = this.videoAssetService.getAllResolutionsPath({
-      videoId: videoEvent.videoId,
-      slug: videoEvent.slug,
-    })
-    const allAssetsExist = await this.storageService.existMany(assetsId)
-    if (!allAssetsExist) return
+    const assetsId = this.videosProcessing.get(videoEvent.videoId)!
+    assetsId.push(videoEvent.assetId)
+    if (assetsId.length < RESOLUTIONS.length) {
+      this.videosProcessing.set(videoEvent.videoId, assetsId)
+      return
+    }
     await this.createManifestQueue.add(`${videoEvent.videoId}-manifest`, {
       videoId: videoEvent.videoId,
       assetsId,
       slug: videoEvent.slug,
     })
+    this.videosProcessing.delete(videoEvent.videoId)
   }
 
   @OnEvent(VideoEvent.MANIFEST_CREATED)

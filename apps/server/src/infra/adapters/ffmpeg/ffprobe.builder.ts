@@ -53,29 +53,7 @@ export class FfProbeBuilder {
       detached: true,
       shell: true,
     })
-    process.on('error', (err) => {
-      process.stdin.destroy(err)
-      process.stdout.destroy(err)
-    })
-    process.on('close', (code) => {
-      if (code !== 0) {
-        this.logger.error(`FFprobe exited with code ${code}`)
-      } else {
-        this.logger.success('FFprobe processing completed successfully')
-      }
-    })
-    process.stderr.on('data', (error) => this.logger.error(error.toString()))
-    process.stdout.on('data', (data) => this.logger.debug(data.toString()))
-    process.stdout.on('error', (error) => {
-      process.stdin.destroy(error)
-      process.stdout.destroy(error)
-      process.kill()
-    })
-    process.stdout.on('end', () => {
-      process.stdin.destroy()
-      process.stdout.destroy()
-      process.kill()
-    })
+    process.stderr.on('data', (error) => this.logger.info(error.toString()))
     return {
       input: process.stdin,
       output: process.stdout,
@@ -89,10 +67,14 @@ export class FfProbeBuilder {
             const data = JSON.parse(Buffer.concat(chunks).toString())
             resolve(data)
           })
-          process.stdio.forEach((std) => {
-            std?.on('error', (error) => reject(error))
+          process.on('error', (error) => {
+            this.logger.error(`FFmpeg error: ${error.message}`)
+            reject(error)
           })
-          process.stderr.on('data', (error) => {
+          process.stdout.on('error', (error) => {
+            process.stdin.destroy(error)
+            process.stdout.destroy(error)
+            process.kill(1)
             reject(error)
           })
         })

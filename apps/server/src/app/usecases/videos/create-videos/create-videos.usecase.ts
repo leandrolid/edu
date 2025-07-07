@@ -27,13 +27,12 @@ export class CreateVideosUseCase {
       videos.map(async (video) => {
         const videoId = this.uidService.uuid()
         const buffer = await video.file.toBuffer()
-        const videoInfo = await this.videoAssetService.getInfo({ buffer })
         const upload = await this.storageService.uploadOne({
           buffer,
           key: this.videoAssetService.createPath({
             slug: user.slug!,
             videoId,
-            name: `original.${video.file.filename.split('.').pop() || 'mp4'}`,
+            name: 'original.mp4',
           }),
         })
         const material = await this.videoRepository.createOne({
@@ -43,7 +42,7 @@ export class CreateVideosUseCase {
           organizationId: user.organizationId!,
           assetId: upload.key,
           baseUrl: 'http://localhost:3333',
-          duration: Math.ceil(videoInfo.video.duration),
+          duration: 0,
           thumbnail: '',
         })
         await this.eventsService.emit(
