@@ -57,7 +57,7 @@ export class VideoProcessorJob
       await this.eventsService.emit(
         VideoEvent.PROCESSED,
         VideoEvent.create({
-          assetId,
+          assetId: resized.key,
           videoId,
           slug,
         }),
