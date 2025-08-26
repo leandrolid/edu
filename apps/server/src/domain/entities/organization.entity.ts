@@ -13,5 +13,5 @@ export class Organization {
     readonly shouldAttachUserByDomain: boolean,
   ) {}
 
-  readonly members: Member[] = []
+  readonly members!: Member[]
 }

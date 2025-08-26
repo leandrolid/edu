@@ -14,6 +14,6 @@ export class Member {
     readonly teamId: string,
   ) {}
 
-  readonly team: Team = Object.create(null)
-  readonly user: User = Object.create(null)
+  readonly team!: Team
+  readonly user!: User
 }
